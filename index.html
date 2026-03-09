@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Haoyu Wu | Molecular Simulation & Scientific Software</title>
+  <meta name="description" content="Haoyu Wu — PhD student at the University of Notre Dame working on molecular simulation, polymer physics, multiscale modeling, and scientific software.">
+  <meta name="theme-color" content="#0b1220">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="brand" href="#top">Haoyu Wu</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#software">Software</a>
+        <a href="#links">Links</a>
+      </nav>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme">Theme</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Molecular simulation · polymer physics · multiscale modeling · scientific software</p>
+          <h1>Haoyu Wu</h1>
+          <p class="hero-text">
+            PhD student at the University of Notre Dame focused on molecular simulation, with an active software portfolio spanning
+            reactive force-field extensions, Monte Carlo sampling, trajectory analysis, crystallization analysis, viscoelastic-response
+            extraction, and nanoscale-to-device continuum modeling.
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="https://github.com/haoyuwu97" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="button" href="https://scholar.google.com/citations?hl=en&authuser=1&user=NSpr644AAAAJ" target="_blank" rel="noreferrer">Google Scholar</a>
+            <a class="button" href="https://orcid.org/0000-0002-2805-4911" target="_blank" rel="noreferrer">ORCID</a>
+          </div>
+        </div>
+        <aside class="profile-card" aria-label="Profile summary">
+          <div class="avatar">HW</div>
+          <dl class="facts">
+            <div>
+              <dt>Affiliation</dt>
+              <dd>University of Notre Dame</dd>
+            </div>
+            <div>
+              <dt>Focus</dt>
+              <dd>Molecular simulation and scientific computing</dd>
+            </div>
+            <div>
+              <dt>Location</dt>
+              <dd>South Bend, Indiana, USA</dd>
+            </div>
+            <div>
+              <dt>Software themes</dt>
+              <dd>Trajectory analysis, continuum modeling, polymer crystallization, viscoelasticity</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">About</p>
+          <h2>Research profile</h2>
+        </div>
+        <div class="content-card prose">
+          <p>
+            My work sits at the interface of molecular simulation, polymer physics, and computational modeling. I am interested in
+            building reliable and extensible software that connects atomistic or coarse-grained simulation outputs to physically
+            interpretable observables and, when needed, to higher-level continuum descriptions.
+          </p>
+          <p>
+            Across the current codebase portfolio, the main themes are: force-field development for reactive systems,
+            equilibrium and nonequilibrium analysis of simulation trajectories, crystallization and morphology characterization,
+            viscoelastic linear-response analysis, and transport or electrostatic continuum models informed by simulation-derived kernels.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workflow">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Workflow</p>
+          <h2>From molecular interactions to device-scale observables</h2>
+        </div>
+        <div class="workflow-grid">
+          <article class="content-card flow-card">
+            <span class="step">01</span>
+            <h3>Interactions and model systems</h3>
+            <p>Custom interaction models and simple-particle simulation workflows for reactive and coarse-grained systems.</p>
+            <p class="muted">Repositories: <strong>pair_style-sw-as</strong>, <strong>GNM</strong></p>
+          </article>
+          <article class="content-card flow-card">
+            <span class="step">02</span>
+            <h3>Trajectory-scale analysis</h3>
+            <p>Reusable infrastructure for extracting physical observables from large molecular simulation trajectories.</p>
+            <p class="muted">Repositories: <strong>PILOTS</strong>, <strong>IMPACT</strong>, <strong>VELA</strong></p>
+          </article>
+          <article class="content-card flow-card">
+            <span class="step">03</span>
+            <h3>Continuum and device modeling</h3>
+            <p>Simulation-informed continuum solvers for charge, ion, and redox transport from nanoscale kernels to device outputs.</p>
+            <p class="muted">Repository: <strong>CHANNEL</strong></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="software">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Software</p>
+          <h2>Selected repositories</h2>
+        </div>
+        <div class="project-grid">
+          <article class="project-card">
+            <div class="project-top">
+              <h3><a href="https://github.com/haoyuwu97/PILOTS" target="_blank" rel="noreferrer">PILOTS</a></h3>
+              <span class="pill">Trajectory analysis</span>
+            </div>
+            <p>High-performance, reproducible trajectory-analysis runner for large-scale molecular simulations with an extensible measure framework.</p>
+          </article>
+
+          <article class="project-card">
+            <div class="project-top">
+              <h3><a href="https://github.com/haoyuwu97/CHANNEL" target="_blank" rel="noreferrer">CHANNEL</a></h3>
+              <span class="pill">Continuum modeling</span>
+            </div>
+            <p>1D continuum simulator for charge, ion, and redox physics in nanoscale-to-device workflows, designed to consume PILOTS-generated kernels.</p>
+          </article>
+
+          <article class="project-card">
+            <div class="project-top">
+              <h3><a href="https://github.com/haoyuwu97/IMPACT" target="_blank" rel="noreferrer">IMPACT</a></h3>
+              <span class="pill">Crystallization analysis</span>
+            </div>
+            <p>Coarse-grained crystallization analysis toolkit for semi-crystalline polymers and polymeric nanocomposites.</p>
+          </article>
+
+          <article class="project-card">
+            <div class="project-top">
+              <h3><a href="https://github.com/haoyuwu97/VELA" target="_blank" rel="noreferrer">VELA</a></h3>
+              <span class="pill">Linear response</span>
+            </div>
+            <p>Stress-autocorrelation and modulus-analysis package for converting MD stress time series into time- and frequency-domain viscoelastic observables.</p>
+          </article>
+
+          <article class="project-card">
+            <div class="project-top">
+              <h3><a href="https://github.com/haoyuwu97/pair_style-sw-as" target="_blank" rel="noreferrer">pair_style-sw-as</a></h3>
+              <span class="pill">LAMMPS extension</span>
+            </div>
+            <p>LAMMPS pair style implementing a modified Stillinger–Weber three-body potential for associative vitrimer bonding.</p>
+          </article>
+
+          <article class="project-card">
+            <div class="project-top">
+              <h3><a href="https://github.com/haoyuwu97/GNM" target="_blank" rel="noreferrer">GNM</a></h3>
+              <span class="pill">Monte Carlo</span>
+            </div>
+            <p>MC / GCMC package for simple Lennard–Jones particle systems.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="links">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Links</p>
+          <h2>Profiles and research pages</h2>
+        </div>
+        <div class="link-grid">
+          <a class="content-card link-card" href="https://github.com/haoyuwu97" target="_blank" rel="noreferrer">
+            <h3>GitHub</h3>
+            <p>Source code and software repositories.</p>
+          </a>
+          <a class="content-card link-card" href="https://scholar.google.com/citations?hl=en&authuser=1&user=NSpr644AAAAJ" target="_blank" rel="noreferrer">
+            <h3>Google Scholar</h3>
+            <p>Publication and citation profile.</p>
+          </a>
+          <a class="content-card link-card" href="https://orcid.org/0000-0002-2805-4911" target="_blank" rel="noreferrer">
+            <h3>ORCID</h3>
+            <p>Research identity and record linkage.</p>
+          </a>
+          <a class="content-card link-card" href="https://www.linkedin.com/in/haoyu-wu-439bba323" target="_blank" rel="noreferrer">
+            <h3>LinkedIn</h3>
+            <p>Professional profile and network.</p>
+          </a>
+          <a class="content-card link-card" href="https://whitmergroup.github.io/people.html" target="_blank" rel="noreferrer">
+            <h3>Whitmer Group</h3>
+            <p>Group page and broader research context.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <p>© <span id="year"></span> Haoyu Wu</p>
+      <p class="muted">Built as a lightweight static site for GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>
