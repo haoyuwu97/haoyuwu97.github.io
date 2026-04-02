@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research Wiki | Haoyu Wu</title>
+    <meta
+      name="description"
+      content="A code atlas for Haoyu Wu's software stack: PILOTS, CHANNEL, IMPACT, VELA, GNM, and pair_style-sw-as."
+    />
+    <meta name="theme-color" content="#050816" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Research Wiki | Haoyu Wu" />
+    <meta
+      property="og:description"
+      content="A code atlas for Haoyu Wu's software stack: PILOTS, CHANNEL, IMPACT, VELA, GNM, and pair_style-sw-as."
+    />
+    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <meta property="og:url" content="https://haoyuwu97.github.io/wiki.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Research Wiki | Haoyu Wu" />
+    <meta
+      name="twitter:description"
+      content="A code atlas for Haoyu Wu's software stack: PILOTS, CHANNEL, IMPACT, VELA, GNM, and pair_style-sw-as."
+    />
+    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+    <div class="site-shell">
+      <div class="topbar-wrap">
+        <header class="container topbar">
+          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+            <span class="brand-mark" aria-hidden="true">HW</span>
+            <span class="brand-copy">
+              <span class="brand-title">Haoyu Wu</span>
+              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+            </span>
+          </a>
+          <nav class="nav-links" aria-label="Primary navigation">
+            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
+          </nav>
+        </header>
+      </div>
+
+      <main class="site-main">
+        <section class="page-hero">
+          <div class="container page-hero-shell">
+            <div class="page-hero-grid">
+              <div class="page-head">
+                <span class="kicker">Research wiki</span>
+                <h1 class="page-title">A software page that behaves like documentation</h1>
+                <p class="page-subtitle">
+                  Instead of a bare repository list, this page exposes categories, dependency-like relationships, quick summaries, and per-project detail pages.
+                </p>
+              </div>
+              <aside class="page-side-panel">
+                <article class="stat-card glass-card">
+                  <span class="stat-label">Repositories listed</span>
+                  <strong id="repo-total" class="stat-value">0</strong>
+                </article>
+                <article class="stat-card glass-card">
+                  <span class="stat-label">Technical categories</span>
+                  <strong id="category-total" class="stat-value">0</strong>
+                </article>
+                <article class="stat-card glass-card">
+                  <span class="stat-label">Current matches</span>
+                  <strong id="repo-results" class="stat-value">0</strong>
+                </article>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="container">
+            <div class="glass-card" data-reveal>
+              <span class="meta-chip">Code atlas</span>
+              <h2 class="section-title">Workflow relationships</h2>
+              <p class="section-copy">
+                This visual map is deliberately simple: it emphasizes scientific roles and data flow rather than mimicking full dependency graphs.
+              </p>
+              <div id="software-map-container" class="section-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="container">
+            <div class="glass-card control-panel" data-reveal>
+              <div class="control-grid">
+                <div class="control">
+                  <label for="repo-search">Search repositories</label>
+                  <input id="repo-search" class="text-input" type="search" placeholder="Try: continuum, crystallization, LAMMPS, Monte Carlo..." />
+                </div>
+              </div>
+              <div class="control">
+                <label>Category filter</label>
+                <div id="category-filters" class="chip-wrap" aria-label="Repository categories"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="container">
+            <div id="repo-list" class="repo-grid"></div>
+            <div id="repo-pagination" class="pagination" aria-label="Repository pagination"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="container footer-card">
+          <div class="footer-copy">
+            © <span data-year></span> Haoyu Wu. Each repository can be opened as a dedicated wiki-style detail page with commands, features, and software context.
+          </div>
+          <div class="footer-links">
+            <a href="index.html">Overview</a>
+            <a href="publications.html">Publications</a>
+            <a href="leisure.html">Rest Mode</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="assets/js/wiki.js"></script>
+  </body>
+</html>

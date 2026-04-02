@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found | Haoyu Wu</title>
+    <meta name="description" content="Page not found on Haoyu Wu's research site." />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+    <div class="site-shell">
+      <main class="site-main">
+        <section class="page-hero">
+          <div class="container page-hero-shell">
+            <div class="page-head">
+              <span class="kicker">404</span>
+              <h1 class="page-title">That page drifted out of the simulation box.</h1>
+              <p class="page-subtitle">The address may be outdated, renamed, or typed incorrectly. Use the links below to jump back into the main site.</p>
+              <div class="hero-actions">
+                <a class="btn primary" href="index.html">Go to overview</a>
+                <a class="btn secondary" href="wiki.html">Open research wiki</a>
+                <a class="btn ghost" href="publications.html">Open publications</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module">
+      import { initMolecularField } from './assets/js/background.js';
+      initMolecularField(document.getElementById('bg-canvas'), { variant: 'page', density: 0.65 });
+    </script>
+  </body>
+</html>

@@ -1,10 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Haoyu Wu favicon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#1d4ed8"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
+    <linearGradient id="g" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BAF7FF"/>
+      <stop offset="0.45" stop-color="#95F2FF"/>
+      <stop offset="1" stop-color="#9BAAFF"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#g)"/>
-  <text x="32" y="38" text-anchor="middle" font-size="24" font-family="Arial, Helvetica, sans-serif" font-weight="700" fill="#ffffff">HW</text>
+  <rect width="64" height="64" rx="18" fill="#050816"/>
+  <circle cx="18" cy="20" r="5" fill="url(#g)"/>
+  <circle cx="47" cy="17" r="4.5" fill="url(#g)"/>
+  <circle cx="49" cy="45" r="5.5" fill="url(#g)"/>
+  <circle cx="17" cy="45" r="4.5" fill="url(#g)"/>
+  <circle cx="32" cy="32" r="6" fill="url(#g)"/>
+  <path d="M18 20 32 32 47 17M32 32 49 45M32 32 17 45" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <path d="M22 50V27h4l6.5 11.5L39 27h4v23h-4V34.2l-5.4 9.7h-2.1L26 34.2V50h-4Z" fill="#F8FDFF" fill-opacity="0.94"/>
 </svg>

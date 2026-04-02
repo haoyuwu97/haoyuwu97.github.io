@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research Wiki | Haoyu Wu</title>
+    <meta name="description" content="Detailed repository page for Haoyu Wu's scientific software." />
+    <meta name="theme-color" content="#050816" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Research Wiki | Haoyu Wu" />
+    <meta property="og:description" content="Detailed repository page for Haoyu Wu's scientific software." />
+    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <meta property="og:url" content="https://haoyuwu97.github.io/wiki-entry.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Research Wiki | Haoyu Wu" />
+    <meta name="twitter:description" content="Detailed repository page for Haoyu Wu's scientific software." />
+    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+    <div class="site-shell">
+      <div class="topbar-wrap">
+        <header class="container topbar">
+          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+            <span class="brand-mark" aria-hidden="true">HW</span>
+            <span class="brand-copy">
+              <span class="brand-title">Haoyu Wu</span>
+              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+            </span>
+          </a>
+          <nav class="nav-links" aria-label="Primary navigation">
+            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
+          </nav>
+        </header>
+      </div>
+
+      <main class="site-main">
+        <section class="detail-header">
+          <div class="container detail-header-shell">
+            <div class="detail-header-grid">
+              <div class="detail-head">
+                <span id="entry-kicker" class="kicker">Repository</span>
+                <h1 id="entry-title" class="entry-title">Repository</h1>
+                <p id="entry-headline" class="entry-headline"></p>
+                <p id="entry-summary" class="entry-summary"></p>
+                <div id="entry-tags" class="entry-tags"></div>
+              </div>
+              <aside class="page-side-panel">
+                <article class="glass-card info-card">
+                  <span class="meta-chip">Why this code matters</span>
+                  <p id="entry-why" class="card-body"></p>
+                </article>
+                <article class="glass-card info-card">
+                  <span class="meta-chip">Quick links</span>
+                  <div id="quick-links" class="quick-links"></div>
+                </article>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="container detail-layout">
+            <aside class="detail-sidebar">
+              <div id="entry-stats" class="section-grid"></div>
+              <div class="glass-card info-card" data-reveal>
+                <span class="meta-chip">Navigate</span>
+                <p class="card-body">
+                  Use the pager below to walk through adjacent repositories, or return to the full atlas view.
+                </p>
+                <div class="quick-links">
+                  <a class="btn secondary" href="wiki.html">Back to wiki</a>
+                  <a class="btn ghost" href="index.html#software">Back to overview</a>
+                </div>
+              </div>
+            </aside>
+
+            <div class="detail-main">
+              <article class="glass-card detail-section" data-reveal>
+                <span class="meta-chip">Core features</span>
+                <h2>What it can do</h2>
+                <ul id="feature-list" class="section-list"></ul>
+              </article>
+
+              <article class="glass-card detail-section" data-reveal>
+                <span class="meta-chip">Architecture</span>
+                <h2>How the workflow is organized</h2>
+                <ul id="architecture-list" class="section-list"></ul>
+              </article>
+
+              <article class="glass-card detail-section" data-reveal>
+                <span class="meta-chip">Outputs</span>
+                <h2>What it produces</h2>
+                <ul id="output-list" class="section-list"></ul>
+              </article>
+
+              <article class="glass-card detail-section" data-reveal>
+                <span class="meta-chip">Connections</span>
+                <h2>Where it fits in the larger stack</h2>
+                <ul id="connection-list" class="section-list"></ul>
+              </article>
+
+              <article class="glass-card detail-section" data-reveal>
+                <span class="meta-chip">Build commands</span>
+                <h2>Compile / setup</h2>
+                <div id="build-commands" class="code-grid"></div>
+              </article>
+
+              <article class="glass-card detail-section" data-reveal>
+                <span class="meta-chip">Run commands</span>
+                <h2>Minimal execution examples</h2>
+                <div id="run-commands" class="code-grid"></div>
+              </article>
+
+              <nav id="entry-pager" class="pager" aria-label="Adjacent repositories"></nav>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="container footer-card">
+          <div class="footer-copy">
+            © <span data-year></span> Haoyu Wu. This page is generated client-side from a shared repository metadata source so the wiki stays easy to extend.
+          </div>
+          <div class="footer-links">
+            <a href="index.html">Overview</a>
+            <a href="publications.html">Publications</a>
+            <a href="wiki.html">Research Wiki</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="assets/js/wiki-entry.js"></script>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rest Mode | Haoyu Wu</title>
+    <meta
+      name="description"
+      content="Minimal browser-based interactive relaxation modes with smooth animations and a random entry mechanic."
+    />
+    <meta name="theme-color" content="#050816" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Rest Mode | Haoyu Wu" />
+    <meta
+      property="og:description"
+      content="Minimal browser-based interactive relaxation modes with smooth animations and a random entry mechanic."
+    />
+    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <meta property="og:url" content="https://haoyuwu97.github.io/leisure.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Rest Mode | Haoyu Wu" />
+    <meta
+      name="twitter:description"
+      content="Minimal browser-based interactive relaxation modes with smooth animations and a random entry mechanic."
+    />
+    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <div class="topbar-wrap">
+        <header class="container topbar">
+          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+            <span class="brand-mark" aria-hidden="true">HW</span>
+            <span class="brand-copy">
+              <span class="brand-title">Haoyu Wu</span>
+              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+            </span>
+          </a>
+          <nav class="nav-links" aria-label="Primary navigation">
+            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
+          </nav>
+        </header>
+      </div>
+
+      <main class="site-main">
+        <section class="leisure-hero">
+          <div class="container playground-shell">
+            <div class="playground-grid">
+              <article class="glass-card playground-card">
+                <canvas id="playground" class="playground-canvas" aria-label="Interactive relaxation canvas"></canvas>
+              </article>
+
+              <aside class="panel-stack">
+                <article class="glass-card mode-panel">
+                  <span class="kicker">Rest mode</span>
+                  <span id="mode-subtitle" class="mode-subtitle">Random assignment</span>
+                  <h1 id="mode-title" class="mode-title">Interactive mode</h1>
+                  <p id="mode-description" class="panel-copy"></p>
+                  <div class="divider"></div>
+                  <p class="helper-note"><strong>How to interact:</strong> <span id="mode-instruction"></span></p>
+                  <div class="selector-row">
+                    <label class="sr-only" for="mode-selector">Choose a mode</label>
+                    <select id="mode-selector"></select>
+                    <button id="mode-reroll" class="btn primary" type="button">Random another one</button>
+                  </div>
+                </article>
+
+                <article class="glass-card panel-card">
+                  <span class="meta-chip">What is inside</span>
+                  <ul class="section-list">
+                    <li>5 endless browser-native mini experiences.</li>
+                    <li>Simple pointer interactions with smooth motion and no hard fail states.</li>
+                    <li>No external libraries and no assets beyond code.</li>
+                    <li>Designed to stay visually consistent with the rest of the site.</li>
+                  </ul>
+                </article>
+
+                <article class="glass-card panel-card">
+                  <span class="meta-chip">Design note</span>
+                  <p class="panel-copy">
+                    This page is intentionally calmer and more playful than the research sections, but it still inherits the same dark glass system and motion language so the site feels coherent.
+                  </p>
+                </article>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="container footer-card">
+          <div class="footer-copy">
+            © <span data-year></span> Haoyu Wu. Endless, low-pressure browser toys for a brief reset between papers and code.
+          </div>
+          <div class="footer-links">
+            <a href="index.html">Overview</a>
+            <a href="publications.html">Publications</a>
+            <a href="wiki.html">Research Wiki</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="assets/js/leisure.js"></script>
+  </body>
+</html>

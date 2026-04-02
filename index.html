@@ -1,215 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Haoyu Wu | Molecular Simulation & Scientific Software</title>
-  <meta name="description" content="Haoyu Wu — PhD student at the University of Notre Dame working on molecular simulation, polymer physics, multiscale modeling, and scientific software.">
-  <meta name="theme-color" content="#0b1220">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="script.js"></script>
-</head>
-<body>
-  <header class="site-header">
-    <div class="container nav-row">
-      <a class="brand" href="#top">Haoyu Wu</a>
-      <nav class="nav-links" aria-label="Primary">
-        <a href="#about">About</a>
-        <a href="#workflow">Workflow</a>
-        <a href="#software">Software</a>
-        <a href="#links">Links</a>
-      </nav>
-      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme">Theme</button>
-    </div>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Haoyu Wu | Molecular Simulation & Scientific Software</title>
+    <meta
+      name="description"
+      content="Personal research homepage for Haoyu Wu, featuring publications, software, research wiki, and an interactive leisure mode."
+    />
+    <meta name="theme-color" content="#050816" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Haoyu Wu | Molecular Simulation & Scientific Software" />
+    <meta
+      property="og:description"
+      content="Personal research homepage for Haoyu Wu, featuring publications, software, research wiki, and an interactive leisure mode."
+    />
+    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <meta property="og:url" content="https://haoyuwu97.github.io/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Haoyu Wu | Molecular Simulation & Scientific Software" />
+    <meta
+      name="twitter:description"
+      content="Personal research homepage for Haoyu Wu, featuring publications, software, research wiki, and an interactive leisure mode."
+    />
+    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+    <div class="site-shell">
+      <div class="topbar-wrap">
+        <header class="container topbar">
+          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+            <span class="brand-mark" aria-hidden="true">HW</span>
+            <span class="brand-copy">
+              <span class="brand-title">Haoyu Wu</span>
+              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+            </span>
+          </a>
+          <nav class="nav-links" aria-label="Primary navigation">
+            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
+          </nav>
+        </header>
+      </div>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Molecular simulation · polymer physics · multiscale modeling · scientific software</p>
-          <h1>Haoyu Wu</h1>
-          <p class="hero-text">
-            PhD student at the University of Notre Dame focused on molecular simulation, with an active software portfolio spanning
-            reactive force-field extensions, Monte Carlo sampling, trajectory analysis, crystallization analysis, viscoelastic-response
-            extraction, and nanoscale-to-device continuum modeling.
-          </p>
-          <div class="cta-row">
-            <a class="button button-primary" href="https://github.com/haoyuwu97" target="_blank" rel="noreferrer">GitHub</a>
-            <a class="button" href="https://scholar.google.com/citations?hl=en&authuser=1&user=NSpr644AAAAJ" target="_blank" rel="noreferrer">Google Scholar</a>
-            <a class="button" href="https://orcid.org/0000-0002-2805-4911" target="_blank" rel="noreferrer">ORCID</a>
+      <main class="site-main">
+        <section class="hero">
+          <div class="container hero-shell">
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <span id="hero-kicker" class="kicker">Research profile</span>
+                <h1 id="hero-name" class="hero-title">Haoyu Wu</h1>
+                <p id="hero-title" class="hero-subtitle">PhD Student in Chemical &amp; Biomolecular Engineering · University of Notre Dame</p>
+                <p id="hero-summary" class="hero-subtitle"></p>
+
+                <div id="hero-links" class="hero-actions" aria-label="Primary actions"></div>
+                <div id="focus-tags" class="focus-tags" aria-label="Research focus areas"></div>
+                <div id="hero-facts" class="metric-strip" aria-label="Profile facts"></div>
+              </div>
+
+              <div class="hero-visual" aria-hidden="true">
+                <div class="portrait-shell">
+                  <span class="portrait-orbit"></span>
+                  <span class="portrait-orbit--b"></span>
+                  <span class="portrait-orbit--c"></span>
+                  <span class="orbit-dot"></span>
+                  <span class="orbit-dot--b"></span>
+                  <span class="orbit-dot--c"></span>
+                  <div class="portrait-image-wrap">
+                    <img id="hero-portrait" class="portrait-image" src="assets/img/profile-haoyu.jpg" alt="Portrait of Haoyu Wu" />
+                  </div>
+                  <div class="portrait-caption">
+                    <strong>Physics-grounded materials simulation</strong>
+                    <span>From trajectories and topology to transport, rheology, and multiscale interpretation.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="profile" class="section">
+          <div class="container">
+            <div class="section-head" data-reveal>
+              <div>
+                <span class="kicker">Profile</span>
+                <h2 class="section-title">A research page built like a technical system</h2>
+                <p class="section-copy">
+                  The homepage is intentionally structured around scientific signal rather than personal filler: problem framing,
+                  current computational direction, selected publications, and a navigable software stack.
+                </p>
+              </div>
+            </div>
+
+            <div class="bio-grid">
+              <div id="bio-grid" class="bio-paragraphs"></div>
+              <aside class="bio-side">
+                <div class="glass-card info-card" data-reveal>
+                  <span class="meta-chip">Research posture</span>
+                  <h3 class="card-title">Microscopic mechanisms, explicit outputs</h3>
+                  <p class="card-body">
+                    The common thread across the work is to move from molecular interactions to measurable observables with code that is interpretable,
+                    modular, and reusable.
+                  </p>
+                </div>
+                <div class="glass-card info-card" data-reveal>
+                  <span class="meta-chip">Links</span>
+                  <p class="card-body">External profiles and lab pages are grouped here for quick access.</p>
+                  <div id="profile-links" class="profile-links"></div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section id="pillars" class="section">
+          <div class="container">
+            <div class="section-head" data-reveal>
+              <div>
+                <span class="kicker">Research pillars</span>
+                <h2 class="section-title">Three working layers</h2>
+                <p class="section-copy">
+                  The current portfolio is organized around materials physics, observables extraction, and multiscale linking.
+                </p>
+              </div>
+            </div>
+            <div id="pillar-grid" class="section-grid grid-3"></div>
+          </div>
+        </section>
+
+        <section id="spotlights" class="section">
+          <div class="container">
+            <div class="section-head" data-reveal>
+              <div>
+                <span class="kicker">Current emphasis</span>
+                <h2 class="section-title">What the site is trying to communicate</h2>
+                <p class="section-copy">
+                  Not only what you study, but how the code and papers fit together as a coherent research workflow.
+                </p>
+              </div>
+            </div>
+            <div id="spotlight-grid" class="section-grid grid-3"></div>
+          </div>
+        </section>
+
+        <section id="selected-publications" class="section">
+          <div class="container">
+            <div class="section-head" data-reveal>
+              <div>
+                <span class="kicker">Selected publications</span>
+                <h2 class="section-title">Recent and representative papers</h2>
+                <p class="section-copy">
+                  A curated subset of publications focused on network formation, rheology, fracture, glass transition, and vitrimer behavior.
+                </p>
+              </div>
+              <a class="btn secondary" href="publications.html">Open full publication page</a>
+            </div>
+
+            <div class="metric-strip" data-reveal>
+              <article class="stat-card glass-card">
+                <span class="stat-label">Selected papers on site</span>
+                <strong id="count-publications" class="stat-value">0</strong>
+              </article>
+              <article class="stat-card glass-card">
+                <span class="stat-label">Software systems documented</span>
+                <strong id="count-projects" class="stat-value">0</strong>
+              </article>
+              <article class="stat-card glass-card">
+                <span class="stat-label">Navigation style</span>
+                <strong class="stat-value">Searchable + paginated</strong>
+              </article>
+              <article class="stat-card glass-card">
+                <span class="stat-label">UI mood</span>
+                <strong class="stat-value">Quiet, dark, simulation-native</strong>
+              </article>
+            </div>
+
+            <div id="publication-preview" class="section-grid grid-2"></div>
+          </div>
+        </section>
+
+        <section id="software" class="section">
+          <div class="container">
+            <div class="section-head" data-reveal>
+              <div>
+                <span class="kicker">Research wiki</span>
+                <h2 class="section-title">Software atlas and code relationships</h2>
+                <p class="section-copy">
+                  The wiki page treats repositories as connected modules rather than isolated links, which makes the computational stack much easier to understand.
+                </p>
+              </div>
+              <a class="btn secondary" href="wiki.html">Open research wiki</a>
+            </div>
+
+            <div class="section-grid grid-2">
+              <div class="glass-card" data-reveal>
+                <span class="meta-chip">Code map</span>
+                <h3 class="card-title">Trajectory → observables → continuum</h3>
+                <p class="card-body">
+                  The map below highlights how simulation kernels, analysis tools, rheology routines, and continuum solvers align in one research-facing stack.
+                </p>
+                <div id="software-map-container" class="section-grid"></div>
+              </div>
+
+              <div id="software-preview" class="section-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="rest" class="section">
+          <div class="container">
+            <div class="section-head" data-reveal>
+              <div>
+                <span class="kicker">Rest mode</span>
+                <h2 class="section-title">A non-serious page, but still designed seriously</h2>
+                <p class="section-copy">
+                  A random entry sends visitors into one of several calm browser toys. It keeps the site human, memorable, and a little playful without breaking the overall design language.
+                </p>
+              </div>
+              <a class="btn primary" href="leisure.html">Enter rest mode</a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="container footer-card">
+          <div class="footer-copy">
+            © <span data-year></span> Haoyu Wu. Built as a static research site for GitHub Pages with vanilla HTML, CSS, and JavaScript.
+          </div>
+          <div class="footer-links">
+            <a href="publications.html">Publications</a>
+            <a href="wiki.html">Research Wiki</a>
+            <a href="leisure.html">Rest Mode</a>
           </div>
         </div>
-        <aside class="profile-card" aria-label="Profile summary">
-          <div class="avatar">HW</div>
-          <dl class="facts">
-            <div>
-              <dt>Affiliation</dt>
-              <dd>University of Notre Dame</dd>
-            </div>
-            <div>
-              <dt>Focus</dt>
-              <dd>Molecular simulation and scientific computing</dd>
-            </div>
-            <div>
-              <dt>Location</dt>
-              <dd>South Bend, Indiana, USA</dd>
-            </div>
-            <div>
-              <dt>Software themes</dt>
-              <dd>Trajectory analysis, continuum modeling, polymer crystallization, viscoelasticity</dd>
-            </div>
-          </dl>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section" id="about">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">About</p>
-          <h2>Research profile</h2>
-        </div>
-        <div class="content-card prose">
-          <p>
-            My work sits at the interface of molecular simulation, polymer physics, and computational modeling. I am interested in
-            building reliable and extensible software that connects atomistic or coarse-grained simulation outputs to physically
-            interpretable observables and, when needed, to higher-level continuum descriptions.
-          </p>
-          <p>
-            Across the current codebase portfolio, the main themes are: force-field development for reactive systems,
-            equilibrium and nonequilibrium analysis of simulation trajectories, crystallization and morphology characterization,
-            viscoelastic linear-response analysis, and transport or electrostatic continuum models informed by simulation-derived kernels.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="workflow">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Workflow</p>
-          <h2>From molecular interactions to device-scale observables</h2>
-        </div>
-        <div class="workflow-grid">
-          <article class="content-card flow-card">
-            <span class="step">01</span>
-            <h3>Interactions and model systems</h3>
-            <p>Custom interaction models and simple-particle simulation workflows for reactive and coarse-grained systems.</p>
-            <p class="muted">Repositories: <strong>pair_style-sw-as</strong>, <strong>GNM</strong></p>
-          </article>
-          <article class="content-card flow-card">
-            <span class="step">02</span>
-            <h3>Trajectory-scale analysis</h3>
-            <p>Reusable infrastructure for extracting physical observables from large molecular simulation trajectories.</p>
-            <p class="muted">Repositories: <strong>PILOTS</strong>, <strong>IMPACT</strong>, <strong>VELA</strong></p>
-          </article>
-          <article class="content-card flow-card">
-            <span class="step">03</span>
-            <h3>Continuum and device modeling</h3>
-            <p>Simulation-informed continuum solvers for charge, ion, and redox transport from nanoscale kernels to device outputs.</p>
-            <p class="muted">Repository: <strong>CHANNEL</strong></p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="software">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Software</p>
-          <h2>Selected repositories</h2>
-        </div>
-        <div class="project-grid">
-          <article class="project-card">
-            <div class="project-top">
-              <h3><a href="https://github.com/haoyuwu97/PILOTS" target="_blank" rel="noreferrer">PILOTS</a></h3>
-              <span class="pill">Trajectory analysis</span>
-            </div>
-            <p>High-performance, reproducible trajectory-analysis runner for large-scale molecular simulations with an extensible measure framework.</p>
-          </article>
-
-          <article class="project-card">
-            <div class="project-top">
-              <h3><a href="https://github.com/haoyuwu97/CHANNEL" target="_blank" rel="noreferrer">CHANNEL</a></h3>
-              <span class="pill">Continuum modeling</span>
-            </div>
-            <p>1D continuum simulator for charge, ion, and redox physics in nanoscale-to-device workflows, designed to consume PILOTS-generated kernels.</p>
-          </article>
-
-          <article class="project-card">
-            <div class="project-top">
-              <h3><a href="https://github.com/haoyuwu97/IMPACT" target="_blank" rel="noreferrer">IMPACT</a></h3>
-              <span class="pill">Crystallization analysis</span>
-            </div>
-            <p>Coarse-grained crystallization analysis toolkit for semi-crystalline polymers and polymeric nanocomposites.</p>
-          </article>
-
-          <article class="project-card">
-            <div class="project-top">
-              <h3><a href="https://github.com/haoyuwu97/VELA" target="_blank" rel="noreferrer">VELA</a></h3>
-              <span class="pill">Linear response</span>
-            </div>
-            <p>Stress-autocorrelation and modulus-analysis package for converting MD stress time series into time- and frequency-domain viscoelastic observables.</p>
-          </article>
-
-          <article class="project-card">
-            <div class="project-top">
-              <h3><a href="https://github.com/haoyuwu97/pair_style-sw-as" target="_blank" rel="noreferrer">pair_style-sw-as</a></h3>
-              <span class="pill">LAMMPS extension</span>
-            </div>
-            <p>LAMMPS pair style implementing a modified Stillinger–Weber three-body potential for associative vitrimer bonding.</p>
-          </article>
-
-          <article class="project-card">
-            <div class="project-top">
-              <h3><a href="https://github.com/haoyuwu97/GNM" target="_blank" rel="noreferrer">GNM</a></h3>
-              <span class="pill">Monte Carlo</span>
-            </div>
-            <p>MC / GCMC package for simple Lennard–Jones particle systems.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="links">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Links</p>
-          <h2>Profiles and research pages</h2>
-        </div>
-        <div class="link-grid">
-          <a class="content-card link-card" href="https://github.com/haoyuwu97" target="_blank" rel="noreferrer">
-            <h3>GitHub</h3>
-            <p>Source code and software repositories.</p>
-          </a>
-          <a class="content-card link-card" href="https://scholar.google.com/citations?hl=en&authuser=1&user=NSpr644AAAAJ" target="_blank" rel="noreferrer">
-            <h3>Google Scholar</h3>
-            <p>Publication and citation profile.</p>
-          </a>
-          <a class="content-card link-card" href="https://orcid.org/0000-0002-2805-4911" target="_blank" rel="noreferrer">
-            <h3>ORCID</h3>
-            <p>Research identity and record linkage.</p>
-          </a>
-          <a class="content-card link-card" href="https://www.linkedin.com/in/haoyu-wu-439bba323" target="_blank" rel="noreferrer">
-            <h3>LinkedIn</h3>
-            <p>Professional profile and network.</p>
-          </a>
-          <a class="content-card link-card" href="https://whitmergroup.github.io/people.html" target="_blank" rel="noreferrer">
-            <h3>Whitmer Group</h3>
-            <p>Group page and broader research context.</p>
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-row">
-      <p>© <span id="year"></span> Haoyu Wu</p>
-      <p class="muted">Built as a lightweight static site for GitHub Pages.</p>
+      </footer>
     </div>
-  </footer>
-</body>
+
+    <script type="module" src="assets/js/home.js"></script>
+  </body>
 </html>
