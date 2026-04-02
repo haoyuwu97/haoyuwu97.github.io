@@ -1,10 +1,10 @@
 export const profile = {
   name: 'Haoyu Wu',
-  headline: 'Molecular Simulation · Polymer Physics · Scientific Software',
+  headline: 'Soft Matter Simulation · Polymer Physics · Scientific Software',
   shortTitle: 'PhD Student in Chemical & Biomolecular Engineering',
   affiliation: 'University of Notre Dame',
   location: 'South Bend, Indiana, USA',
-  heroKicker: 'From molecular interactions to interpretable observables',
+  heroKicker: 'Soft matter, polymer nanocomposites, and multiscale transport',
   portrait: 'assets/img/profile-haoyu.jpg',
   portraitSquare: 'assets/img/profile-haoyu-square.webp',
   links: [
@@ -15,64 +15,64 @@ export const profile = {
     { label: 'ORCID', href: 'https://orcid.org/0000-0002-2805-4911' }
   ],
   heroSummary:
-    'Researching advanced polymeric materials through molecular simulation, coarse-grained modeling, and scientific software that translates trajectories into physically interpretable structure, dynamics, rheology, and transport.',
+    'Chemical engineering PhD student working across molecular simulation of soft matter, polymer and nanocomposite microstructure–property relationships, and reproducible scientific software for extracting structure, rheology, transport, and charge-coupled observables.',
   bio: [
-    'I am a PhD student at the University of Notre Dame working on soft materials and molecular simulation, with a strong emphasis on physically grounded computational modeling and reusable scientific code.',
-    'My current profile spans advanced polymeric materials, molecular simulation, and scientific computing. I am especially interested in the bridge from microscopic interactions to emergent observables such as network formation, crystallization, viscoelastic response, and continuum-scale transport.',
-    'Before Notre Dame, I earned my M.S. and B.E. from Beijing University of Chemical Technology. That training shaped a workflow I still use today: identify the physics, formalize the data path, then package the analysis into tools other researchers can trust and extend.'
+    'I am a PhD student at the University of Notre Dame in the Whitmer group. My core workflow is simulation-first and physics-first: generate trajectories, formalize the observable, and turn the analysis into code that is reusable rather than one-off.',
+    'I have been studying soft-matter molecular simulation since 2018. Earlier work centered on the microstructure–property relationship of polymers and polymer nanocomposites, especially percolation, rheology, thermal transport, glass transition, fracture, and vitrimer self-healing.',
+    'Before Notre Dame, I completed both my B.E. and M.S. at Beijing University of Chemical Technology. My current trajectory keeps the same molecular-to-measurable philosophy while expanding toward multiscale electrochemical transport and predictive device-oriented modeling.'
   ],
   focusAreas: [
-    'Advanced polymeric materials',
-    'Molecular simulations',
+    'Soft-matter simulation',
     'Polymer nanocomposites',
+    'Vitrimers & fracture',
+    'Rheology & glass transition',
     'Scientific software',
-    'Trajectory analysis',
-    'Continuum coupling'
+    'Electrochemical transport'
   ],
   quickFacts: [
     { label: 'Current home', value: 'Notre Dame' },
-    { label: 'Training', value: 'B.E. + M.S. at BUCT' },
-    { label: 'Research style', value: 'Physics-first + code-first' },
-    { label: 'Built around', value: 'Reproducible simulation workflows' }
+    { label: 'Started in', value: 'Soft-matter simulation since 2018' },
+    { label: 'Training', value: 'B.E. 2020 + M.S. 2023, BUCT' },
+    { label: 'Current arc', value: 'Polymers → multiscale charge transport' }
   ]
 };
 
 export const researchPillars = [
   {
-    id: 'molecular-modeling',
-    title: 'Molecular modeling of soft materials',
+    id: 'soft-materials',
+    title: 'Soft materials and polymer nanocomposites',
     body:
-      'Coarse-grained and molecular-dynamics studies of vitrimer networks, polymer nanocomposites, glass transition behavior, percolation, fracture, and self-healing.'
+      'Molecular-dynamics and coarse-grained studies of polymer nanocomposites, percolated filler networks, thermal transport, pressure-dependent dynamics, fracture, and vitrimer healing.'
   },
   {
     id: 'analysis-systems',
-    title: 'Simulation analysis systems',
+    title: 'Analysis systems and scientific software',
     body:
-      'Reusable code for trajectory processing, structural observables, crystallization analysis, viscoelastic response extraction, and large-scale simulation post-processing.'
+      'Reusable code for trajectory parsing, structural observables, crystallization analysis, rheology extraction, and larger simulation workflows that stay auditable as projects grow.'
   },
   {
-    id: 'multiscale-bridges',
-    title: 'Microscopic-to-continuum bridges',
+    id: 'multiscale-transport',
+    title: 'Multiscale transport and continuum bridges',
     body:
-      'A software stack that links nanoscale kernels, thermodynamics, and transport to continuum/device observables, enabling multiscale interpretation rather than isolated simulation outputs.'
+      'A current direction links simulation-derived kernels to ion, charge, and electrochemical-device observables, so the code stack can support predictive multiscale transport rather than isolated trajectory plots.'
   }
 ];
 
 export const homeSpotlights = [
   {
-    title: 'Physically interpretable software',
+    title: 'Microstructure ↔ property relationships',
     text:
-      'The code portfolio is organized like a workflow rather than a collection of unrelated repositories: generate trajectories, extract observables, characterize structure and rheology, then push kernels into higher-level continuum models.'
+      'A large part of the publication record is about how nanoscale arrangement, filler geometry, pressure, and exchange chemistry reshape conductivity, rheology, fracture, thermal transport, and relaxation in polymer systems.'
   },
   {
-    title: 'Polymer systems with structure and dynamics',
+    title: 'Mechanism-driven vitrimer and fracture work',
     text:
-      'Much of the publication record centers on how topology, filler geometry, pressure, and dynamic exchange reshape fracture, percolation, viscoelasticity, and glass-transition behavior in polymeric systems.'
+      'Recent papers push from static structure toward failure pathways, topological transition, and self-healing, which gives the site a much sharper “materials physics” identity than a generic publication list.'
   },
   {
-    title: 'Minimal interfaces, high information density',
+    title: 'Emerging electrochemical direction',
     text:
-      'This site intentionally adopts a quiet dark interface with simulation-inspired rendering layers, code-atlas navigation, and compact cards so the work feels technical, modern, and easy to scan.'
+      'The newer Notre Dame thread extends the same simulation philosophy toward electrochemical hysteresis, ionic/electronic transport, and multiscale predictive modeling for organic mixed ionic–electronic conductor systems.'
   }
 ];
 
@@ -104,17 +104,17 @@ export const publications = [
       'Studies how dual-network architecture and cross-link density influence fracture energy and failure pathways in interpenetrated polymer networks.'
   },
   {
-    id: 'rheological-mechanism-spherical-np-2021',
-    year: 2021,
-    title: 'Rheological mechanism of polymer nanocomposites filled with spherical nanoparticles: Insight from molecular dynamics simulation',
-    authors: 'Haoxiang Li, Haoyu Wu, Wenfeng Zhang, Xiuying Zhao, Liqun Zhang, Yangyang Gao',
-    venue: 'Polymer',
-    citation: '231, 124129',
-    doi: '10.1016/j.polymer.2021.124129',
-    url: 'https://doi.org/10.1016/j.polymer.2021.124129',
-    tags: ['Rheology', 'Spherical nanoparticles', 'Nanocomposites', 'Molecular dynamics'],
+    id: 'fracture-crosslinking-points-2020',
+    year: 2020,
+    title: 'Improving the fracture property of polymer nanocomposites by employing nanoparticles as cross-linking points',
+    authors: 'Guangyao Mu, Haoxiang Li, Wei Sun, Haoyu Wu, Yanlong Luo, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
+    venue: 'Engineering Fracture Mechanics',
+    citation: '237, 107229',
+    doi: '10.1016/j.engfracmech.2020.107229',
+    url: 'https://doi.org/10.1016/j.engfracmech.2020.107229',
+    tags: ['Fracture', 'Grafted nanoparticles', 'Reinforcement', 'Polymer nanocomposites'],
     blurb:
-      'Connects nanoparticle-induced structural changes to rheological response and gives a simulation-based mechanism for reinforcement in filled polymers.'
+      'Shows how using nanoparticles as effective cross-linking points can toughen polymer nanocomposites and redirect void nucleation and failure.'
   },
   {
     id: 'mixed-nanoparticles-percolated-network-2021',
@@ -128,6 +128,32 @@ export const publications = [
     tags: ['Coarse-grained MD', 'Percolation', 'Mixed fillers', 'Nanocomposites'],
     blurb:
       'Quantifies how particle-size heterogeneity reshapes filler networks in polymer nanocomposites and highlights a route to tuning percolation by size mixing.'
+  },
+  {
+    id: 'rheological-mechanism-spherical-np-2021',
+    year: 2021,
+    title: 'Rheological mechanism of polymer nanocomposites filled with spherical nanoparticles: Insight from molecular dynamics simulation',
+    authors: 'Haoxiang Li, Haoyu Wu, Wenfeng Zhang, Xiuying Zhao, Liqun Zhang, Yangyang Gao',
+    venue: 'Polymer',
+    citation: '231, 124129',
+    doi: '10.1016/j.polymer.2021.124129',
+    url: 'https://doi.org/10.1016/j.polymer.2021.124129',
+    tags: ['Rheology', 'Spherical nanoparticles', 'Nanocomposites', 'Molecular dynamics'],
+    blurb:
+      'Connects nanoparticle-induced structural changes to rheological response and gives a simulation-based mechanism for reinforcement in filled polymers.'
+  },
+  {
+    id: 'thermal-conductivity-hbn-pdms-2021',
+    year: 2021,
+    title: 'Influence of Surface Defects on the Thermal Conductivity of Hexagonal Boron Nitride/Poly(dimethylsiloxane) Nanocomposites: A Molecular Dynamics Simulation',
+    authors: 'Wenfeng Zhang, Haoxiang Li, Hanyu Jiang, Haoyu Wu, Yonglai Lu, Xiuying Zhao, Li Liu, Yangyang Gao, Liqun Zhang',
+    venue: 'Langmuir',
+    citation: '37(41), 12038–12048',
+    doi: '10.1021/acs.langmuir.1c01697',
+    url: 'https://doi.org/10.1021/acs.langmuir.1c01697',
+    tags: ['Thermal transport', 'Boron nitride', 'PDMS', 'Molecular dynamics'],
+    blurb:
+      'Uses molecular simulation to connect defect structure and interfacial organization to thermal transport in boron-nitride/PDMS nanocomposites.'
   },
   {
     id: 'glass-transition-polyisoprene-pressure-2022',
@@ -432,58 +458,58 @@ export const softwareGraph = [
 
 export const leisureModes = [
   {
-    id: 'bubble-drift',
-    title: 'Bubble Drift',
-    subtitle: 'Tap to release tension',
-    description: 'Pop slow-floating bubbles. Every burst respawns new ones, so the canvas never ends.',
-    instruction: 'Click or tap the bubbles. Hold and drag to stir the whole field.'
+    id: 'bullet-weave',
+    title: 'Bullet Weave',
+    subtitle: 'Minimal danmaku shooter',
+    description: 'A compact bullet-hell shooter: slide the ship, erase emitters, and survive increasingly dense patterns.',
+    instruction: 'Mouse / touch to move. The ship auto-fires. Avoid bullets and enemies; restart is automatic.'
   },
   {
-    id: 'orbit-garden',
-    title: 'Orbit Garden',
-    subtitle: 'Seed calm attractors',
-    description: 'Place orbital centers and let particles spiral into smooth layered motion.',
-    instruction: 'Click to place an attractor. Move the cursor to bend nearby trajectories.'
+    id: 'chain-runner',
+    title: 'Chain Runner',
+    subtitle: 'Endless side-scrolling run',
+    description: 'A smooth single-button runner with increasing speed, clean jumps, and no visual clutter.',
+    instruction: 'Click, tap, Space, or ↑ to jump. Time the jumps to clear incoming barriers.'
   },
   {
-    id: 'sand-wave',
-    title: 'Sand Wave',
-    subtitle: 'Draw and let it settle',
-    description: 'A minimalist zen field that remembers your gesture briefly, then relaxes.',
-    instruction: 'Drag slowly to rake the field. Click to drop a stone and watch ripples spread.'
+    id: 'survivor-field',
+    title: 'Survivor Field',
+    subtitle: 'Minimal survivors-like arena',
+    description: 'Swarming enemies, automatic fire, and quiet progression. Survive long enough and the weapon upgrades itself.',
+    instruction: 'Mouse / touch / WASD / arrows to move. Shots fire automatically toward nearby threats.'
   },
   {
-    id: 'ribbon-flow',
-    title: 'Ribbon Flow',
-    subtitle: 'Guide an endless filament',
-    description: 'A soft elastic ribbon follows your motion with layered trailing echoes.',
-    instruction: 'Move the cursor gently. Faster sweeps create tighter wave packets.'
+    id: 'drift-shooter',
+    title: 'Drift Shooter',
+    subtitle: 'Inertial asteroid arcade',
+    description: 'A lighter twin-stick-style endless shooter built around momentum, fragments, and precise drift control.',
+    instruction: 'Move with mouse / touch / WASD / arrows. The ship auto-fires toward the pointer or nearest target.'
   },
   {
-    id: 'gravity-pebbles',
-    title: 'Gravity Pebbles',
-    subtitle: 'Build a relaxing field',
-    description: 'Drop temporary gravity wells and watch dust drift into elegant patterns.',
-    instruction: 'Click to drop a pebble. Add several to create a living force landscape.'
+    id: 'wave-glider',
+    title: 'Wave Glider',
+    subtitle: 'Endless smooth flight',
+    description: 'Hold to rise, release to descend, and thread an infinite sequence of clean gates at a calm but demanding pace.',
+    instruction: 'Hold click or touch to gain lift. Release to glide down. Pass through gates to extend the run.'
   }
 ];
 
 export const pageMeta = {
   index: {
-    title: 'Haoyu Wu | Molecular Simulation & Scientific Software',
+    title: 'Haoyu Wu | Soft Matter Simulation & Scientific Software',
     description:
-      'Personal research homepage for Haoyu Wu, featuring publications, software, research wiki, and an interactive leisure mode.'
+      'Personal research homepage for Haoyu Wu: soft-matter simulation, polymer nanocomposites, multiscale transport, publications, software, and a playable rest mode.'
   },
   publications: {
     title: 'Publications | Haoyu Wu',
-    description: 'Selected publications spanning polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation.'
+    description: 'Publications spanning polymer nanocomposites, thermal transport, rheology, glass transition, fracture, vitrimers, and molecular simulation.'
   },
   wiki: {
     title: 'Research Wiki | Haoyu Wu',
-    description: 'A code atlas for Haoyu Wu\'s software stack: PILOTS, CHANNEL, IMPACT, VELA, GNM, and pair_style-sw-as.'
+    description: 'A code atlas for Haoyu Wu\'s simulation and analysis stack: PILOTS, CHANNEL, IMPACT, VELA, GNM, and pair_style-sw-as.'
   },
   leisure: {
     title: 'Rest Mode | Haoyu Wu',
-    description: 'Minimal browser-based interactive relaxation modes with smooth animations and a random entry mechanic.'
+    description: 'Five playable endless browser games: danmaku shooter, runner, survivors-like arena, inertial shooter, and wave glider.'
   }
 };

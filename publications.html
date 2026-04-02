@@ -25,6 +25,20 @@
     />
     <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <script>
+      (() => {
+        const key = 'haoyu-theme-mode';
+        let mode = 'auto';
+        try {
+          mode = localStorage.getItem(key) || 'auto';
+        } catch {}
+        const hour = new Date().getHours();
+        const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
+        document.documentElement.dataset.themeMode = mode;
+        document.documentElement.dataset.theme = effective;
+        document.documentElement.style.colorScheme = effective;
+      })();
+    </script>
     <link rel="stylesheet" href="assets/css/main.css" />
   </head>
   <body>
@@ -44,6 +58,10 @@
             <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
             <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
             <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
+            <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
+              <span data-theme-icon aria-hidden="true">◐</span>
+              <span data-theme-label>Auto</span>
+            </button>
           </nav>
         </header>
       </div>
@@ -120,6 +138,7 @@
       </footer>
     </div>
 
+    <script src="assets/js/theme.js"></script>
     <script type="module" src="assets/js/publications.js"></script>
   </body>
 </html>

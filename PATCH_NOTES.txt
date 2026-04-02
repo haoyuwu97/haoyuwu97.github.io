@@ -1,0 +1,34 @@
+Haoyu site upgrade v2 patch
+
+Deploy this patch on top of the current redesigned site.
+
+Files changed:
+- assets/js/background.js
+- assets/js/leisure.js
+- assets/js/site-data.js
+- assets/js/theme.js (new)
+- assets/css/main.css
+- index.html
+- publications.html
+- wiki.html
+- wiki-entry.html
+- leisure.html
+- 404.html
+- assets/img/profile-haoyu.jpg
+- assets/img/profile-haoyu.webp
+- assets/img/profile-haoyu-square.webp
+
+What changed:
+1. Home background replaced with stable CG-polymer-chain field rendering.
+2. Added automatic day/night theme by local time + manual theme toggle.
+3. Rest Mode replaced with 5 actually playable endless mini-games.
+4. Profile/publication content refreshed from public academic/lab sources.
+5. Portrait replaced with the public Whitmer Group photo.
+
+How to deploy:
+- If your current repository already has the redesigned multi-page site, unzip the PATCH zip and overwrite the existing files.
+- If you want the cleanest result, use the FULL zip and replace the whole site root with its contents.
+
+Important:
+- Upload the contents of the zip to the repository root.
+- Do not upload an extra outer folder level.
