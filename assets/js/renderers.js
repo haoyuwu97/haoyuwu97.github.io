@@ -55,6 +55,7 @@ export function publicationCard(item, compact = false) {
       <span class="figure-slot-path">${slotPath}</span>
       <span class="figure-slot-note">Place a PNG or JPG with this paper ID inside <code>assets/img/publications/</code>. The page will pick it up automatically.</span>
     `;
+    placeholder.hidden = true;
 
     const img = document.createElement('img');
     img.className = 'publication-figure';
@@ -65,6 +66,7 @@ export function publicationCard(item, compact = false) {
 
     const figureNote = document.createElement('div');
     figureNote.className = 'publication-figure-note';
+    figureNote.hidden = !item.figure?.caption;
     if (item.figure?.caption) figureNote.textContent = item.figure.caption;
 
     const preferred = item.figure?.src || `assets/img/publications/${item.id}.png`;
@@ -72,7 +74,7 @@ export function publicationCard(item, compact = false) {
     img.addEventListener('load', () => {
       img.hidden = false;
       placeholder.hidden = true;
-      if (!item.figure?.caption) figureNote.hidden = true;
+      figureNote.hidden = !item.figure?.caption;
     });
     img.addEventListener('error', () => {
       if (img.dataset.triedFallback === 'true') {

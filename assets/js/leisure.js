@@ -647,15 +647,15 @@ function brushChannelMode() {
           const sway = Math.sin(engine.now * 0.003 + gate.phase + index * 0.6) * 10;
           const topPoints = [
             { x, y: 20 },
-            { x + sway * 0.3, y: top * 0.35 },
-            { x + sway * 0.6, y: top * 0.68 },
-            { x + sway, y: top }
+            { x: x + sway * 0.3, y: top * 0.35 },
+            { x: x + sway * 0.6, y: top * 0.68 },
+            { x: x + sway, y: top }
           ];
           const bottomPoints = [
             { x, y: engine.height - 20 },
-            { x - sway * 0.3, y: engine.height - (engine.height - bottom) * 0.35 },
-            { x - sway * 0.6, y: engine.height - (engine.height - bottom) * 0.68 },
-            { x - sway, y: bottom }
+            { x: x - sway * 0.3, y: engine.height - (engine.height - bottom) * 0.35 },
+            { x: x - sway * 0.6, y: engine.height - (engine.height - bottom) * 0.68 },
+            { x: x - sway, y: bottom }
           ];
           drawPolyline(ctx, topPoints, 'rgba(143,243,255,0.34)', 5, 'rgba(0,0,0,0.18)');
           drawPolyline(ctx, bottomPoints, 'rgba(136,164,255,0.28)', 5, 'rgba(0,0,0,0.18)');

@@ -90,19 +90,6 @@ export const publications = [
       'Builds a machine-learning route for predicting Tg in styrene-butadiene rubber, extending the research arc from molecular simulation to data-driven materials inference.'
   },
   {
-    id: 'microscopic-self-healing-ml-2024',
-    year: 2024,
-    title: 'Microscopic Mechanisms of Self-Healing in Polymers Revealed by Molecular Simulations and Machine Learning',
-    authors: 'Yuhang Zhou, Jianlong Wen, Yijing Nie, et al.',
-    venue: 'Macromolecules',
-    citation: '57(7), 3258–3270',
-    doi: '10.1021/acs.macromol.4c00338',
-    url: 'https://doi.org/10.1021/acs.macromol.4c00338',
-    tags: ['Self-healing', 'Machine learning', 'Molecular simulations', 'Polymers'],
-    blurb:
-      'Combines molecular simulations with machine-learning analysis to reveal how microscopic variables control self-healing response in dynamic polymer systems.'
-  },
-  {
     id: 'vitrimer-topological-transition-2024',
     year: 2024,
     title: 'Molecular Insights into the Topological Transition, Fracture, and Self-Healing Behavior of Vitrimer Composites with Exchangeable Interfaces',
