@@ -15,7 +15,7 @@ export const profile = {
     { label: 'ORCID', href: 'https://orcid.org/0000-0002-2805-4911' }
   ],
   heroSummary:
-    'I work on polymeric soft matter, vitrimer mechanics, and multiscale transport using simulation-first workflows that turn trajectories into interpretable observables, reusable software, and device-relevant models.',
+    'I study polymeric soft matter, vitrimer mechanics, and multiscale transport with simulation-first workflows that turn trajectories into observables, software, and device-relevant models.',
   bio: [
     'I am a PhD student at the University of Notre Dame in the Whitmer group. My workflow is simulation-first and physics-first: generate trajectories, formalize the observable, and turn the analysis into code that is reusable rather than one-off.',
     'Before Notre Dame, I completed both my B.E. and M.S. at Beijing University of Chemical Technology. Earlier work centered on polymers and polymer nanocomposites, especially percolation, rheology, thermal transport, glass transition, fracture, and vitrimer self-healing.'
@@ -85,6 +85,7 @@ export const publications = [
     citation: '87(1), Article 17',
     doi: '10.32604/cmc.2025.075667',
     url: 'https://doi.org/10.32604/cmc.2025.075667',
+    figure: { src: 'assets/img/publications/ml-tg-sbr-2026.png', alt: 'ml-tg-sbr-2026 figure', caption: 'Model-performance figure and feature summary for Tg prediction.' },
     tags: ['Machine learning', 'Glass transition', 'Styrene-butadiene rubber', 'Prediction'],
     blurb:
       'Builds a machine-learning route for predicting Tg in styrene-butadiene rubber, extending the research arc from molecular simulation to data-driven materials inference.'
@@ -98,6 +99,7 @@ export const publications = [
     citation: '57(20), 9725–9736',
     doi: '10.1021/acs.macromol.4c01541',
     url: 'https://doi.org/10.1021/acs.macromol.4c01541',
+    figure: { src: 'assets/img/publications/vitrimer-topological-transition-2024.png', alt: 'vitrimer-topological-transition-2024 figure', caption: 'Schematic of topological transition, fracture, and healing in vitrimer composites.' },
     tags: ['Vitrimers', 'Self-healing', 'Fracture', 'Exchangeable interfaces'],
     blurb:
       'Probes how exchangeable interfaces govern topological transition, damage evolution, and healing in vitrimer composites.'
@@ -111,6 +113,7 @@ export const publications = [
     citation: '238, 124433',
     doi: '10.1016/j.polymer.2021.124433',
     url: 'https://doi.org/10.1016/j.polymer.2021.124433',
+    figure: { src: 'assets/img/publications/glass-transition-polyisoprene-pressure-2022.jpg', alt: 'glass-transition-polyisoprene-pressure-2022 figure', caption: 'Representative structure/dynamics view around the pressure-dependent glass transition of polyisoprene.' },
     tags: ['Glass transition', 'Polyisoprene', 'Pressure effects', 'Molecular dynamics'],
     blurb:
       'Analyzes pressure-dependent structural and dynamical signatures around the glass transition of polyisoprene using simulation-resolved molecular observables.'
@@ -124,6 +127,7 @@ export const publications = [
     citation: '246, 124750',
     doi: '10.1016/j.polymer.2022.124750',
     url: 'https://doi.org/10.1016/j.polymer.2022.124750',
+    figure: { src: 'assets/img/publications/shape-size-viscoelasticity-2022.jpg', alt: 'shape-size-viscoelasticity-2022 figure', caption: 'Representative comparison of filler geometry effects on viscoelastic response.' },
     tags: ['Viscoelasticity', 'Nanofillers', 'Filler geometry', 'Polymer nanocomposites'],
     blurb:
       'Shows how filler shape and size jointly govern the viscoelastic reinforcement landscape of polymer nanocomposites.'
@@ -137,6 +141,7 @@ export const publications = [
     citation: '229, 109694',
     doi: '10.1016/j.compscitech.2022.109694',
     url: 'https://doi.org/10.1016/j.compscitech.2022.109694',
+    figure: { src: 'assets/img/publications/nanorods-nanospheres-2022.jpg', alt: 'nanorods-nanospheres-2022 figure', caption: 'Schematic of nanorod network manipulation by added nanospheres.' },
     tags: ['Nanorods', 'Nanospheres', 'Percolated networks', 'Molecular dynamics'],
     blurb:
       'Demonstrates that non-conductive additives can redirect nanorod network formation and alter effective transport pathways in polymer matrices.'
@@ -150,6 +155,7 @@ export const publications = [
     citation: '14(12), 3301',
     doi: '10.3390/ma14123301',
     url: 'https://doi.org/10.3390/ma14123301',
+    figure: { src: 'assets/img/publications/mixed-nanoparticles-percolated-network-2021.png', alt: 'mixed-nanoparticles-percolated-network-2021 figure', caption: 'Representative mixed-filler percolation schematic.' },
     tags: ['Coarse-grained MD', 'Percolation', 'Mixed fillers', 'Nanocomposites'],
     blurb:
       'Quantifies how particle-size heterogeneity reshapes filler networks in polymer nanocomposites and highlights a route to tuning percolation by size mixing.'
@@ -163,6 +169,7 @@ export const publications = [
     citation: '231, 124129',
     doi: '10.1016/j.polymer.2021.124129',
     url: 'https://doi.org/10.1016/j.polymer.2021.124129',
+    figure: { src: 'assets/img/publications/rheological-mechanism-spherical-np-2021.jpg', alt: 'rheological-mechanism-spherical-np-2021 figure', caption: 'Representative rheology mechanism figure for spherical nanoparticles in polymer matrices.' },
     tags: ['Rheology', 'Spherical nanoparticles', 'Nanocomposites', 'Molecular dynamics'],
     blurb:
       'Connects nanoparticle-induced structural changes to rheological response and gives a simulation-based mechanism for reinforcement in filled polymers.'
@@ -176,6 +183,7 @@ export const publications = [
     citation: '37(41), 12038–12048',
     doi: '10.1021/acs.langmuir.1c01697',
     url: 'https://doi.org/10.1021/acs.langmuir.1c01697',
+    figure: { src: 'assets/img/publications/thermal-conductivity-hbn-pdms-2021.png', alt: 'thermal-conductivity-hbn-pdms-2021 figure', caption: 'Representative defect/thermal-transport schematic for hBN/PDMS nanocomposites.' },
     tags: ['Thermal transport', 'Boron nitride', 'PDMS', 'Molecular dynamics'],
     blurb:
       'Uses molecular simulation to connect defect structure and interfacial organization to thermal transport in boron-nitride/PDMS nanocomposites.'
@@ -189,6 +197,7 @@ export const publications = [
     citation: '196, 108208',
     doi: '10.1016/j.compscitech.2020.108208',
     url: 'https://doi.org/10.1016/j.compscitech.2020.108208',
+    figure: { src: 'assets/img/publications/percolation-polydisperse-nanorods-2020.jpg', alt: 'percolation-polydisperse-nanorods-2020 figure', caption: 'Representative graphical abstract for polydisperse nanorod percolation.' },
     tags: ['Percolation', 'Nanorods', 'Polymer nanocomposites', 'Molecular dynamics'],
     blurb:
       'Examines how rod-length polydispersity reorganizes conductive network formation in polymer nanocomposites and why distributional effects matter for emergent connectivity.'
@@ -202,6 +211,7 @@ export const publications = [
     citation: '199, 122571',
     doi: '10.1016/j.polymer.2020.122571',
     url: 'https://doi.org/10.1016/j.polymer.2020.122571',
+    figure: { src: 'assets/img/publications/double-interpenetrated-fracture-2020.jpg', alt: 'double-interpenetrated-fracture-2020 figure', caption: 'Representative fracture-mechanism schematic for double interpenetrated polymer networks.' },
     tags: ['Fracture', 'Double networks', 'Cross-linked polymers', 'Molecular dynamics'],
     blurb:
       'Studies how dual-network architecture and cross-link density influence fracture energy and failure pathways in interpenetrated polymer networks.'
@@ -215,6 +225,7 @@ export const publications = [
     citation: '237, 107229',
     doi: '10.1016/j.engfracmech.2020.107229',
     url: 'https://doi.org/10.1016/j.engfracmech.2020.107229',
+    figure: { src: 'assets/img/publications/fracture-crosslinking-points-2020.jpg', alt: 'fracture-crosslinking-points-2020 figure', caption: 'Representative fracture/reinforcement figure using nanoparticles as cross-linking points.' },
     tags: ['Fracture', 'Grafted nanoparticles', 'Reinforcement', 'Polymer nanocomposites'],
     blurb:
       'Shows how using nanoparticles as effective cross-linking points can toughen polymer nanocomposites and redirect void nucleation and failure.'
@@ -478,70 +489,86 @@ export const softwareGraph = [
   { from: 'pilots', to: 'impact', label: 'structure' }
 ];
 
+
 export const leisureModes = [
   {
     id: 'chain-growth-runner',
     title: 'Living Chain Growth',
-    subtitle: 'Chain-growth polymerization runner',
-    description: 'Guide an active chain end through an endless lane, collect monomer beads, and keep the growing polymer conformation clear of quenchers and rigid barriers.',
-    instruction: 'Click, tap, Space, or ↑ to jump. Every monomer extends the trailing chain; any bead hitting an obstacle terminates the run.',
-    concept: 'A stylized chain-growth picture: local addition at the active end changes the global collision risk of the whole chain.',
+    subtitle: 'Endless chain-growth polymerization',
+    description:
+      'Guide one active chain end through a reactor, capture monomers, lengthen the polymer, and keep inhibitors from cutting the backbone faster than you can grow it.',
+    instruction:
+      'Mouse / touch / WASD / arrows to steer. Monomer capture extends the chain; inhibitor collisions cut beads from the tail instead of causing an instant failure.',
+    concept:
+      'This is a gentle cartoon of chain-growth polymerization: local addition at one reactive end changes the global geometry and collision probability of the entire chain.',
     learning: [
-      'Monomer capture lengthens the chain and increases geometric constraint.',
-      'Termination-like barriers make chain length a real design trade-off.',
-      'The bead-spring tail turns local growth into global conformation dynamics.'
+      'Monomer addition is localized at the active end, but the growing tail changes crowding everywhere.',
+      'Chain scission shortens the backbone instead of simply ending the process, which makes the growth–damage competition visible.',
+      'Longer chains occupy more space and become more difficult to steer through the same reactor volume.'
     ]
   },
   {
     id: 'brush-channel',
     title: 'Brush Channel Transport',
-    subtitle: 'Catalyst transport through grafted brushes',
-    description: 'Thread a catalyst bead through an endless channel whose top and bottom walls are lined with oscillating grafted polymer brushes that open and close transport windows.',
-    instruction: 'Hold click, tap, Space, or ↑ to rise. Release to descend. Stay inside the transient free-volume window.',
-    concept: 'The gap between brush layers acts as a fluctuating transport channel, emphasizing steric gating and residence time.',
+    subtitle: 'Tracer transport through grafted polymer brushes',
+    description:
+      'Carry a tracer bead through a slowly scrolling channel whose walls are lined with swaying grafted chains. The gap opens and closes as the brushes breathe.',
+    instruction:
+      'Mouse / touch / WASD / arrows to steer. Stay inside the moving free-volume window and collect bright transport markers while avoiding repeated brush collisions.',
+    concept:
+      'The mode emphasizes steric transport: confinement and fluctuating free volume can matter as much as the mean driving force.',
     learning: [
-      'Dense grafted chains reduce free volume and narrow transport pathways.',
-      'The best trajectory is often not the shortest one but the one aligned with brush motion.',
-      'Catalytic access is controlled by local confinement, not just by driving force.'
+      'Dense brushes reduce accessible free volume and create fluctuating bottlenecks.',
+      'Transport is easiest when the particle motion is synchronized with local brush motion.',
+      'Residence time and steric hindrance can dominate even in a simple one-particle cartoon.'
     ]
   },
   {
-    id: 'charge-hopping',
-    title: 'Charge Hopping Field',
-    subtitle: 'Transport through energetic disorder',
-    description: 'Move a charge packet across a disordered landscape of hopping sites, favoring connected low-energy pathways while avoiding deep traps and dead ends.',
-    instruction: 'Mouse, touch, WASD, or arrows to steer. Stay near conducting sites, collect aligned dopants, and avoid red trap states.',
-    concept: 'An endless cartoon of transport in a heterogeneous medium: mobility comes from path connectivity and barrier avoidance.',
+    id: 'bond-repair',
+    title: 'Scission & Repair Sweep',
+    subtitle: 'Bond scission versus dynamic healing',
+    description:
+      'Sweep a repair catalyst through an endless field of broken bond pairs. Reconnect cuts before reactive hot spots generate new damage and fragment the network.',
+    instruction:
+      'Mouse / touch / WASD / arrows to move. Touch split bond pairs to heal them; avoid red hot spots that trigger new scission events and reduce network integrity.',
+    concept:
+      'The loop frames network lifetime as a competition between bond scission and local repair kinetics.',
     learning: [
-      'Low-energy pathways act like transient conduction corridors.',
-      'Trap-rich regions reduce usable connectivity even when sites are present.',
-      'The field visualizes why transport depends on network structure as much as carrier count.'
+      'Damage is spatially localized, but enough local scission events disconnect macroscopic pathways.',
+      'Repair is useful only when it reaches newly broken pairs before additional damage accumulates nearby.',
+      'Dynamic networks survive by maintaining connectivity, not by preventing every bond from ever breaking.'
     ]
   },
   {
-    id: 'vitrimer-healing',
-    title: 'Vitrimer Healing Sweep',
-    subtitle: 'Dynamic bond-exchange repair',
-    description: 'Sweep through a drifting network of broken bond pairs, trigger exchange-mediated healing events, and avoid frozen domains that block rearrangement.',
-    instruction: 'Mouse, touch, WASD, or arrows to move. Pass through broken pairs to heal them before frozen domains cut off the path.',
-    concept: 'The loop is built around dynamic covalent exchange: repair is local, but continuous healing keeps the network globally navigable.',
+    id: 'reaction-match',
+    title: 'Organic Reaction Match',
+    subtitle: 'A chemistry-pair board inspired by mahjong / match play',
+    description:
+      'Choose compatible reagent tiles—such as diol with diacid chloride or epoxide with amine—to build an endless stream of polymer-forming reaction pairs.',
+    instruction:
+      'Click or tap one tile, then a compatible partner anywhere on the board. Correct pairs react, score, and are replaced by fresh reagents.',
+    concept:
+      'It is not a literal synthesis simulator; it is a compact way to rehearse which functional groups commonly pair to form major polymer classes or dynamic linkages.',
     learning: [
-      'Exchange events are spatially local but mechanically global in effect.',
-      'Frozen regions illustrate the loss of topology-changing mobility.',
-      'Healing is framed as path restoration rather than simple point collection.'
+      'Different functional-group pairs map to different polymerization chemistries.',
+      'Recognizing compatible partners quickly is a useful intuition-building exercise.',
+      'The board stays endless by replenishing reacted pairs with new reagent opportunities.'
     ]
   },
   {
-    id: 'wormlike-drift',
-    title: 'Wormlike Drift',
-    subtitle: 'Chain motion in a soft flow field',
-    description: 'Steer the head bead of a wormlike chain through an endless soft-flow environment while the full conformation bends, lags, and relaxes behind it.',
-    instruction: 'Mouse, touch, WASD, or arrows to steer. The head responds first, but the chain follows with delayed conformational relaxation.',
-    concept: 'This mode is the closest one to a bead-spring cartoon: the whole point is to make relaxation, lag, and bending visually intuitive.',
+    id: 'charge-tactics',
+    title: 'Charge-Hopping Tactics',
+    subtitle: 'A small board game for disordered transport',
+    description:
+      'Move a charge packet across a lattice of conducting, doped, blocked, and trap-rich sites. Reach the collector, reroll the field, and keep the transport pathway alive.',
+    instruction:
+      'Click an adjacent site or use WASD / arrows. Blue sites conduct, gold sites boost score, gray sites block, and red sites trap and drain mobility.',
+    concept:
+      'This mode is deliberately more strategic and board-like: transport is framed as path planning through energetic disorder rather than as arcade reflexes.',
     learning: [
-      'The chain does not move as a rigid rod; different segments respond at different times.',
-      'Flow and obstacle fields bias conformation without prescribing a single shape.',
-      'Local steering is converted into delayed global rearrangement along the backbone.'
+      'Percolation requires a connected pathway, not just a large number of sites.',
+      'Dopants can stabilize high-value routes, whereas trap states reduce useful mobility.',
+      'The transport problem becomes tactical when disorder and connectivity compete at each move.'
     ]
   }
 ];

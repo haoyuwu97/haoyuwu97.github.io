@@ -1,5 +1,5 @@
-import { profile, researchPillars, publications, softwareProjects, pageMeta } from './site-data.js';
-import { activateNav, initReveal, renderTagList, smoothScrollForHashes, setMeta } from './utils.js';
+import { profile, researchPillars, pageMeta } from './site-data.js';
+import { activateNav, initReveal, renderTagList, renderLinkRow, smoothScrollForHashes, setMeta } from './utils.js';
 import { initMolecularField } from './background.js';
 import { renderStats } from './renderers.js';
 
@@ -8,15 +8,9 @@ function renderHero() {
   document.getElementById('hero-name').textContent = profile.name;
   document.getElementById('hero-title').textContent = `${profile.shortTitle} · ${profile.affiliation}`;
   document.getElementById('hero-summary').textContent = profile.heroSummary;
-  renderTagList(document.getElementById('focus-tags'), profile.focusAreas);
-
-  const facts = [
-    profile.quickFacts[0],
-    profile.quickFacts[1],
-    { label: 'Papers indexed', value: `${publications.length}` },
-    { label: 'Packages documented', value: `${softwareProjects.length}` }
-  ];
-  renderStats(document.getElementById('hero-facts'), facts);
+  renderTagList(document.getElementById('focus-tags'), profile.focusAreas.slice(0, 6));
+  renderStats(document.getElementById('hero-facts'), profile.quickFacts.slice(0, 3));
+  renderLinkRow(document.getElementById('hero-links'), profile.links.slice(0, 4), 'ghost');
 }
 
 function renderSnapshot() {
@@ -24,7 +18,7 @@ function renderSnapshot() {
   container.innerHTML = '';
   researchPillars.forEach((pillar) => {
     const article = document.createElement('article');
-    article.className = 'glass-card pillar-card';
+    article.className = 'glass-card pillar-card compact-pillar';
     article.dataset.reveal = '';
     article.innerHTML = `
       <span class="meta-chip">${pillar.id.replaceAll('-', ' ')}</span>
@@ -49,5 +43,5 @@ window.addEventListener('DOMContentLoaded', () => {
   renderHero();
   renderSnapshot();
   initReveal();
-  initMolecularField(document.getElementById('bg-canvas'), { variant: 'hero', density: 0.88 });
+  initMolecularField(document.getElementById('bg-canvas'), { variant: 'hero', density: 1.04 });
 });
