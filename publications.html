@@ -41,7 +41,7 @@
     </script>
     <link rel="stylesheet" href="assets/css/main.css" />
   </head>
-  <body>
+  <body class="subpage subpage-publications">
     <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
     <div class="site-shell">
       <div class="topbar-wrap">
@@ -67,41 +67,30 @@
       </div>
 
       <main class="site-main">
-        <section class="page-hero">
-          <div class="container page-hero-shell">
-            <div class="page-hero-grid">
-              <div class="page-head">
+        <section class="page-hero page-hero-compact">
+          <div class="container">
+            <div class="page-hero-shell compact-shell">
+              <div class="page-head compact-page-head">
                 <span class="kicker">Publications</span>
-                <h1 class="page-title">Papers organized for fast scanning</h1>
-                <p class="page-subtitle">
-                  This page functions as a searchable publication index with DOI links, year / topic filters, and figure slots that can be filled by dropping images into <code>assets/img/publications/</code>.
-                </p>
+                <h1 class="page-title">Full paper list</h1>
+                <p class="page-subtitle compact-page-subtitle">Search, filter, and scan figures. Six papers are shown per page.</p>
+                <div class="compact-meta-row" aria-label="Publication summary">
+                  <span class="meta-chip"><strong id="publication-total">0</strong> indexed</span>
+                  <span class="meta-chip"><strong id="year-span">—</strong></span>
+                  <span class="meta-chip"><strong id="result-count">0</strong> shown</span>
+                </div>
               </div>
-              <aside class="page-side-panel">
-                <article class="stat-card glass-card">
-                  <span class="stat-label">Papers indexed</span>
-                  <strong id="publication-total" class="stat-value">0</strong>
-                </article>
-                <article class="stat-card glass-card">
-                  <span class="stat-label">Current year span</span>
-                  <strong id="year-span" class="stat-value">—</strong>
-                </article>
-                <article class="stat-card glass-card">
-                  <span class="stat-label">Filter results</span>
-                  <strong id="result-count" class="stat-value">0</strong>
-                </article>
-              </aside>
             </div>
           </div>
         </section>
 
-        <section class="section">
+        <section class="section section-tight">
           <div class="container">
-            <div class="glass-card control-panel" data-reveal>
-              <div class="control-grid">
+            <div class="glass-card control-panel compact-control-panel" data-reveal>
+              <div class="control-grid compact-control-grid">
                 <div class="control">
-                  <label for="search-input">Search by title, topic, author, or venue</label>
-                  <input id="search-input" class="text-input" type="search" placeholder="Try: vitrimer, rheology, nanocomposites, glass transition..." />
+                  <label for="search-input">Search</label>
+                  <input id="search-input" class="text-input" type="search" placeholder="Try: vitrimer, rheology, nanorods, glass transition..." />
                 </div>
                 <div class="control">
                   <label for="year-filter">Year</label>
@@ -109,33 +98,20 @@
                 </div>
               </div>
               <div class="control">
-                <label>Topic tags</label>
+                <label>Topic</label>
                 <div id="tag-filters" class="chip-wrap" aria-label="Publication tags"></div>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="section">
+        <section class="section section-tight-bottom">
           <div class="container">
             <div id="publication-list" class="results-grid"></div>
             <div id="publication-pagination" class="pagination" aria-label="Publication pagination"></div>
           </div>
         </section>
       </main>
-
-      <footer class="footer">
-        <div class="container footer-card">
-          <div class="footer-copy">
-            © <span data-year></span> Haoyu Wu. This page is designed as a compact DOI index with manual figure slots for each paper card.
-          </div>
-          <div class="footer-links">
-            <a href="index.html">Overview</a>
-            <a href="wiki.html">Research Wiki</a>
-            <a href="leisure.html">Rest Mode</a>
-          </div>
-        </div>
-      </footer>
     </div>
 
     <script src="assets/js/theme.js"></script>

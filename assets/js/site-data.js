@@ -493,68 +493,68 @@ export const softwareGraph = [
 
 export const leisureModes = [
   {
-    id: 'bullet-weave',
-    title: 'Reactive Barrage',
-    subtitle: 'Catalyst in a radical field',
-    description: 'Guide a catalyst bead through slow radical bursts, quench source nodes, and grow a trailing chain that can temporarily shield the core.',
-    instruction: 'Mouse / touch / WASD / arrows to move. Shots auto-fire toward the nearest radical source.',
-    concept: 'A stylized reaction field: sources emit reactive bursts, the catalyst survives by motion and local quenching, and collected monomers extend a shielding chain.',
+    id: 'chain-growth-runner',
+    title: 'Living Chain Growth',
+    subtitle: 'Chain-growth polymerization runner',
+    description: 'Guide an active chain end through an endless lane, collect monomer beads, and keep the growing polymer conformation clear of quenchers and rigid barriers.',
+    instruction: 'Click, tap, Space, or ↑ to jump. Every monomer extends the trailing chain; any bead hitting an obstacle terminates the run.',
+    concept: 'A stylized chain-growth picture: local addition at the active end changes the global collision risk of the whole chain.',
     learning: [
-      'Tail beads behave like a sacrificial reaction shell.',
-      'Source nodes illustrate how local event frequency changes field difficulty.',
-      'The visual language echoes bead-spring and coarse-grained reaction cartoons.'
+      'Monomer capture lengthens the chain and increases geometric constraint.',
+      'Termination-like barriers make chain length a real design trade-off.',
+      'The bead-spring tail turns local growth into global conformation dynamics.'
     ]
   },
   {
-    id: 'chain-runner',
-    title: 'Chain-Growth Runner',
-    subtitle: 'Monomer capture and chain extension',
-    description: 'A side-scrolling polymerization lane: collect monomer beads, lengthen the chain behind the active end, and keep the whole conformation clear of barriers and terminators.',
-    instruction: 'Click, tap, Space, or ↑ to jump. Collect monomers to lengthen the chain; any bead hitting an obstacle ends the run.',
-    concept: 'This is a playful chain-growth polymerization analogy: the head is the active end, collected monomers join the tail, and obstacle collisions mimic termination or chain failure.',
+    id: 'brush-channel',
+    title: 'Brush Channel Transport',
+    subtitle: 'Catalyst transport through grafted brushes',
+    description: 'Thread a catalyst bead through an endless channel whose top and bottom walls are lined with oscillating grafted polymer brushes that open and close transport windows.',
+    instruction: 'Hold click, tap, Space, or ↑ to rise. Release to descend. Stay inside the transient free-volume window.',
+    concept: 'The gap between brush layers acts as a fluctuating transport channel, emphasizing steric gating and residence time.',
     learning: [
-      'Longer chains are more rewarding but also harder to protect.',
-      'The run visualizes how local growth changes global conformation risk.',
-      'Barrier encounters are designed as termination-style teaching cues, not realistic chemistry.'
+      'Dense grafted chains reduce free volume and narrow transport pathways.',
+      'The best trajectory is often not the shortest one but the one aligned with brush motion.',
+      'Catalytic access is controlled by local confinement, not just by driving force.'
     ]
   },
   {
-    id: 'survivor-field',
-    title: 'Conformation Survivor',
-    subtitle: 'Crowded melt survival',
-    description: 'Move through a soft-matter field of quenchers and defects while orbiting segments auto-fire. Survive longer to thicken the protective conformation shell.',
-    instruction: 'Mouse / touch / WASD / arrows to move. Orbiting segments and auto-fire strengthen as you survive and collect drops.',
-    concept: 'The player core is wrapped by an orbiting conformation shell. It is not a literal polymer model, but a teaching sketch for crowding, shielding, and defect-clearing in a dense soft-matter landscape.',
+    id: 'charge-hopping',
+    title: 'Charge Hopping Field',
+    subtitle: 'Transport through energetic disorder',
+    description: 'Move a charge packet across a disordered landscape of hopping sites, favoring connected low-energy pathways while avoiding deep traps and dead ends.',
+    instruction: 'Mouse, touch, WASD, or arrows to steer. Stay near conducting sites, collect aligned dopants, and avoid red trap states.',
+    concept: 'An endless cartoon of transport in a heterogeneous medium: mobility comes from path connectivity and barrier avoidance.',
     learning: [
-      'Orbiting segments stand in for a protective local environment.',
-      'Dense fields make transport and avoidance harder, like crowded media.',
-      'Color and motion stay simple so the physical analogy remains legible.'
+      'Low-energy pathways act like transient conduction corridors.',
+      'Trap-rich regions reduce usable connectivity even when sites are present.',
+      'The field visualizes why transport depends on network structure as much as carrier count.'
     ]
   },
   {
-    id: 'drift-shooter',
-    title: 'Crosslink Drift',
-    subtitle: 'Reactive filler through a viscoelastic melt',
-    description: 'Drift as a reactive nanoparticle through a viscoelastic melt, fragment defect clusters, and manage inertia while the tail traces local structure.',
-    instruction: 'Move with mouse / touch / WASD / arrows. Shots auto-aim toward the pointer or nearest defect cluster.',
-    concept: 'This mode reframes the shooter as a drifting filler / crosslink center in a structured melt. Momentum matters, and local defects are removed before they accumulate into failure pathways.',
+    id: 'vitrimer-healing',
+    title: 'Vitrimer Healing Sweep',
+    subtitle: 'Dynamic bond-exchange repair',
+    description: 'Sweep through a drifting network of broken bond pairs, trigger exchange-mediated healing events, and avoid frozen domains that block rearrangement.',
+    instruction: 'Mouse, touch, WASD, or arrows to move. Pass through broken pairs to heal them before frozen domains cut off the path.',
+    concept: 'The loop is built around dynamic covalent exchange: repair is local, but continuous healing keeps the network globally navigable.',
     learning: [
-      'Inertia makes control feel different from a simple top-down shooter.',
-      'Defect clusters and tail motion hint at local structure around a moving inclusion.',
-      'The mode is built to feel like soft-matter motion rather than rigid-space combat.'
+      'Exchange events are spatially local but mechanically global in effect.',
+      'Frozen regions illustrate the loss of topology-changing mobility.',
+      'Healing is framed as path restoration rather than simple point collection.'
     ]
   },
   {
-    id: 'wave-glider',
-    title: 'Brush Reactor Glide',
-    subtitle: 'Catalyst threading through grafted brushes',
-    description: 'Hold to rise and release to descend while a catalyst bead threads through oscillating grafted-polymer brushes and activates reaction sites in the channel.',
-    instruction: 'Hold click / touch / Space / ↑ to gain lift. Release to descend. Fly through the reaction window between the brushes.',
-    concept: 'The gate geometry is a reactor cartoon built from top and bottom grafted brushes. Safe passage depends on threading the free-volume window while tagging active sites.',
+    id: 'wormlike-drift',
+    title: 'Wormlike Drift',
+    subtitle: 'Chain motion in a soft flow field',
+    description: 'Steer the head bead of a wormlike chain through an endless soft-flow environment while the full conformation bends, lags, and relaxes behind it.',
+    instruction: 'Mouse, touch, WASD, or arrows to steer. The head responds first, but the chain follows with delayed conformational relaxation.',
+    concept: 'This mode is the closest one to a bead-spring cartoon: the whole point is to make relaxation, lag, and bending visually intuitive.',
     learning: [
-      'Brush sway visualizes fluctuating free volume and steric confinement.',
-      'Collectible sites give the lane a reaction-channel narrative instead of generic pipes.',
-      'The pacing is intentionally slower than an arcade flier so the structure stays readable.'
+      'The chain does not move as a rigid rod; different segments respond at different times.',
+      'Flow and obstacle fields bias conformation without prescribing a single shape.',
+      'Local steering is converted into delayed global rearrangement along the backbone.'
     ]
   }
 ];
@@ -575,6 +575,6 @@ export const pageMeta = {
   },
   leisure: {
     title: 'Rest Mode | Haoyu Wu',
-    description: 'Five polymer-themed endless browser games: catalyst barrage, chain-growth runner, conformation survivor, crosslink drift, and brush-reactor glide.'
+    description: 'Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion.'
   }
 };
