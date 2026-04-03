@@ -68,7 +68,7 @@
 
       <main class="site-main">
         <section class="hero">
-          <div class="container hero-shell">
+          <div class="container hero-shell compact-home-shell">
             <div class="hero-grid">
               <div class="hero-copy">
                 <span id="hero-kicker" class="kicker">Research profile</span>
@@ -93,45 +93,11 @@
                     <img id="hero-portrait" class="portrait-image" src="assets/img/profile-haoyu.jpg" alt="Portrait of Haoyu Wu" />
                   </div>
                   <div class="portrait-caption">
-                    <strong>Physics-grounded materials simulation</strong>
-                    <span>From trajectories and topology to transport, rheology, and multiscale interpretation.</span>
+                    <strong>Mechanism-oriented simulation</strong>
+                    <span>Polymer physics, molecular observables, and reusable scientific software.</span>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="profile" class="section">
-          <div class="container">
-            <div class="section-head" data-reveal>
-              <div>
-                <span class="kicker">Profile</span>
-                <h2 class="section-title">A research page built like a technical system</h2>
-                <p class="section-copy">
-                  The homepage is intentionally structured around scientific signal rather than personal filler: problem framing,
-                  current computational direction, selected publications, and a navigable software stack.
-                </p>
-              </div>
-            </div>
-
-            <div class="bio-grid">
-              <div id="bio-grid" class="bio-paragraphs"></div>
-              <aside class="bio-side">
-                <div class="glass-card info-card" data-reveal>
-                  <span class="meta-chip">Research posture</span>
-                  <h3 class="card-title">Microscopic mechanisms, explicit outputs</h3>
-                  <p class="card-body">
-                    The common thread across the work is to move from molecular interactions to measurable observables with code that is interpretable,
-                    modular, and reusable.
-                  </p>
-                </div>
-                <div class="glass-card info-card" data-reveal>
-                  <span class="meta-chip">Links</span>
-                  <p class="card-body">External profiles and lab pages are grouped here for quick access.</p>
-                  <div id="profile-links" class="profile-links"></div>
-                </div>
-              </aside>
             </div>
           </div>
         </section>
@@ -140,10 +106,10 @@
           <div class="container">
             <div class="section-head" data-reveal>
               <div>
-                <span class="kicker">Research pillars</span>
-                <h2 class="section-title">Three working layers</h2>
+                <span class="kicker">Research snapshot</span>
+                <h2 class="section-title">Only the high-level map lives on the homepage</h2>
                 <p class="section-copy">
-                  The current portfolio is organized around materials physics, observables extraction, and multiscale linking.
+                  Detailed paper lists, package documentation, and interactive extras stay on their own subpages so the front page remains compact and readable.
                 </p>
               </div>
             </div>
@@ -151,29 +117,14 @@
           </div>
         </section>
 
-        <section id="spotlights" class="section">
-          <div class="container">
-            <div class="section-head" data-reveal>
-              <div>
-                <span class="kicker">Current emphasis</span>
-                <h2 class="section-title">What the site is trying to communicate</h2>
-                <p class="section-copy">
-                  Not only what you study, but how the code and papers fit together as a coherent research workflow.
-                </p>
-              </div>
-            </div>
-            <div id="spotlight-grid" class="section-grid grid-3"></div>
-          </div>
-        </section>
-
         <section id="selected-publications" class="section">
           <div class="container">
             <div class="section-head" data-reveal>
               <div>
-                <span class="kicker">Selected publications</span>
-                <h2 class="section-title">Recent and representative papers</h2>
+                <span class="kicker">Publication index</span>
+                <h2 class="section-title">A compact preview of the full paper page</h2>
                 <p class="section-copy">
-                  A curated subset of publications focused on network formation, rheology, fracture, glass transition, and vitrimer behavior.
+                  The publication page now keeps the searchable full list, DOI links, pagination, and image slots for paper figures. The homepage only previews a few entries.
                 </p>
               </div>
               <a class="btn secondary" href="publications.html">Open full publication page</a>
@@ -181,11 +132,11 @@
 
             <div class="metric-strip" data-reveal>
               <article class="stat-card glass-card">
-                <span class="stat-label">Selected papers on site</span>
+                <span class="stat-label">Papers indexed on site</span>
                 <strong id="count-publications" class="stat-value">0</strong>
               </article>
               <article class="stat-card glass-card">
-                <span class="stat-label">Software systems documented</span>
+                <span class="stat-label">Packages documented</span>
                 <strong id="count-projects" class="stat-value">0</strong>
               </article>
               <article class="stat-card glass-card">
@@ -193,8 +144,8 @@
                 <strong class="stat-value">Searchable + paginated</strong>
               </article>
               <article class="stat-card glass-card">
-                <span class="stat-label">UI mood</span>
-                <strong class="stat-value">Adaptive day/night, simulation-native</strong>
+                <span class="stat-label">Display mode</span>
+                <strong class="stat-value">Adaptive day/night</strong>
               </article>
             </div>
 
@@ -207,9 +158,9 @@
             <div class="section-head" data-reveal>
               <div>
                 <span class="kicker">Research wiki</span>
-                <h2 class="section-title">Software atlas and code relationships</h2>
+                <h2 class="section-title">Packages, relationships, and per-project detail pages</h2>
                 <p class="section-copy">
-                  The wiki page treats repositories as connected modules rather than isolated links, which makes the computational stack much easier to understand.
+                  Repositories are shown as a connected software atlas rather than a flat list. Logos are integrated directly into the cards to make each package easier to scan.
                 </p>
               </div>
               <a class="btn secondary" href="wiki.html">Open research wiki</a>
@@ -235,9 +186,9 @@
             <div class="section-head" data-reveal>
               <div>
                 <span class="kicker">Rest mode</span>
-                <h2 class="section-title">A non-serious page, but still designed seriously</h2>
+                <h2 class="section-title">Small games, built like simplified polymer cartoons</h2>
                 <p class="section-copy">
-                  A random entry sends visitors into one of several calm browser toys. It keeps the site human, memorable, and a little playful without breaking the overall design language.
+                  The interactive page now stays deliberately minimal, cleaner, and slower. Each mode is framed as a soft-matter or reaction analogy rather than a generic arcade reskin.
                 </p>
               </div>
               <a class="btn primary" href="leisure.html">Enter rest mode</a>

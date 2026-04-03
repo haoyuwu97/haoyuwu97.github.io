@@ -12,9 +12,11 @@ Main files
 - publications.html         : searchable / filterable publications page
 - wiki.html                 : paginated software atlas
 - wiki-entry.html           : per-repository detail page
-- leisure.html              : random browser relaxation page with 5 interactive modes
-- assets/css/main.css       : full visual system
+- leisure.html              : random playable rest page with 5 endless mini-games
+- assets/css/main.css       : full visual system + day/night theme
 - assets/js/site-data.js    : editable content source (profile, publications, software, games)
+- assets/js/theme.js        : local-time auto theme + manual toggle
+- assets/js/background.js   : CG-polymer-chain animated field
 
 Fast content edits
 ------------------

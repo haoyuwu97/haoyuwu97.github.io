@@ -4,7 +4,7 @@ export const profile = {
   shortTitle: 'PhD Student in Chemical & Biomolecular Engineering',
   affiliation: 'University of Notre Dame',
   location: 'South Bend, Indiana, USA',
-  heroKicker: 'Soft matter, polymer nanocomposites, and multiscale transport',
+  heroKicker: 'Coarse-grained molecular simulation · polymer physics · multiscale transport',
   portrait: 'assets/img/profile-haoyu.jpg',
   portraitSquare: 'assets/img/profile-haoyu-square.webp',
   links: [
@@ -15,106 +15,144 @@ export const profile = {
     { label: 'ORCID', href: 'https://orcid.org/0000-0002-2805-4911' }
   ],
   heroSummary:
-    'Chemical engineering PhD student working across molecular simulation of soft matter, polymer and nanocomposite microstructure–property relationships, and reproducible scientific software for extracting structure, rheology, transport, and charge-coupled observables.',
+    'I work on polymeric soft matter, vitrimer mechanics, and multiscale transport using simulation-first workflows that turn trajectories into interpretable observables, reusable software, and device-relevant models.',
   bio: [
-    'I am a PhD student at the University of Notre Dame in the Whitmer group. My core workflow is simulation-first and physics-first: generate trajectories, formalize the observable, and turn the analysis into code that is reusable rather than one-off.',
-    'I have been studying soft-matter molecular simulation since 2018. Earlier work centered on the microstructure–property relationship of polymers and polymer nanocomposites, especially percolation, rheology, thermal transport, glass transition, fracture, and vitrimer self-healing.',
-    'Before Notre Dame, I completed both my B.E. and M.S. at Beijing University of Chemical Technology. My current trajectory keeps the same molecular-to-measurable philosophy while expanding toward multiscale electrochemical transport and predictive device-oriented modeling.'
+    'I am a PhD student at the University of Notre Dame in the Whitmer group. My workflow is simulation-first and physics-first: generate trajectories, formalize the observable, and turn the analysis into code that is reusable rather than one-off.',
+    'Before Notre Dame, I completed both my B.E. and M.S. at Beijing University of Chemical Technology. Earlier work centered on polymers and polymer nanocomposites, especially percolation, rheology, thermal transport, glass transition, fracture, and vitrimer self-healing.'
   ],
   focusAreas: [
     'Soft-matter simulation',
     'Polymer nanocomposites',
     'Vitrimers & fracture',
-    'Rheology & glass transition',
+    'Rheology',
     'Scientific software',
-    'Electrochemical transport'
+    'Transport modeling'
   ],
   quickFacts: [
     { label: 'Current home', value: 'Notre Dame' },
-    { label: 'Started in', value: 'Soft-matter simulation since 2018' },
     { label: 'Training', value: 'B.E. 2020 + M.S. 2023, BUCT' },
-    { label: 'Current arc', value: 'Polymers → multiscale charge transport' }
+    { label: 'Paper window', value: '2020–2026 on this site' },
+    { label: 'Code style', value: 'Trajectory → observable → model' }
   ]
 };
 
 export const researchPillars = [
   {
     id: 'soft-materials',
-    title: 'Soft materials and polymer nanocomposites',
+    title: 'Polymer microstructure and emergent properties',
     body:
-      'Molecular-dynamics and coarse-grained studies of polymer nanocomposites, percolated filler networks, thermal transport, pressure-dependent dynamics, fracture, and vitrimer healing.'
+      'Coarse-grained and molecular-dynamics studies of percolation, rheology, fracture, vitrimer healing, and transport in filled and cross-linked polymer systems.'
   },
   {
     id: 'analysis-systems',
-    title: 'Analysis systems and scientific software',
+    title: 'Reusable analysis systems',
     body:
-      'Reusable code for trajectory parsing, structural observables, crystallization analysis, rheology extraction, and larger simulation workflows that stay auditable as projects grow.'
+      'Trajectory parsing, structural observables, crystallization analysis, modulus extraction, and other analysis routines organized as durable software instead of one-off scripts.'
   },
   {
     id: 'multiscale-transport',
-    title: 'Multiscale transport and continuum bridges',
+    title: 'Microscopic kernels to continuum response',
     body:
-      'A current direction links simulation-derived kernels to ion, charge, and electrochemical-device observables, so the code stack can support predictive multiscale transport rather than isolated trajectory plots.'
+      'A current direction connects molecular observables to mesoscale and device-scale transport, especially electrochemical and mixed ionic/electronic systems.'
   }
 ];
 
 export const homeSpotlights = [
   {
-    title: 'Microstructure ↔ property relationships',
+    title: 'Polymer nanocomposites',
     text:
-      'A large part of the publication record is about how nanoscale arrangement, filler geometry, pressure, and exchange chemistry reshape conductivity, rheology, fracture, thermal transport, and relaxation in polymer systems.'
+      'Microstructure–property analysis across filler size, shape, percolation, thermal transport, and rheology.'
   },
   {
-    title: 'Mechanism-driven vitrimer and fracture work',
+    title: 'Fracture and vitrimer physics',
     text:
-      'Recent papers push from static structure toward failure pathways, topological transition, and self-healing, which gives the site a much sharper “materials physics” identity than a generic publication list.'
+      'Failure pathways, bond exchange, topological transition, and self-healing in dynamic polymer networks.'
   },
   {
-    title: 'Emerging electrochemical direction',
+    title: 'Scientific software',
     text:
-      'The newer Notre Dame thread extends the same simulation philosophy toward electrochemical hysteresis, ionic/electronic transport, and multiscale predictive modeling for organic mixed ionic–electronic conductor systems.'
+      'From trajectory analysis to continuum solvers, the code stack is designed as a connected research system.'
   }
 ];
 
 export const publications = [
   {
-    id: 'percolation-polydisperse-nanorods-2020',
-    year: 2020,
-    title: 'Percolation of polydisperse nanorods in polymer nanocomposites: Insights from molecular dynamics simulation',
-    authors: 'Haoyu Wu, Haoxiang Li, Wenfeng Zhang, Fei Li, Bin Li, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
-    venue: 'Composites Science and Technology',
-    citation: '196, 108208',
-    doi: '10.1016/j.compscitech.2020.108208',
-    url: 'https://doi.org/10.1016/j.compscitech.2020.108208',
-    tags: ['Percolation', 'Nanorods', 'Polymer nanocomposites', 'Molecular dynamics'],
+    id: 'ml-tg-sbr-2026',
+    year: 2026,
+    title: 'Machine Learning-Driven Prediction of the Glass Transition Temperature of Styrene-Butadiene Rubber',
+    authors: 'Zhanglei Wang, Shuo Yan, Jingyu Gao, Haoyu Wu, Baili Wang, Xiuying Zhao, Shikai Hu',
+    venue: 'Computers, Materials & Continua',
+    citation: '87(1), Article 17',
+    doi: '10.32604/cmc.2025.075667',
+    url: 'https://doi.org/10.32604/cmc.2025.075667',
+    tags: ['Machine learning', 'Glass transition', 'Styrene-butadiene rubber', 'Prediction'],
     blurb:
-      'Examines how rod-length polydispersity reorganizes conductive network formation in polymer nanocomposites and why distributional effects matter for emergent connectivity.'
+      'Builds a machine-learning route for predicting Tg in styrene-butadiene rubber, extending the research arc from molecular simulation to data-driven materials inference.'
   },
   {
-    id: 'double-interpenetrated-fracture-2020',
-    year: 2020,
-    title: 'Molecular dynamics simulation of fracture mechanism in the double interpenetrated cross-linked polymer',
-    authors: 'Haoxiang Li, Haoyu Wu, Bin Li, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
+    id: 'microscopic-self-healing-ml-2024',
+    year: 2024,
+    title: 'Microscopic Mechanisms of Self-Healing in Polymers Revealed by Molecular Simulations and Machine Learning',
+    authors: 'Yuhang Zhou, Jianlong Wen, Yijing Nie, et al.',
+    venue: 'Macromolecules',
+    citation: '57(7), 3258–3270',
+    doi: '10.1021/acs.macromol.4c00338',
+    url: 'https://doi.org/10.1021/acs.macromol.4c00338',
+    tags: ['Self-healing', 'Machine learning', 'Molecular simulations', 'Polymers'],
+    blurb:
+      'Combines molecular simulations with machine-learning analysis to reveal how microscopic variables control self-healing response in dynamic polymer systems.'
+  },
+  {
+    id: 'vitrimer-topological-transition-2024',
+    year: 2024,
+    title: 'Molecular Insights into the Topological Transition, Fracture, and Self-Healing Behavior of Vitrimer Composites with Exchangeable Interfaces',
+    authors: 'Ruibin Ma, Haoyu Wu, Chenlong Li, Xiuying Zhao, Xiaolin Li, Liqun Zhang, Yangyang Gao',
+    venue: 'Macromolecules',
+    citation: '57(20), 9725–9736',
+    doi: '10.1021/acs.macromol.4c01541',
+    url: 'https://doi.org/10.1021/acs.macromol.4c01541',
+    tags: ['Vitrimers', 'Self-healing', 'Fracture', 'Exchangeable interfaces'],
+    blurb:
+      'Probes how exchangeable interfaces govern topological transition, damage evolution, and healing in vitrimer composites.'
+  },
+  {
+    id: 'glass-transition-polyisoprene-pressure-2022',
+    year: 2022,
+    title: 'Structure and dynamics behavior during the glass transition of the polyisoprene in the presence of pressure: A molecular dynamics simulation',
+    authors: 'Wei Sun, Haoyu Wu, Yanlong Luo, Bin Li, Lixin Mao, Xiuying Zhao, Liqun Zhang, Yangyang Gao',
     venue: 'Polymer',
-    citation: '199, 122571',
-    doi: '10.1016/j.polymer.2020.122571',
-    url: 'https://doi.org/10.1016/j.polymer.2020.122571',
-    tags: ['Fracture', 'Double networks', 'Cross-linked polymers', 'Molecular dynamics'],
+    citation: '238, 124433',
+    doi: '10.1016/j.polymer.2021.124433',
+    url: 'https://doi.org/10.1016/j.polymer.2021.124433',
+    tags: ['Glass transition', 'Polyisoprene', 'Pressure effects', 'Molecular dynamics'],
     blurb:
-      'Studies how dual-network architecture and cross-link density influence fracture energy and failure pathways in interpenetrated polymer networks.'
+      'Analyzes pressure-dependent structural and dynamical signatures around the glass transition of polyisoprene using simulation-resolved molecular observables.'
   },
   {
-    id: 'fracture-crosslinking-points-2020',
-    year: 2020,
-    title: 'Improving the fracture property of polymer nanocomposites by employing nanoparticles as cross-linking points',
-    authors: 'Guangyao Mu, Haoxiang Li, Wei Sun, Haoyu Wu, Yanlong Luo, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
-    venue: 'Engineering Fracture Mechanics',
-    citation: '237, 107229',
-    doi: '10.1016/j.engfracmech.2020.107229',
-    url: 'https://doi.org/10.1016/j.engfracmech.2020.107229',
-    tags: ['Fracture', 'Grafted nanoparticles', 'Reinforcement', 'Polymer nanocomposites'],
+    id: 'shape-size-viscoelasticity-2022',
+    year: 2022,
+    title: 'Effect of shape and size of nanofillers on the viscoelasticity of polymer nanocomposites',
+    authors: 'Dandan Luo, Haoyu Wu, Haoxiang Li, Wenfeng Zhang, Liqun Zhang, Yangyang Gao',
+    venue: 'Polymer',
+    citation: '246, 124750',
+    doi: '10.1016/j.polymer.2022.124750',
+    url: 'https://doi.org/10.1016/j.polymer.2022.124750',
+    tags: ['Viscoelasticity', 'Nanofillers', 'Filler geometry', 'Polymer nanocomposites'],
     blurb:
-      'Shows how using nanoparticles as effective cross-linking points can toughen polymer nanocomposites and redirect void nucleation and failure.'
+      'Shows how filler shape and size jointly govern the viscoelastic reinforcement landscape of polymer nanocomposites.'
+  },
+  {
+    id: 'nanorods-nanospheres-2022',
+    year: 2022,
+    title: 'Manipulating the percolated network of nanorods in polymer matrix by adding non-conductive nanospheres: A molecular dynamics simulation',
+    authors: 'Haoyu Wu, Ruibin Ma, Yimin Wang, Xiuying Zhao, Liqun Zhang, Yangyang Gao',
+    venue: 'Composites Science and Technology',
+    citation: '229, 109694',
+    doi: '10.1016/j.compscitech.2022.109694',
+    url: 'https://doi.org/10.1016/j.compscitech.2022.109694',
+    tags: ['Nanorods', 'Nanospheres', 'Percolated networks', 'Molecular dynamics'],
+    blurb:
+      'Demonstrates that non-conductive additives can redirect nanorod network formation and alter effective transport pathways in polymer matrices.'
   },
   {
     id: 'mixed-nanoparticles-percolated-network-2021',
@@ -156,56 +194,43 @@ export const publications = [
       'Uses molecular simulation to connect defect structure and interfacial organization to thermal transport in boron-nitride/PDMS nanocomposites.'
   },
   {
-    id: 'glass-transition-polyisoprene-pressure-2022',
-    year: 2022,
-    title: 'Structure and dynamics behavior during the glass transition of the polyisoprene in the presence of pressure: A molecular dynamics simulation',
-    authors: 'Wei Sun, Haoyu Wu, Yanlong Luo, Bin Li, Lixin Mao, Xiuying Zhao, Liqun Zhang, Yangyang Gao',
-    venue: 'Polymer',
-    citation: '238, 124433',
-    doi: '10.1016/j.polymer.2021.124433',
-    url: 'https://doi.org/10.1016/j.polymer.2021.124433',
-    tags: ['Glass transition', 'Polyisoprene', 'Pressure effects', 'Molecular dynamics'],
-    blurb:
-      'Analyzes pressure-dependent structural and dynamical signatures around the glass transition of polyisoprene using simulation-resolved molecular observables.'
-  },
-  {
-    id: 'shape-size-viscoelasticity-2022',
-    year: 2022,
-    title: 'Effect of shape and size of nanofillers on the viscoelasticity of polymer nanocomposites',
-    authors: 'Dandan Luo, Haoyu Wu, Haoxiang Li, Wenfeng Zhang, Liqun Zhang, Yangyang Gao',
-    venue: 'Polymer',
-    citation: '246, 124750',
-    doi: '10.1016/j.polymer.2022.124750',
-    url: 'https://doi.org/10.1016/j.polymer.2022.124750',
-    tags: ['Viscoelasticity', 'Nanofillers', 'Filler geometry', 'Polymer nanocomposites'],
-    blurb:
-      'Shows how filler shape and size jointly govern the viscoelastic reinforcement landscape of polymer nanocomposites.'
-  },
-  {
-    id: 'nanorods-nanospheres-2022',
-    year: 2022,
-    title: 'Manipulating the percolated network of nanorods in polymer matrix by adding non-conductive nanospheres: A molecular dynamics simulation',
-    authors: 'Haoyu Wu, Ruibin Ma, Yimin Wang, Xiuying Zhao, Liqun Zhang, Yangyang Gao',
+    id: 'percolation-polydisperse-nanorods-2020',
+    year: 2020,
+    title: 'Percolation of polydisperse nanorods in polymer nanocomposites: Insights from molecular dynamics simulation',
+    authors: 'Haoyu Wu, Haoxiang Li, Wenfeng Zhang, Fanzhu Li, Bin Li, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
     venue: 'Composites Science and Technology',
-    citation: '229, 109694',
-    doi: '10.1016/j.compscitech.2022.109694',
-    url: 'https://doi.org/10.1016/j.compscitech.2022.109694',
-    tags: ['Nanorods', 'Nanospheres', 'Percolated networks', 'Molecular dynamics'],
+    citation: '196, 108208',
+    doi: '10.1016/j.compscitech.2020.108208',
+    url: 'https://doi.org/10.1016/j.compscitech.2020.108208',
+    tags: ['Percolation', 'Nanorods', 'Polymer nanocomposites', 'Molecular dynamics'],
     blurb:
-      'Demonstrates that even non-conductive additives can redirect nanorod network formation and change effective transport pathways in polymer matrices.'
+      'Examines how rod-length polydispersity reorganizes conductive network formation in polymer nanocomposites and why distributional effects matter for emergent connectivity.'
   },
   {
-    id: 'vitrimer-topological-transition-2024',
-    year: 2024,
-    title: 'Molecular Insights into the Topological Transition, Fracture, and Self-Healing Behavior of Vitrimer Composites with Exchangeable Interfaces',
-    authors: 'Ruibin Ma, Haoyu Wu, Chenlong Li, Xiuying Zhao, Xiaolin Li, Liqun Zhang, Yangyang Gao',
-    venue: 'Macromolecules',
-    citation: '57(20), 9725–9736',
-    doi: '10.1021/acs.macromol.4c01541',
-    url: 'https://doi.org/10.1021/acs.macromol.4c01541',
-    tags: ['Vitrimers', 'Self-healing', 'Fracture', 'Exchangeable interfaces'],
+    id: 'double-interpenetrated-fracture-2020',
+    year: 2020,
+    title: 'Molecular dynamics simulation of fracture mechanism in the double interpenetrated cross-linked polymer',
+    authors: 'Haoxiang Li, Haoyu Wu, Bin Li, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
+    venue: 'Polymer',
+    citation: '199, 122571',
+    doi: '10.1016/j.polymer.2020.122571',
+    url: 'https://doi.org/10.1016/j.polymer.2020.122571',
+    tags: ['Fracture', 'Double networks', 'Cross-linked polymers', 'Molecular dynamics'],
     blurb:
-      'Probes how exchangeable interfaces govern topological transition, damage evolution, and healing in vitrimer composites.'
+      'Studies how dual-network architecture and cross-link density influence fracture energy and failure pathways in interpenetrated polymer networks.'
+  },
+  {
+    id: 'fracture-crosslinking-points-2020',
+    year: 2020,
+    title: 'Improving the fracture property of polymer nanocomposites by employing nanoparticles as cross-linking points',
+    authors: 'Guangyao Mu, Haoxiang Li, Wei Sun, Haoyu Wu, Yanlong Luo, Yangyang Gao, Xiuying Zhao, Liqun Zhang',
+    venue: 'Engineering Fracture Mechanics',
+    citation: '237, 107229',
+    doi: '10.1016/j.engfracmech.2020.107229',
+    url: 'https://doi.org/10.1016/j.engfracmech.2020.107229',
+    tags: ['Fracture', 'Grafted nanoparticles', 'Reinforcement', 'Polymer nanocomposites'],
+    blurb:
+      'Shows how using nanoparticles as effective cross-linking points can toughen polymer nanocomposites and redirect void nucleation and failure.'
   }
 ];
 
@@ -221,6 +246,8 @@ export const softwareProjects = [
     updated: 'Mar 11, 2026',
     repoUrl: 'https://github.com/haoyuwu97/PILOTS',
     docsUrl: 'https://haoyuwu97.github.io/PILOTS/',
+    logo: 'assets/img/logos/pilots.svg',
+    logoAlt: 'PILOTS logo',
     cardSummary:
       'High-performance, reproducible trajectory-analysis runner for large molecular simulations with an extensible measure framework.',
     headline:
@@ -262,6 +289,8 @@ export const softwareProjects = [
     updated: 'Mar 10, 2026',
     repoUrl: 'https://github.com/haoyuwu97/CHANNEL',
     docsUrl: 'https://github.com/haoyuwu97/CHANNEL',
+    logo: 'assets/img/logos/channel.svg',
+    logoAlt: 'CHANNEL logo',
     cardSummary:
       '1D continuum simulator for charge, ion, and redox physics designed to consume simulation-derived kernels.',
     headline:
@@ -284,7 +313,7 @@ export const softwareProjects = [
       'Supports direct file-based kernels and helper discovery from PILOTS output folders',
       'Designed as a multiscale bridge rather than a standalone nanoscale generator'
     ],
-    outputs: ['results.json', 'profile datasets such as psi.dat and c_*.dat', 'optional dynamic/ time-series directory'],
+    outputs: ['results.json', 'profile datasets such as psi.dat and c_*.dat', 'optional dynamic / time-series directory'],
     connections: ['Consumes kernels from molecular workflows', 'Pairs naturally with PILOTS for end-to-end multiscale studies'],
     quickLinks: [
       { label: 'Repository', href: 'https://github.com/haoyuwu97/CHANNEL' }
@@ -301,6 +330,8 @@ export const softwareProjects = [
     updated: 'Mar 9, 2026',
     repoUrl: 'https://github.com/haoyuwu97/IMPACT',
     docsUrl: 'https://github.com/haoyuwu97/IMPACT',
+    logo: 'assets/img/logos/impact.svg',
+    logoAlt: 'IMPACT logo',
     cardSummary:
       'Coarse-grained crystallization analysis toolkit for semi-crystalline polymeric materials with clustering and chain-conformation modes.',
     headline:
@@ -320,7 +351,7 @@ export const softwareProjects = [
     run: ['IMPACT -in input.dump -out output -sop 1.44 0.8 -c 1.05 0.95 -cf'],
     architecture: [
       'Dump parser → crystallinity mode → optional clustering / conformation → output folder',
-      'Supports both batch analysis and streaming/follow analysis',
+      'Supports both batch analysis and streaming / follow analysis',
       'Built for semi-crystalline polymer systems with explicit workflow switches'
     ],
     outputs: ['analysis folders', 'snapshot-style results for selected modes'],
@@ -340,6 +371,8 @@ export const softwareProjects = [
     updated: 'Mar 10, 2026',
     repoUrl: 'https://github.com/haoyuwu97/VELA',
     docsUrl: 'https://github.com/haoyuwu97/VELA',
+    logo: 'assets/img/logos/vela.svg',
+    logoAlt: 'VELA logo',
     cardSummary:
       'Stress-autocorrelation and modulus-analysis package that converts MD stress series into time- and frequency-domain viscoelastic observables.',
     headline:
@@ -358,7 +391,7 @@ export const softwareProjects = [
     build: ['make'],
     run: ['./VELA INPUT_FILE OUTPUT_FILE_Gt OUTPUT_FILE_Gw DT MODE [GTCUT] [TAIL_PARAM]'],
     architecture: [
-      'Stress timeseries → centered correlators → transform route → time/frequency outputs',
+      'Stress timeseries → centered correlators → transform route → time / frequency outputs',
       'Optional LAMMPS backend enables physically grounded absolute-modulus workflows',
       'CAFT-Bounds provides trusted-window plus constrained-tail inference'
     ],
@@ -379,12 +412,14 @@ export const softwareProjects = [
     updated: 'Jan 14, 2026',
     repoUrl: 'https://github.com/haoyuwu97/GNM',
     docsUrl: 'https://github.com/haoyuwu97/GNM',
+    logo: 'assets/img/logos/gnm.svg',
+    logoAlt: 'GNM logo',
     cardSummary:
       'MC / GCMC package for simple Lennard–Jones particle systems with an input-driven setup similar to classical simulators.',
     headline:
       'Grand-canonical N-particle Monte Carlo simulation',
     overview:
-      'GNM is a compact MC/GCMC engine for simple Lennard–Jones particle systems. It is designed both as a practical starting point for small-scale simulation work and as a teaching-friendly codebase.',
+      'GNM is a compact MC / GCMC engine for simple Lennard–Jones particle systems. It is designed both as a practical starting point for small-scale simulation work and as a teaching-friendly codebase.',
     whyItMatters:
       'Not every useful simulation code should be huge. GNM is valuable as a clean, focused basis for Monte Carlo workflows and for learning how a simple simulation package can be organized around input files and extensible particle types.',
     features: [
@@ -449,7 +484,7 @@ export const softwareProjects = [
 ];
 
 export const softwareGraph = [
-  { from: 'pair_style-sw-as', to: 'pilots', label: 'simulate' },
+  { from: 'pair-style-swas', to: 'pilots', label: 'simulate' },
   { from: 'gnm', to: 'pilots', label: 'analyze' },
   { from: 'pilots', to: 'channel', label: 'kernels' },
   { from: 'pilots', to: 'vela', label: 'stress data' },
@@ -459,38 +494,68 @@ export const softwareGraph = [
 export const leisureModes = [
   {
     id: 'bullet-weave',
-    title: 'Bullet Weave',
-    subtitle: 'Minimal danmaku shooter',
-    description: 'A compact bullet-hell shooter: slide the ship, erase emitters, and survive increasingly dense patterns.',
-    instruction: 'Mouse / touch to move. The ship auto-fires. Avoid bullets and enemies; restart is automatic.'
+    title: 'Reactive Barrage',
+    subtitle: 'Catalyst in a radical field',
+    description: 'Guide a catalyst bead through slow radical bursts, quench source nodes, and grow a trailing chain that can temporarily shield the core.',
+    instruction: 'Mouse / touch / WASD / arrows to move. Shots auto-fire toward the nearest radical source.',
+    concept: 'A stylized reaction field: sources emit reactive bursts, the catalyst survives by motion and local quenching, and collected monomers extend a shielding chain.',
+    learning: [
+      'Tail beads behave like a sacrificial reaction shell.',
+      'Source nodes illustrate how local event frequency changes field difficulty.',
+      'The visual language echoes bead-spring and coarse-grained reaction cartoons.'
+    ]
   },
   {
     id: 'chain-runner',
-    title: 'Chain Runner',
-    subtitle: 'Endless side-scrolling run',
-    description: 'A smooth single-button runner with increasing speed, clean jumps, and no visual clutter.',
-    instruction: 'Click, tap, Space, or ↑ to jump. Time the jumps to clear incoming barriers.'
+    title: 'Chain-Growth Runner',
+    subtitle: 'Monomer capture and chain extension',
+    description: 'A side-scrolling polymerization lane: collect monomer beads, lengthen the chain behind the active end, and keep the whole conformation clear of barriers and terminators.',
+    instruction: 'Click, tap, Space, or ↑ to jump. Collect monomers to lengthen the chain; any bead hitting an obstacle ends the run.',
+    concept: 'This is a playful chain-growth polymerization analogy: the head is the active end, collected monomers join the tail, and obstacle collisions mimic termination or chain failure.',
+    learning: [
+      'Longer chains are more rewarding but also harder to protect.',
+      'The run visualizes how local growth changes global conformation risk.',
+      'Barrier encounters are designed as termination-style teaching cues, not realistic chemistry.'
+    ]
   },
   {
     id: 'survivor-field',
-    title: 'Survivor Field',
-    subtitle: 'Minimal survivors-like arena',
-    description: 'Swarming enemies, automatic fire, and quiet progression. Survive long enough and the weapon upgrades itself.',
-    instruction: 'Mouse / touch / WASD / arrows to move. Shots fire automatically toward nearby threats.'
+    title: 'Conformation Survivor',
+    subtitle: 'Crowded melt survival',
+    description: 'Move through a soft-matter field of quenchers and defects while orbiting segments auto-fire. Survive longer to thicken the protective conformation shell.',
+    instruction: 'Mouse / touch / WASD / arrows to move. Orbiting segments and auto-fire strengthen as you survive and collect drops.',
+    concept: 'The player core is wrapped by an orbiting conformation shell. It is not a literal polymer model, but a teaching sketch for crowding, shielding, and defect-clearing in a dense soft-matter landscape.',
+    learning: [
+      'Orbiting segments stand in for a protective local environment.',
+      'Dense fields make transport and avoidance harder, like crowded media.',
+      'Color and motion stay simple so the physical analogy remains legible.'
+    ]
   },
   {
     id: 'drift-shooter',
-    title: 'Drift Shooter',
-    subtitle: 'Inertial asteroid arcade',
-    description: 'A lighter twin-stick-style endless shooter built around momentum, fragments, and precise drift control.',
-    instruction: 'Move with mouse / touch / WASD / arrows. The ship auto-fires toward the pointer or nearest target.'
+    title: 'Crosslink Drift',
+    subtitle: 'Reactive filler through a viscoelastic melt',
+    description: 'Drift as a reactive nanoparticle through a viscoelastic melt, fragment defect clusters, and manage inertia while the tail traces local structure.',
+    instruction: 'Move with mouse / touch / WASD / arrows. Shots auto-aim toward the pointer or nearest defect cluster.',
+    concept: 'This mode reframes the shooter as a drifting filler / crosslink center in a structured melt. Momentum matters, and local defects are removed before they accumulate into failure pathways.',
+    learning: [
+      'Inertia makes control feel different from a simple top-down shooter.',
+      'Defect clusters and tail motion hint at local structure around a moving inclusion.',
+      'The mode is built to feel like soft-matter motion rather than rigid-space combat.'
+    ]
   },
   {
     id: 'wave-glider',
-    title: 'Wave Glider',
-    subtitle: 'Endless smooth flight',
-    description: 'Hold to rise, release to descend, and thread an infinite sequence of clean gates at a calm but demanding pace.',
-    instruction: 'Hold click or touch to gain lift. Release to glide down. Pass through gates to extend the run.'
+    title: 'Brush Reactor Glide',
+    subtitle: 'Catalyst threading through grafted brushes',
+    description: 'Hold to rise and release to descend while a catalyst bead threads through oscillating grafted-polymer brushes and activates reaction sites in the channel.',
+    instruction: 'Hold click / touch / Space / ↑ to gain lift. Release to descend. Fly through the reaction window between the brushes.',
+    concept: 'The gate geometry is a reactor cartoon built from top and bottom grafted brushes. Safe passage depends on threading the free-volume window while tagging active sites.',
+    learning: [
+      'Brush sway visualizes fluctuating free volume and steric confinement.',
+      'Collectible sites give the lane a reaction-channel narrative instead of generic pipes.',
+      'The pacing is intentionally slower than an arcade flier so the structure stays readable.'
+    ]
   }
 ];
 
@@ -510,6 +575,6 @@ export const pageMeta = {
   },
   leisure: {
     title: 'Rest Mode | Haoyu Wu',
-    description: 'Five playable endless browser games: danmaku shooter, runner, survivors-like arena, inertial shooter, and wave glider.'
+    description: 'Five polymer-themed endless browser games: catalyst barrage, chain-growth runner, conformation survivor, crosslink drift, and brush-reactor glide.'
   }
 };

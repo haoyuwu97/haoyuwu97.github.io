@@ -1,4 +1,4 @@
-import { formatDOI, renderTagList, makeLinkButton, qs } from './utils.js';
+import { formatDOI, renderTagList, makeLinkButton } from './utils.js';
 
 export function publicationCard(item, compact = false) {
   const article = document.createElement('article');
@@ -41,7 +41,57 @@ export function publicationCard(item, compact = false) {
   actions.className = 'button-row';
   actions.appendChild(makeLinkButton({ label: 'DOI', href: formatDOI(item.doi), kind: 'secondary' }));
 
-  article.append(meta, title, authors, citation, blurb, tags, actions);
+  const nodes = [meta];
+
+  if (!compact) {
+    const figureShell = document.createElement('div');
+    figureShell.className = 'publication-figure-shell';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'publication-figure-placeholder';
+    const slotPath = item.figure?.slot || `assets/img/publications/${item.id}.png`;
+    placeholder.innerHTML = `
+      <strong class="figure-slot-title">Figure slot ready</strong>
+      <span class="figure-slot-path">${slotPath}</span>
+      <span class="figure-slot-note">Place a PNG or JPG with this paper ID inside <code>assets/img/publications/</code>. The page will pick it up automatically.</span>
+    `;
+
+    const img = document.createElement('img');
+    img.className = 'publication-figure';
+    img.alt = item.figure?.alt || `${item.title} figure preview`;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.hidden = true;
+
+    const figureNote = document.createElement('div');
+    figureNote.className = 'publication-figure-note';
+    if (item.figure?.caption) figureNote.textContent = item.figure.caption;
+
+    const preferred = item.figure?.src || `assets/img/publications/${item.id}.png`;
+    const fallback = `assets/img/publications/${item.id}.jpg`;
+    img.addEventListener('load', () => {
+      img.hidden = false;
+      placeholder.hidden = true;
+      if (!item.figure?.caption) figureNote.hidden = true;
+    });
+    img.addEventListener('error', () => {
+      if (img.dataset.triedFallback === 'true') {
+        img.hidden = true;
+        placeholder.hidden = false;
+        figureNote.hidden = true;
+        return;
+      }
+      img.dataset.triedFallback = 'true';
+      img.src = fallback;
+    });
+    img.src = preferred;
+
+    figureShell.append(img, placeholder, figureNote);
+    nodes.push(figureShell);
+  }
+
+  nodes.push(title, authors, citation, blurb, tags, actions);
+  article.append(...nodes);
   return article;
 }
 
@@ -60,13 +110,27 @@ export function projectCard(project) {
   updated.textContent = project.updated;
   top.append(category, updated);
 
+  const brand = document.createElement('div');
+  brand.className = 'repo-brand';
+  if (project.logo) {
+    const logo = document.createElement('img');
+    logo.className = 'repo-logo';
+    logo.src = project.logo;
+    logo.alt = project.logoAlt || `${project.name} logo`;
+    logo.loading = 'lazy';
+    brand.appendChild(logo);
+  }
+
+  const brandCopy = document.createElement('div');
+  brandCopy.className = 'repo-brand-copy';
   const title = document.createElement('h3');
   title.className = 'card-title';
   title.textContent = project.name;
-
   const headline = document.createElement('p');
   headline.className = 'repo-headline';
   headline.textContent = project.headline;
+  brandCopy.append(title, headline);
+  brand.appendChild(brandCopy);
 
   const summary = document.createElement('p');
   summary.className = 'card-body';
@@ -86,7 +150,7 @@ export function projectCard(project) {
     actions.appendChild(makeLinkButton({ label: 'Docs', href: project.docsUrl, kind: 'ghost' }));
   }
 
-  article.append(top, title, headline, summary, tags, actions);
+  article.append(top, brand, summary, tags, actions);
   return article;
 }
 
@@ -99,7 +163,7 @@ export function renderSoftwareMap(container, projects, graph) {
   shell.className = 'software-map';
 
   const lanes = [
-    ['pair_style-sw-as', 'gnm'],
+    ['pair-style-swas', 'gnm'],
     ['pilots'],
     ['impact', 'vela', 'channel']
   ];
@@ -113,7 +177,8 @@ export function renderSoftwareMap(container, projects, graph) {
       const node = document.createElement('a');
       node.className = 'software-node';
       node.href = `wiki-entry.html?repo=${project.slug}`;
-      node.innerHTML = `<strong>${project.name}</strong><span>${project.category}</span>`;
+      const logo = project.logo ? `<img class="software-node-logo" src="${project.logo}" alt="${project.logoAlt || project.name}" />` : '<span class="software-node-dot"></span>';
+      node.innerHTML = `${logo}<span class="software-node-copy"><strong>${project.name}</strong><span>${project.category}</span></span>`;
       laneNode.appendChild(node);
     });
     shell.appendChild(laneNode);

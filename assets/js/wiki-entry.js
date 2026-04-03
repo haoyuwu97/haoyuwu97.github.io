@@ -19,7 +19,21 @@ function getProject() {
 }
 
 function renderProject(project) {
-  document.getElementById('entry-kicker').textContent = project.category;
+  const brand = document.getElementById('entry-brand');
+  const kickerFallback = document.getElementById('entry-kicker-fallback');
+  const logo = document.getElementById('entry-logo');
+  if (project.logo) {
+    brand.hidden = false;
+    logo.src = project.logo;
+    logo.alt = project.logoAlt || `${project.name} logo`;
+    brand.querySelector('.kicker').textContent = project.category;
+    kickerFallback.hidden = true;
+  } else {
+    brand.hidden = true;
+    kickerFallback.textContent = project.category;
+    kickerFallback.hidden = false;
+  }
+
   document.getElementById('entry-title').textContent = project.name;
   document.getElementById('entry-headline').textContent = project.headline;
   document.getElementById('entry-summary').textContent = project.overview;
@@ -120,7 +134,7 @@ window.addEventListener('DOMContentLoaded', () => {
   activateNav('wiki');
   initFooterYear();
   smoothScrollForHashes();
-  initMolecularField(document.getElementById('bg-canvas'), { variant: 'page', density: 0.65 });
+  initMolecularField(document.getElementById('bg-canvas'), { variant: 'page', density: 0.62 });
   renderProject(project);
   initReveal();
   initTilt();

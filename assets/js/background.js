@@ -10,7 +10,7 @@ function pick(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-function wrap(value, max, margin = 120) {
+function wrap(value, max, margin = 180) {
   if (value < -margin) return max + margin;
   if (value > max + margin) return -margin;
   return value;
@@ -23,18 +23,18 @@ function rotate(x, y, angle) {
 }
 
 function recenter(points) {
-  const center = points.reduce((acc, point) => ({ x: acc.x + point.x, y: acc.y + point.y }), { x: 0, y: 0 });
-  const cx = center.x / points.length;
-  const cy = center.y / points.length;
+  const sum = points.reduce((acc, point) => ({ x: acc.x + point.x, y: acc.y + point.y }), { x: 0, y: 0 });
+  const cx = sum.x / points.length;
+  const cy = sum.y / points.length;
   return points.map((point) => ({ ...point, x: point.x - cx, y: point.y - cy }));
 }
 
-function persistentWalk(length, step, turn = 0.62) {
+function walk(count, step, turn = 0.55) {
   const points = [{ x: 0, y: 0 }];
   let angle = random(0, TAU);
-  for (let index = 1; index < length; index += 1) {
+  for (let i = 1; i < count; i += 1) {
     angle += random(-turn, turn);
-    const prev = points[index - 1];
+    const prev = points[i - 1];
     points.push({
       x: prev.x + Math.cos(angle) * step,
       y: prev.y + Math.sin(angle) * step
@@ -43,180 +43,212 @@ function persistentWalk(length, step, turn = 0.62) {
   return recenter(points);
 }
 
-function buildBranch(anchor, count, step) {
-  const branch = [{ x: 0, y: 0 }];
-  let angle = random(-1.5, 1.5);
-  for (let index = 1; index < count; index += 1) {
-    angle += random(-0.45, 0.45);
-    const prev = branch[index - 1];
-    branch.push({
-      x: prev.x + Math.cos(angle) * step,
-      y: prev.y + Math.sin(angle) * step
-    });
-  }
-  return { anchor, points: branch };
-}
-
-function buildChainGeometry(kind) {
-  const count = Math.floor(random(10, 18));
-  const step = random(16, 24);
-
-  if (kind === 'loop') {
-    const rx = random(34, 68);
-    const ry = random(24, 46);
-    const points = Array.from({ length: count }, (_, index) => {
-      const theta = (index / count) * TAU;
-      return {
-        x: Math.cos(theta) * rx,
-        y: Math.sin(theta) * ry
-      };
-    });
-    return { points, branches: [], closed: true };
+function buildShape(kind, count, spacing) {
+  if (kind === 'ring') {
+    const rx = spacing * random(2.6, 4.4);
+    const ry = spacing * random(1.7, 3.1);
+    return {
+      closed: true,
+      points: Array.from({ length: count }, (_, index) => {
+        const theta = (index / count) * TAU;
+        return { x: Math.cos(theta) * rx, y: Math.sin(theta) * ry };
+      }),
+      branches: []
+    };
   }
 
   if (kind === 'stretched') {
     const points = Array.from({ length: count }, (_, index) => {
       const t = index - (count - 1) / 2;
       return {
-        x: t * step,
-        y: Math.sin(index * 0.72 + random(0, TAU)) * random(5, 13)
+        x: t * spacing,
+        y: Math.sin(index * 0.82 + random(0, TAU)) * spacing * 0.22
       };
     });
-    return { points, branches: [], closed: false };
+    return { closed: false, points, branches: [] };
+  }
+
+  if (kind === 'hairpin') {
+    const split = Math.ceil(count * 0.55);
+    const left = Array.from({ length: split }, (_, index) => ({
+      x: index * spacing,
+      y: Math.sin(index * 0.68) * spacing * 0.18
+    }));
+    const right = Array.from({ length: count - split }, (_, index) => ({
+      x: left.at(-1).x - (index + 1) * spacing * 0.88,
+      y: spacing * random(1.2, 2.2) + Math.sin(index * 0.8) * spacing * 0.2
+    }));
+    return { closed: false, points: recenter([...left, ...right]), branches: [] };
+  }
+
+  if (kind === 'brush') {
+    const backbone = Array.from({ length: count }, (_, index) => ({
+      x: (index - (count - 1) / 2) * spacing,
+      y: Math.sin(index * 0.65) * spacing * 0.14
+    }));
+    const branches = [];
+    for (let i = 2; i < count - 2; i += 3) {
+      const sign = i % 2 === 0 ? -1 : 1;
+      const branchCount = Math.max(3, Math.floor(random(3, 5)));
+      branches.push({
+        anchor: i,
+        points: Array.from({ length: branchCount }, (_, k) => ({
+          x: 0,
+          y: sign * (k + 1) * spacing * 0.75 + Math.sin(k * 0.6) * spacing * 0.05
+        }))
+      });
+    }
+    return { closed: false, points: recenter(backbone), branches };
   }
 
   if (kind === 'folded') {
-    const half = Math.ceil(count / 2);
-    const first = Array.from({ length: half }, (_, index) => ({
-      x: index * step,
-      y: Math.sin(index * 0.82) * random(4, 11)
+    const base = walk(count, spacing, 0.38);
+    const points = base.map((point, index) => ({
+      x: point.x * 0.86,
+      y: point.y * 0.66 + Math.sin(index * 0.75) * spacing * 0.18
     }));
-    const second = Array.from({ length: count - half }, (_, index) => ({
-      x: first.at(-1).x - (index + 1) * step * 0.88,
-      y: random(12, 26) + Math.sin(index * 0.9 + 0.6) * random(4, 10)
-    }));
-    return { points: recenter([...first, ...second]), branches: [], closed: false };
+    return { closed: false, points: recenter(points), branches: [] };
   }
 
-  if (kind === 'branched') {
-    const points = persistentWalk(count, step, 0.48);
-    const anchor = Math.floor(random(count * 0.3, count * 0.7));
-    const branches = [buildBranch(anchor, Math.floor(random(4, 7)), step * 0.66)];
-    if (Math.random() > 0.55) {
-      branches.push(buildBranch(Math.floor(random(count * 0.2, count * 0.8)), Math.floor(random(3, 5)), step * 0.56));
-    }
-    return { points, branches, closed: false };
-  }
+  return { closed: false, points: walk(count, spacing, 0.62), branches: [] };
+}
 
-  return { points: persistentWalk(count, step, 0.7), branches: [], closed: false };
+function themeName() {
+  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
 }
 
 function readPalette() {
-  const styles = getComputedStyle(document.documentElement);
+  const light = themeName() === 'light';
   return {
-    backdropStart: styles.getPropertyValue('--field-backdrop-1').trim() || 'rgba(12, 18, 34, 0.95)',
-    backdropEnd: styles.getPropertyValue('--field-backdrop-2').trim() || 'rgba(6, 10, 20, 0.96)',
-    glowA: styles.getPropertyValue('--field-glow-a').trim() || 'rgba(143, 243, 255, 0.08)',
-    glowB: styles.getPropertyValue('--field-glow-b').trim() || 'rgba(136, 164, 255, 0.06)',
-    bond: styles.getPropertyValue('--field-bond').trim() || 'rgba(126, 231, 255, 0.18)',
-    bondSoft: styles.getPropertyValue('--field-bond-soft').trim() || 'rgba(136, 164, 255, 0.08)',
-    bead: styles.getPropertyValue('--field-bead').trim() || 'rgba(210, 244, 255, 0.72)',
-    beadCore: styles.getPropertyValue('--field-bead-core').trim() || 'rgba(255, 255, 255, 0.92)',
-    particle: styles.getPropertyValue('--field-particle').trim() || 'rgba(255, 255, 255, 0.6)',
-    particleSoft: styles.getPropertyValue('--field-particle-soft').trim() || 'rgba(143, 243, 255, 0.18)',
-    halo: styles.getPropertyValue('--field-halo').trim() || 'rgba(143, 243, 255, 0.16)'
+    backdropStart: light ? 'rgba(248, 251, 255, 0.97)' : 'rgba(4, 8, 18, 0.97)',
+    backdropEnd: light ? 'rgba(234, 243, 255, 0.98)' : 'rgba(6, 10, 22, 0.98)',
+    glowA: light ? 'rgba(61, 130, 255, 0.10)' : 'rgba(111, 231, 255, 0.08)',
+    glowB: light ? 'rgba(0, 190, 165, 0.07)' : 'rgba(177, 120, 255, 0.08)',
+    grid: light ? 'rgba(54, 94, 164, 0.055)' : 'rgba(142, 176, 242, 0.045)',
+    halo: light ? 'rgba(52, 120, 255, 0.11)' : 'rgba(143, 243, 255, 0.12)',
+    shadow: light ? 'rgba(25, 46, 86, 0.18)' : 'rgba(0, 0, 0, 0.34)',
+    chainSets: light
+      ? [
+          { bead: '#4f8bff', highlight: 'rgba(255,255,255,0.92)', bond: 'rgba(79,139,255,0.55)', glow: 'rgba(79,139,255,0.16)' },
+          { bead: '#19c2a8', highlight: 'rgba(255,255,255,0.9)', bond: 'rgba(25,194,168,0.52)', glow: 'rgba(25,194,168,0.16)' },
+          { bead: '#ff8d6d', highlight: 'rgba(255,255,255,0.92)', bond: 'rgba(255,141,109,0.52)', glow: 'rgba(255,141,109,0.15)' },
+          { bead: '#c280ff', highlight: 'rgba(255,255,255,0.9)', bond: 'rgba(194,128,255,0.48)', glow: 'rgba(194,128,255,0.15)' },
+          { bead: '#f1b941', highlight: 'rgba(255,255,255,0.92)', bond: 'rgba(241,185,65,0.5)', glow: 'rgba(241,185,65,0.16)' }
+        ]
+      : [
+          { bead: '#89e4ff', highlight: 'rgba(255,255,255,0.96)', bond: 'rgba(137,228,255,0.6)', glow: 'rgba(137,228,255,0.18)' },
+          { bead: '#86f5aa', highlight: 'rgba(255,255,255,0.94)', bond: 'rgba(134,245,170,0.56)', glow: 'rgba(134,245,170,0.18)' },
+          { bead: '#ff8d80', highlight: 'rgba(255,255,255,0.95)', bond: 'rgba(255,141,128,0.55)', glow: 'rgba(255,141,128,0.18)' },
+          { bead: '#c3a2ff', highlight: 'rgba(255,255,255,0.94)', bond: 'rgba(195,162,255,0.52)', glow: 'rgba(195,162,255,0.16)' },
+          { bead: '#ffd166', highlight: 'rgba(255,255,255,0.95)', bond: 'rgba(255,209,102,0.52)', glow: 'rgba(255,209,102,0.18)' }
+        ],
+    particleSets: light
+      ? [
+          { fill: 'rgba(79,139,255,0.42)', core: 'rgba(255,255,255,0.96)', halo: 'rgba(79,139,255,0.10)' },
+          { fill: 'rgba(25,194,168,0.38)', core: 'rgba(255,255,255,0.92)', halo: 'rgba(25,194,168,0.1)' },
+          { fill: 'rgba(255,141,109,0.38)', core: 'rgba(255,255,255,0.94)', halo: 'rgba(255,141,109,0.1)' }
+        ]
+      : [
+          { fill: 'rgba(137,228,255,0.48)', core: 'rgba(255,255,255,0.96)', halo: 'rgba(137,228,255,0.12)' },
+          { fill: 'rgba(134,245,170,0.42)', core: 'rgba(255,255,255,0.94)', halo: 'rgba(134,245,170,0.12)' },
+          { fill: 'rgba(255,141,128,0.44)', core: 'rgba(255,255,255,0.95)', halo: 'rgba(255,141,128,0.12)' }
+        ]
   };
 }
 
-function buildChain(state, variant, density, reduced) {
-  const kind = pick(['coil', 'coil', 'stretched', 'loop', 'folded', 'branched']);
-  const geometry = buildChainGeometry(kind);
-  const scale = random(0.8, 1.25) * (variant === 'hero' ? 1 : 0.92);
-  const speedScale = reduced ? 0.45 : 1;
+function buildChain(state, variant, reduced) {
+  const spacing = variant === 'hero' ? random(30, 40) : random(24, 32);
+  const count = Math.floor(random(9, 15));
+  const kind = pick(['coil', 'coil', 'stretched', 'ring', 'hairpin', 'folded', 'brush']);
+  const shape = buildShape(kind, count, spacing);
+  const colorSet = pick(state.palette.chainSets);
   return {
     kind,
-    closed: geometry.closed,
-    points: geometry.points.map((point, index) => ({
+    closed: shape.closed,
+    colorSet,
+    baseRadius: variant === 'hero' ? random(12.5, 18.5) : random(9.8, 14.4),
+    bondWidth: variant === 'hero' ? random(8.4, 13.2) : random(6.8, 10.8),
+    points: shape.points.map((point, index) => ({
       ...point,
-      ampX: random(0.4, 1.8),
-      ampY: random(0.3, 1.6),
+      ampX: random(0.2, 1.5),
+      ampY: random(0.2, 1.4),
       phase: random(0, TAU),
-      speed: random(0.00022, 0.00055),
-      bead: index % 2 === 0 || geometry.closed
+      speed: random(0.00012, 0.00028),
+      wobble: index % 2 === 0 ? 1 : 0.78
     })),
-    branches: geometry.branches.map((branch) => ({
+    branches: shape.branches.map((branch) => ({
       anchor: branch.anchor,
       points: branch.points.map((point) => ({
         ...point,
-        ampX: random(0.2, 1.0),
-        ampY: random(0.2, 0.9),
+        ampX: random(0.1, 0.8),
+        ampY: random(0.1, 0.8),
         phase: random(0, TAU),
-        speed: random(0.00026, 0.0006)
+        speed: random(0.00012, 0.00024)
       }))
     })),
     center: {
       x: random(-60, state.width + 60),
       y: random(-40, state.height + 40),
-      vx: random(-0.05, 0.05) * speedScale * density,
-      vy: random(-0.04, 0.04) * speedScale * density
+      vx: random(-0.025, 0.025) * (reduced ? 0.6 : 1),
+      vy: random(-0.02, 0.02) * (reduced ? 0.6 : 1)
     },
     rotation: random(0, TAU),
-    rotSpeed: random(-0.00014, 0.00014) * speedScale,
-    scale,
-    breathAmp: random(0.015, 0.045),
-    breathSpeed: random(0.00018, 0.00038),
-    swayAmp: random(4, 14),
-    swaySpeed: random(0.00014, 0.00028),
+    rotSpeed: random(-0.00006, 0.00006) * (reduced ? 0.5 : 1),
+    scale: random(1.02, 1.32) * (variant === 'hero' ? 1.28 : 1.06),
+    breathAmp: random(0.008, 0.028),
+    breathSpeed: random(0.00008, 0.00016),
+    swayAmp: random(4, 10),
+    swaySpeed: random(0.00006, 0.00014),
     phase: random(0, TAU),
-    depth: random(0.7, 1.18),
-    lineWidth: random(1.05, 1.7)
+    depth: random(0.9, 1.12)
   };
 }
 
 function buildParticle(state, variant, reduced) {
-  const band = variant === 'hero' ? 1 : 0.75;
+  const colorSet = pick(state.palette.particleSets);
   return {
     x: random(0, state.width),
     y: random(0, state.height),
-    vx: random(-0.08, 0.08) * band,
-    vy: random(-0.06, 0.06) * band,
-    size: random(1.2, 2.9),
-    alpha: random(0.14, 0.42),
+    vx: random(-0.035, 0.035) * (reduced ? 0.65 : 1),
+    vy: random(-0.028, 0.028) * (reduced ? 0.65 : 1),
+    size: (variant === 'hero' ? random(10, 16) : random(7.5, 12.5)) * (reduced ? 0.94 : 1),
     phase: random(0, TAU),
-    drift: random(0.00018, 0.00048),
-    depth: reduced ? random(0.7, 1) : random(0.65, 1.12)
+    drift: random(0.00006, 0.00014),
+    bob: random(0.6, 2.0),
+    depth: random(0.88, 1.15),
+    colorSet
   };
 }
 
 export function initMolecularField(canvas, options = {}) {
   if (!canvas) return null;
 
-  const variant = options.variant || 'hero';
-  const reduced = prefersReducedMotion();
-  const density = options.density ?? 1;
   const ctx = canvas.getContext('2d');
+  const reduced = prefersReducedMotion();
+  const variant = options.variant || 'hero';
+  const density = options.density ?? 1;
   const state = {
     dpr: Math.min(window.devicePixelRatio || 1, 2),
     width: 0,
     height: 0,
+    time: 0,
+    running: true,
+    palette: readPalette(),
     pointer: { x: 0, y: 0, active: false, down: false },
     chains: [],
     particles: [],
-    rafId: null,
-    time: 0,
-    running: true,
-    palette: readPalette()
+    rafId: 0
   };
 
   const profile = {
-    hero: { chains: reduced ? 8 : 13, particles: reduced ? 22 : 44 },
-    page: { chains: reduced ? 5 : 8, particles: reduced ? 16 : 28 }
-  }[variant] || { chains: 8, particles: 24 };
+    hero: { chains: reduced ? 6 : 8, particles: reduced ? 10 : 14 },
+    page: { chains: reduced ? 4 : 5, particles: reduced ? 8 : 10 }
+  }[variant] || { chains: 8, particles: 16 };
 
   function seed() {
     const chainCount = Math.max(4, Math.round(profile.chains * density));
-    const particleCount = Math.max(10, Math.round(profile.particles * density));
-    state.chains = Array.from({ length: chainCount }, () => buildChain(state, variant, density, reduced));
+    const particleCount = Math.max(6, Math.round(profile.particles * density));
+    state.chains = Array.from({ length: chainCount }, () => buildChain(state, variant, reduced));
     state.particles = Array.from({ length: particleCount }, () => buildParticle(state, variant, reduced));
   }
 
@@ -230,13 +262,13 @@ export function initMolecularField(canvas, options = {}) {
     seed();
   }
 
-  function transformPoint(chain, point, index, time) {
+  function pointFor(chain, point, index, time) {
     const breath = 1 + Math.sin(time * chain.breathSpeed + chain.phase) * chain.breathAmp;
-    const wobbleX = Math.sin(time * point.speed + point.phase + index * 0.19) * point.ampX;
-    const wobbleY = Math.cos(time * point.speed * 1.1 + point.phase + index * 0.14) * point.ampY;
+    const wobbleX = Math.sin(time * point.speed + point.phase + index * 0.17) * point.ampX * point.wobble;
+    const wobbleY = Math.cos(time * point.speed * 1.16 + point.phase + index * 0.12) * point.ampY * point.wobble;
     const local = rotate((point.x + wobbleX) * chain.scale * breath, (point.y + wobbleY) * chain.scale * breath, chain.rotation);
-    const swayX = Math.sin(time * chain.swaySpeed + chain.phase) * chain.swayAmp * 0.18;
-    const swayY = Math.cos(time * chain.swaySpeed * 1.16 + chain.phase) * chain.swayAmp * 0.14;
+    const swayX = Math.sin(time * chain.swaySpeed + chain.phase) * chain.swayAmp;
+    const swayY = Math.cos(time * chain.swaySpeed * 1.08 + chain.phase) * chain.swayAmp * 0.78;
     return {
       x: chain.center.x + local.x + swayX,
       y: chain.center.y + local.y + swayY
@@ -245,42 +277,41 @@ export function initMolecularField(canvas, options = {}) {
 
   function update(deltaMs) {
     state.time += deltaMs;
-    const influenceRadius = state.pointer.down ? 170 : 125;
+    const pointerRadius = state.pointer.down ? 200 : 150;
 
     state.chains.forEach((chain) => {
-      chain.center.x = wrap(chain.center.x + chain.center.vx, state.width, 180);
-      chain.center.y = wrap(chain.center.y + chain.center.vy, state.height, 180);
+      chain.center.x = wrap(chain.center.x + chain.center.vx, state.width, 200);
+      chain.center.y = wrap(chain.center.y + chain.center.vy, state.height, 200);
       chain.rotation += chain.rotSpeed * deltaMs;
 
       if (state.pointer.active) {
         const dx = chain.center.x - state.pointer.x;
         const dy = chain.center.y - state.pointer.y;
         const dist = Math.hypot(dx, dy);
-        if (dist < influenceRadius) {
-          const force = (1 - dist / influenceRadius) * (state.pointer.down ? 0.0011 : 0.00038);
+        if (dist < pointerRadius) {
+          const force = (1 - dist / pointerRadius) * (state.pointer.down ? 0.0007 : 0.00026);
           chain.center.vx += (dx / (dist + 0.001)) * force * deltaMs;
           chain.center.vy += (dy / (dist + 0.001)) * force * deltaMs;
         }
       }
 
-      chain.center.vx = clamp(chain.center.vx + Math.sin(state.time * 0.00008 + chain.phase) * 0.0005, -0.07, 0.07);
-      chain.center.vy = clamp(chain.center.vy + Math.cos(state.time * 0.00009 + chain.phase) * 0.0004, -0.06, 0.06);
-      chain.center.vx *= 0.998;
-      chain.center.vy *= 0.998;
+      chain.center.vx = clamp(chain.center.vx + Math.sin(state.time * 0.000025 + chain.phase) * 0.00016, -0.035, 0.035);
+      chain.center.vy = clamp(chain.center.vy + Math.cos(state.time * 0.00003 + chain.phase) * 0.00014, -0.03, 0.03);
+      chain.center.vx *= 0.997;
+      chain.center.vy *= 0.997;
     });
 
     state.particles.forEach((particle) => {
-      particle.x = wrap(particle.x + particle.vx + Math.sin(state.time * particle.drift + particle.phase) * 0.12 * particle.depth, state.width, 80);
-      particle.y = wrap(particle.y + particle.vy + Math.cos(state.time * particle.drift * 1.1 + particle.phase) * 0.12 * particle.depth, state.height, 80);
-
+      particle.x = wrap(particle.x + particle.vx + Math.sin(state.time * particle.drift + particle.phase) * 0.18 * particle.depth, state.width, 120);
+      particle.y = wrap(particle.y + particle.vy + Math.cos(state.time * particle.drift * 1.1 + particle.phase) * 0.16 * particle.depth, state.height, 120);
       if (state.pointer.active) {
         const dx = particle.x - state.pointer.x;
         const dy = particle.y - state.pointer.y;
         const dist = Math.hypot(dx, dy);
-        if (dist < 90) {
-          const push = (1 - dist / 90) * (state.pointer.down ? 0.55 : 0.18);
-          particle.x = wrap(particle.x + (dx / (dist + 0.001)) * push * 2.1, state.width, 80);
-          particle.y = wrap(particle.y + (dy / (dist + 0.001)) * push * 2.1, state.height, 80);
+        if (dist < 100) {
+          const push = (1 - dist / 100) * (state.pointer.down ? 0.5 : 0.12);
+          particle.x = wrap(particle.x + (dx / (dist + 0.001)) * push, state.width, 120);
+          particle.y = wrap(particle.y + (dy / (dist + 0.001)) * push, state.height, 120);
         }
       }
     });
@@ -295,90 +326,150 @@ export function initMolecularField(canvas, options = {}) {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, state.width, state.height);
 
-    const glowA = ctx.createRadialGradient(state.width * 0.2, state.height * 0.22, 0, state.width * 0.2, state.height * 0.22, Math.max(state.width, state.height) * 0.42);
+    const glowA = ctx.createRadialGradient(state.width * 0.16, state.height * 0.2, 0, state.width * 0.16, state.height * 0.2, Math.max(state.width, state.height) * 0.36);
     glowA.addColorStop(0, state.palette.glowA);
     glowA.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glowA;
     ctx.fillRect(0, 0, state.width, state.height);
 
-    const glowB = ctx.createRadialGradient(state.width * 0.78, state.height * 0.72, 0, state.width * 0.78, state.height * 0.72, Math.max(state.width, state.height) * 0.38);
+    const glowB = ctx.createRadialGradient(state.width * 0.8, state.height * 0.72, 0, state.width * 0.8, state.height * 0.72, Math.max(state.width, state.height) * 0.38);
     glowB.addColorStop(0, state.palette.glowB);
     glowB.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glowB;
     ctx.fillRect(0, 0, state.width, state.height);
+
+    ctx.save();
+    ctx.strokeStyle = state.palette.grid;
+    ctx.lineWidth = 1;
+    const grid = variant === 'hero' ? 96 : 110;
+    const ox = -((state.time * 0.004) % grid);
+    const oy = -((state.time * 0.0025) % grid);
+    for (let x = ox; x < state.width + grid; x += grid) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, state.height);
+      ctx.stroke();
+    }
+    for (let y = oy; y < state.height + grid; y += grid) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(state.width, y);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
-  function drawChains() {
+  function drawParticles() {
+    state.particles.forEach((particle) => {
+      const radius = particle.size * particle.depth;
+      const bob = Math.sin(state.time * particle.drift + particle.phase) * particle.bob;
+      ctx.save();
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = particle.colorSet.halo;
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, radius * 1.9, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = particle.colorSet.fill;
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y + bob * 0.12, radius, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = particle.colorSet.core;
+      ctx.beginPath();
+      ctx.arc(particle.x - radius * 0.24, particle.y - radius * 0.24, radius * 0.32, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawChainPath(points, color, width, shadow) {
+    if (points.length < 2) return;
+    ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-
-    state.chains.forEach((chain, chainIndex) => {
-      const points = chain.points.map((point, index) => transformPoint(chain, point, index, state.time));
-      const branchSets = chain.branches.map((branch) => ({
-        anchor: points[branch.anchor],
-        points: branch.points.map((point, index) => transformPoint(chain, point, index + 1.5, state.time))
-      }));
-
+    if (shadow) {
+      ctx.strokeStyle = shadow;
+      ctx.lineWidth = width + 3.4;
       ctx.beginPath();
       points.forEach((point, index) => {
         if (index === 0) ctx.moveTo(point.x, point.y);
         else ctx.lineTo(point.x, point.y);
       });
-      if (chain.closed && points.length > 2) ctx.closePath();
-      ctx.strokeStyle = chainIndex % 2 === 0 ? state.palette.bond : state.palette.bondSoft;
-      ctx.lineWidth = chain.lineWidth * chain.depth;
       ctx.stroke();
+    }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    points.forEach((point, index) => {
+      if (index === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    });
+    ctx.stroke();
+    ctx.restore();
+  }
 
-      branchSets.forEach((branch) => {
-        ctx.beginPath();
-        ctx.moveTo(branch.anchor.x, branch.anchor.y);
-        branch.points.forEach((point) => ctx.lineTo(point.x, point.y));
-        ctx.strokeStyle = state.palette.bondSoft;
-        ctx.lineWidth = Math.max(0.9, chain.lineWidth * 0.8);
-        ctx.stroke();
+  function drawChains() {
+    state.chains.forEach((chain) => {
+      const points = chain.points.map((point, index) => pointFor(chain, point, index, state.time));
+      const branches = chain.branches.map((branch) => ({
+        anchor: points[branch.anchor],
+        points: branch.points.map((point, index) => pointFor(chain, point, index + 1.4, state.time))
+      }));
+      const shadow = state.palette.shadow;
+
+      drawChainPath(points, chain.colorSet.bond, chain.bondWidth * chain.depth, shadow);
+      if (chain.closed && points.length > 2) {
+        drawChainPath([points.at(-1), points[0]], chain.colorSet.bond, chain.bondWidth * chain.depth, shadow);
+      }
+      branches.forEach((branch) => {
+        const branchPoints = [branch.anchor, ...branch.points];
+        drawChainPath(branchPoints, chain.colorSet.bond, Math.max(3.4, chain.bondWidth * 0.74), shadow);
       });
 
       points.forEach((point, index) => {
-        const source = chain.points[index];
-        if (!source.bead) return;
-        const size = (chain.kind === 'loop' ? 2.2 : 1.9) * chain.depth;
+        const radius = chain.baseRadius * chain.depth * (index === 0 || index === points.length - 1 ? 1.08 : 1);
+        ctx.save();
+        ctx.fillStyle = chain.colorSet.glow;
         ctx.beginPath();
-        ctx.arc(point.x, point.y, size + 0.6, 0, TAU);
-        ctx.fillStyle = state.palette.bead;
+        ctx.arc(point.x, point.y, radius * 1.7, 0, TAU);
         ctx.fill();
-
+        ctx.fillStyle = chain.colorSet.bead;
         ctx.beginPath();
-        ctx.arc(point.x, point.y, size * 0.48, 0, TAU);
-        ctx.fillStyle = state.palette.beadCore;
+        ctx.arc(point.x, point.y, radius, 0, TAU);
         ctx.fill();
+        ctx.fillStyle = chain.colorSet.highlight;
+        ctx.beginPath();
+        ctx.arc(point.x - radius * 0.24, point.y - radius * 0.26, radius * 0.34, 0, TAU);
+        ctx.fill();
+        ctx.restore();
       });
 
-      branchSets.forEach((branch) => {
-        branch.points.forEach((point, index) => {
-          if (index === 0) return;
+      branches.forEach((branch) => {
+        branch.points.forEach((point) => {
+          const radius = Math.max(3.8, chain.baseRadius * 0.55);
+          ctx.save();
+          ctx.fillStyle = chain.colorSet.glow;
           ctx.beginPath();
-          ctx.arc(point.x, point.y, 1.1, 0, TAU);
-          ctx.fillStyle = state.palette.bead;
+          ctx.arc(point.x, point.y, radius * 1.5, 0, TAU);
           ctx.fill();
+          ctx.fillStyle = chain.colorSet.bead;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, radius, 0, TAU);
+          ctx.fill();
+          ctx.fillStyle = chain.colorSet.highlight;
+          ctx.beginPath();
+          ctx.arc(point.x - radius * 0.2, point.y - radius * 0.2, radius * 0.3, 0, TAU);
+          ctx.fill();
+          ctx.restore();
         });
       });
     });
-  }
-
-  function drawParticles() {
-    state.particles.forEach((particle, index) => {
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * particle.depth, 0, TAU);
-      ctx.fillStyle = index % 5 === 0 ? state.palette.particleSoft : state.palette.particle;
-      ctx.fill();
-    });
 
     if (state.pointer.active && !reduced) {
-      const glow = ctx.createRadialGradient(state.pointer.x, state.pointer.y, 0, state.pointer.x, state.pointer.y, 150);
+      const glow = ctx.createRadialGradient(state.pointer.x, state.pointer.y, 0, state.pointer.x, state.pointer.y, 170);
       glow.addColorStop(0, state.palette.halo);
       glow.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = glow;
-      ctx.fillRect(state.pointer.x - 160, state.pointer.y - 160, 320, 320);
+      ctx.fillRect(state.pointer.x - 180, state.pointer.y - 180, 360, 360);
     }
   }
 
@@ -386,7 +477,7 @@ export function initMolecularField(canvas, options = {}) {
 
   function frame(now) {
     if (!state.running) return;
-    const deltaMs = Math.min(40, now - lastTime);
+    const deltaMs = Math.min(40, now - lastTime || 16.6);
     lastTime = now;
     update(deltaMs);
     drawBackground();
@@ -397,50 +488,60 @@ export function initMolecularField(canvas, options = {}) {
 
   function refreshPalette() {
     state.palette = readPalette();
+    state.chains.forEach((chain) => {
+      chain.colorSet = pick(state.palette.chainSets);
+    });
+    state.particles.forEach((particle) => {
+      particle.colorSet = pick(state.palette.particleSets);
+    });
   }
 
-  function handleMove(event) {
+  function setPointer(event) {
     const rect = canvas.getBoundingClientRect();
     state.pointer.x = event.clientX - rect.left;
     state.pointer.y = event.clientY - rect.top;
     state.pointer.active = true;
   }
 
-  function handleLeave() {
+  function move(event) {
+    setPointer(event);
+  }
+
+  function leave() {
     state.pointer.active = false;
     state.pointer.down = false;
   }
 
-  function handleDown(event) {
-    handleMove(event);
+  function down(event) {
+    setPointer(event);
     state.pointer.down = true;
   }
 
-  function handleUp() {
+  function up() {
     state.pointer.down = false;
   }
 
-  function handleTouch(event) {
+  function touch(event) {
     const touch = event.touches?.[0] || event.changedTouches?.[0];
     if (!touch) return;
-    handleMove(touch);
+    setPointer(touch);
     state.pointer.down = event.type === 'touchstart' || event.type === 'touchmove';
     if (event.type === 'touchend' || event.type === 'touchcancel') {
-      state.pointer.down = false;
       state.pointer.active = false;
+      state.pointer.down = false;
     }
   }
 
   window.addEventListener('resize', resize);
   window.addEventListener('themechange', refreshPalette);
-  canvas.addEventListener('mousemove', handleMove);
-  canvas.addEventListener('mouseleave', handleLeave);
-  canvas.addEventListener('mousedown', handleDown);
-  window.addEventListener('mouseup', handleUp);
-  canvas.addEventListener('touchstart', handleTouch, { passive: true });
-  canvas.addEventListener('touchmove', handleTouch, { passive: true });
-  canvas.addEventListener('touchend', handleTouch, { passive: true });
-  canvas.addEventListener('touchcancel', handleTouch, { passive: true });
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseleave', leave);
+  canvas.addEventListener('mousedown', down);
+  window.addEventListener('mouseup', up);
+  canvas.addEventListener('touchstart', touch, { passive: true });
+  canvas.addEventListener('touchmove', touch, { passive: true });
+  canvas.addEventListener('touchend', touch, { passive: true });
+  canvas.addEventListener('touchcancel', touch, { passive: true });
 
   resize();
   state.rafId = requestAnimationFrame(frame);
@@ -451,14 +552,14 @@ export function initMolecularField(canvas, options = {}) {
       cancelAnimationFrame(state.rafId);
       window.removeEventListener('resize', resize);
       window.removeEventListener('themechange', refreshPalette);
-      window.removeEventListener('mouseup', handleUp);
-      canvas.removeEventListener('mousemove', handleMove);
-      canvas.removeEventListener('mouseleave', handleLeave);
-      canvas.removeEventListener('mousedown', handleDown);
-      canvas.removeEventListener('touchstart', handleTouch);
-      canvas.removeEventListener('touchmove', handleTouch);
-      canvas.removeEventListener('touchend', handleTouch);
-      canvas.removeEventListener('touchcancel', handleTouch);
+      window.removeEventListener('mouseup', up);
+      canvas.removeEventListener('mousemove', move);
+      canvas.removeEventListener('mouseleave', leave);
+      canvas.removeEventListener('mousedown', down);
+      canvas.removeEventListener('touchstart', touch);
+      canvas.removeEventListener('touchmove', touch);
+      canvas.removeEventListener('touchend', touch);
+      canvas.removeEventListener('touchcancel', touch);
     }
   };
 }
