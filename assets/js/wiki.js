@@ -18,7 +18,7 @@ const state = {
   query: '',
   category: 'All',
   page: 1,
-  pageSize: 3
+  pageSize: 6
 };
 
 function categories() {

@@ -1,34 +1,44 @@
-Haoyu site upgrade v2 patch
+Haoyu site v7 — minimal patch notes
 
-Deploy this patch on top of the current redesigned site.
+This patch is built on the latest multi-page version and focuses only on the requested areas.
 
-Files changed:
+Included fixes and upgrades
+1. Publication figures
+- Bundles the entire local publication image folder into the patch.
+- Replaces site-data.js with a valid, fully formatted version so publication data loads correctly.
+- Hardens figure rendering in renderers.js with robust absolute asset resolution and fallback logic.
+
+2. Background rendering
+- Replaces the background engine with a more polymer-like bead-spring field.
+- Adds wormlike, semiflexible, folded, ring, and brush-like architectures.
+- Adds pendant side groups for brush-like chains.
+- Uses lower-frequency contour modes and gentle anchor drift instead of rigid translation.
+- Keeps faux-3D depth and 3D bead rendering.
+
+3. Research Wiki page
+- Changes package pagination to 6 per page.
+- Adjusts the repo grid so all 6 packages fit in a cleaner desktop layout.
+
+4. Rest Mode
+- Rebuilds the modes toward slower, clearer, and more educational mechanics.
+- Living Chain Growth: active-end polymerization with monomer capture, quenching, and catalyst restart.
+- Brush Channel Transport: tracer transport through breathing grafted brushes.
+- Vitrimer Network Triage: connectivity-preserving bond-repair puzzle.
+- Reaction Match Lab: polymer-chemistry matching board.
+- Percolation Circuit: rotate-to-connect transport puzzle.
+- Keeps the UI small and floating above the full-screen canvas.
+
+Files replaced in this patch
 - assets/js/background.js
 - assets/js/leisure.js
+- assets/js/renderers.js
 - assets/js/site-data.js
-- assets/js/theme.js (new)
+- assets/js/wiki.js
+- assets/js/publications.js
 - assets/css/main.css
-- index.html
-- publications.html
-- wiki.html
-- wiki-entry.html
-- leisure.html
-- 404.html
-- assets/img/profile-haoyu.jpg
-- assets/img/profile-haoyu.webp
-- assets/img/profile-haoyu-square.webp
+- assets/img/publications/*
 
-What changed:
-1. Home background replaced with stable CG-polymer-chain field rendering.
-2. Added automatic day/night theme by local time + manual theme toggle.
-3. Rest Mode replaced with 5 actually playable endless mini-games.
-4. Profile/publication content refreshed from public academic/lab sources.
-5. Portrait replaced with the public Whitmer Group photo.
-
-How to deploy:
-- If your current repository already has the redesigned multi-page site, unzip the PATCH zip and overwrite the existing files.
-- If you want the cleanest result, use the FULL zip and replace the whole site root with its contents.
-
-Important:
-- Upload the contents of the zip to the repository root.
-- Do not upload an extra outer folder level.
+Deploy
+- Upload the CONTENTS of the patch zip directly into the repository root.
+- Do not upload the outer folder itself.
+- After pushing, hard refresh the browser with Ctrl+F5.

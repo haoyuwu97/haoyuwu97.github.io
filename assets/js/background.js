@@ -125,69 +125,105 @@ function tone(hex, lShift = 0, sShift = 0, alpha = 1) {
   return `hsla(${h.toFixed(1)}, ${clamp(s + sShift, 15, 98).toFixed(1)}%, ${clamp(l + lShift, 10, 95).toFixed(1)}%, ${alpha})`;
 }
 
-function buildRandomWalk(count, step, stiffness = 0.78) {
-  const points = [vec3(0, 0, 0)];
-  let tangent = normalize(vec3(rand(-1, 1), rand(-1, 1), rand(-0.7, 0.7)), vec3(1, 0, 0));
-  for (let index = 1; index < count; index += 1) {
-    const noise = normalize(vec3(rand(-1, 1), rand(-1, 1), rand(-1, 1)), vec3(0, 1, 0));
-    tangent = normalize(add(scale(tangent, stiffness), scale(noise, 1 - stiffness)), tangent);
-    points.push(add(points[index - 1], scale(tangent, step)));
-  }
+function centerPoints(points) {
   const centroid = points.reduce((acc, point) => add(acc, point), vec3(0, 0, 0));
   const center = scale(centroid, 1 / points.length);
   return points.map((point) => sub(point, center));
 }
 
+function buildWormlike(count, step, stiffness = 0.86, planarBias = 0.15) {
+  const points = [vec3(0, 0, 0)];
+  let tangent = normalize(vec3(rand(-1, 1), rand(-1, 1), rand(-0.35, 0.35)), vec3(1, 0, 0));
+  for (let index = 1; index < count; index += 1) {
+    const noise = normalize(vec3(rand(-1, 1), rand(-1, 1), rand(-1 + planarBias, 1 - planarBias)), vec3(0, 1, 0));
+    tangent = normalize(add(scale(tangent, stiffness), scale(noise, 1 - stiffness)), tangent);
+    points.push(add(points[index - 1], scale(tangent, step)));
+  }
+  return centerPoints(points);
+}
+
+function buildCollapsedCoil(count, step) {
+  const raw = buildWormlike(count, step, 0.78, 0.1).map((point, index, arr) => {
+    const s = index / Math.max(1, arr.length - 1);
+    const pull = Math.sin(Math.PI * s);
+    return vec3(point.x * 0.88, point.y * 0.78 - pull * step * 1.1, point.z * 0.82);
+  });
+  return centerPoints(raw);
+}
+
+function buildSemiflexible(count, step) {
+  const raw = buildWormlike(count, step, 0.93, 0.24).map((point, index, arr) => {
+    const s = index / Math.max(1, arr.length - 1);
+    return vec3(point.x + (s - 0.5) * step * count * 0.24, point.y, point.z * 0.82);
+  });
+  return centerPoints(raw);
+}
+
 function buildHairpin(count, step) {
-  const half = Math.max(4, Math.floor(count * 0.55));
-  const first = buildRandomWalk(half, step, 0.88);
+  const half = Math.max(5, Math.floor(count * 0.52));
+  const first = buildWormlike(half, step, 0.92, 0.22);
   const last = first[first.length - 1];
   const second = [];
   for (let i = 1; i < count - half + 1; i += 1) {
     const back = i / Math.max(1, count - half);
-    const bend = Math.sin(back * Math.PI) * step * 2.4;
-    second.push(vec3(last.x - back * step * (half - 1), last.y + bend * (rand(0.9, 1.1)), last.z + bend * 0.38));
+    const bend = Math.sin(back * Math.PI) * step * 2.2;
+    second.push(vec3(last.x - back * step * (half - 1), last.y + bend, last.z + bend * 0.36));
   }
-  const raw = [...first, ...second];
-  const centroid = raw.reduce((acc, point) => add(acc, point), vec3(0, 0, 0));
-  const center = scale(centroid, 1 / raw.length);
-  return raw.map((point) => sub(point, center));
+  return centerPoints([...first, ...second]);
 }
 
 function buildFolded(count, step) {
   const raw = [];
   const total = count - 1;
   for (let i = 0; i < count; i += 1) {
-    const u = i / Math.max(1, total);
-    const x = (u - 0.5) * step * total * 0.72;
-    const y = Math.sin(u * Math.PI * 2.4) * step * 2.8 + Math.sin(u * Math.PI * 5.1) * step * 0.8;
-    const z = Math.cos(u * Math.PI * 2.1) * step * 1.4;
-    raw.push(vec3(x, y, z));
+    const s = i / Math.max(1, total);
+    raw.push(vec3(
+      (s - 0.5) * step * total * 0.78,
+      Math.sin(s * Math.PI * 2.2) * step * 2.4 + Math.sin(s * Math.PI * 4.8) * step * 0.7,
+      Math.cos(s * Math.PI * 1.9) * step * 1.35
+    ));
   }
-  const centroid = raw.reduce((acc, point) => add(acc, point), vec3(0, 0, 0));
-  const center = scale(centroid, 1 / raw.length);
-  return raw.map((point) => sub(point, center));
+  return centerPoints(raw);
 }
 
 function buildRing(count, radius) {
   const raw = [];
   for (let i = 0; i < count; i += 1) {
     const angle = (i / count) * TAU;
-    const r = radius * rand(0.92, 1.08);
+    const r = radius * rand(0.94, 1.07);
     raw.push(vec3(
       Math.cos(angle) * r,
-      Math.sin(angle) * r * rand(0.88, 1.08),
-      Math.sin(angle * 2.1 + rand(-0.25, 0.25)) * radius * 0.32
+      Math.sin(angle) * r * rand(0.9, 1.08),
+      Math.sin(angle * 2 + rand(-0.18, 0.18)) * radius * 0.28
     ));
   }
   return raw;
 }
 
+function createSideGroups(points, spacing, branchLength, probability = 1) {
+  const groups = [];
+  for (let index = spacing; index < points.length - spacing; index += spacing) {
+    if (Math.random() > probability) continue;
+    groups.push({
+      baseIndex: index,
+      length: Math.max(1, Math.round(branchLength + rand(-0.35, 0.85))),
+      dir: Math.random() > 0.5 ? 1 : -1,
+      phase: rand(0, TAU)
+    });
+  }
+  return groups;
+}
+
 function createBaseShape(kind, count, step) {
-  if (kind === 'ring') return buildRing(count, step * count * 0.15);
-  if (kind === 'hairpin') return buildHairpin(count, step);
-  if (kind === 'folded') return buildFolded(count, step);
-  return buildRandomWalk(count, step, 0.82);
+  if (kind === 'ring') return { points: buildRing(count, step * count * 0.14), sideGroups: [] };
+  if (kind === 'hairpin') return { points: buildHairpin(count, step), sideGroups: [] };
+  if (kind === 'folded') return { points: buildFolded(count, step), sideGroups: [] };
+  if (kind === 'semiflexible') return { points: buildSemiflexible(count, step), sideGroups: [] };
+  if (kind === 'brush') {
+    const points = buildSemiflexible(count, step * 0.96);
+    return { points, sideGroups: createSideGroups(points, 2, 2, 0.95) };
+  }
+  return { points: buildCollapsedCoil(count, step), sideGroups: [] };
 }
 
 function computeFrames(points) {
@@ -202,19 +238,30 @@ function computeFrames(points) {
   });
 }
 
+function createModeSet(kind, step) {
+  if (kind === 'ring') {
+    return [
+      { m: 1, an: step * 0.38, ab: step * 0.3, at: step * 0.08, omega: rand(0.18, 0.28), phase: rand(0, TAU) },
+      { m: 2, an: step * 0.24, ab: step * 0.22, at: step * 0.05, omega: rand(0.24, 0.34), phase: rand(0, TAU) },
+      { m: 3, an: step * 0.14, ab: step * 0.12, at: step * 0.03, omega: rand(0.31, 0.42), phase: rand(0, TAU) }
+    ];
+  }
+  const stiff = kind === 'semiflexible' ? 0.75 : kind === 'brush' ? 0.62 : 1;
+  return [
+    { m: 1, an: step * 0.55 * stiff, ab: step * 0.42 * stiff, at: step * 0.09 * stiff, omega: rand(0.12, 0.22), phase: rand(0, TAU) },
+    { m: 2, an: step * 0.32 * stiff, ab: step * 0.28 * stiff, at: step * 0.05 * stiff, omega: rand(0.18, 0.3), phase: rand(0, TAU) },
+    { m: 3, an: step * 0.18 * stiff, ab: step * 0.16 * stiff, at: step * 0.03 * stiff, omega: rand(0.26, 0.4), phase: rand(0, TAU) }
+  ];
+}
+
 function createChain(state, index, variant) {
-  const kind = choice(['linear', 'linear', 'hairpin', 'folded', 'ring']);
-  const count = kind === 'ring' ? Math.round(rand(18, 26)) : Math.round(rand(14, 24));
-  const step = variant === 'hero' ? rand(13, 18) : rand(12, 16);
-  const base = createBaseShape(kind, count, step);
-  const frames = computeFrames(base);
+  const kind = choice(['coil', 'coil', 'semiflexible', 'hairpin', 'folded', 'ring', 'brush']);
+  const count = kind === 'ring' ? Math.round(rand(18, 28)) : Math.round(rand(16, 30));
+  const step = variant === 'hero' ? rand(12, 17) : rand(10, 14);
+  const { points, sideGroups } = createBaseShape(kind, count, step);
+  const frames = computeFrames(points);
   const color = state.chainColors[index % state.chainColors.length];
-  const margin = variant === 'hero' ? 90 : 64;
-  const anchor0 = vec3(
-    rand(margin, state.width - margin),
-    rand(margin, state.height - margin),
-    rand(0.08, 1)
-  );
+  const margin = variant === 'hero' ? 86 : 62;
   return {
     kind,
     color,
@@ -223,82 +270,82 @@ function createChain(state, index, variant) {
     bondGlow: tone(color, 18, 8, 0.12),
     beadLight: tone(color, 26, -8, 1),
     beadDark: tone(color, -10, 6, 1),
-    anchor0,
+    anchor0: vec3(
+      rand(margin, state.width - margin),
+      rand(margin, state.height - margin),
+      rand(0.12, 1.04)
+    ),
     wander: {
-      rx: rand(18, variant === 'hero' ? 42 : 24),
-      ry: rand(14, variant === 'hero' ? 32 : 20),
-      rz: rand(0.06, 0.2),
-      wx: rand(0.08, 0.18),
-      wy: rand(0.06, 0.16),
-      wz: rand(0.05, 0.12),
+      rx: rand(8, variant === 'hero' ? 24 : 16),
+      ry: rand(8, variant === 'hero' ? 20 : 14),
+      rz: rand(0.03, 0.12),
+      wx: rand(0.02, 0.06),
+      wy: rand(0.02, 0.06),
+      wz: rand(0.03, 0.07),
       px: rand(0, TAU),
       py: rand(0, TAU),
       pz: rand(0, TAU)
     },
     orient: {
-      yaw: rand(-0.4, 0.4),
-      pitch: rand(-0.35, 0.35),
-      roll: rand(-0.25, 0.25),
-      wy: rand(0.04, 0.1),
-      wp: rand(0.03, 0.08),
-      wr: rand(0.03, 0.07),
+      yaw: rand(-0.48, 0.48),
+      pitch: rand(-0.32, 0.32),
+      roll: rand(-0.22, 0.22),
+      wy: rand(0.01, 0.04),
+      wp: rand(0.01, 0.035),
+      wr: rand(0.01, 0.03),
       py: rand(0, TAU),
       pp: rand(0, TAU),
       pr: rand(0, TAU)
     },
-    osc: {
-      a1: rand(3.2, 8.6),
-      a2: rand(2.6, 7.2),
-      a3: rand(0.9, 2.8),
-      az: rand(2.2, 6.4),
-      w1: rand(0.7, 1.15),
-      w2: rand(0.4, 0.85),
-      w3: rand(0.18, 0.42),
-      s1: rand(0.36, 0.74),
-      s2: rand(0.21, 0.56),
-      s3: rand(0.14, 0.28),
-      p1: rand(0, TAU),
-      p2: rand(0, TAU),
-      p3: rand(0, TAU)
+    pulse: {
+      amp: rand(0.16, 0.42),
+      omega: rand(0.45, 0.9),
+      phase: rand(0, TAU)
     },
-    beadRadius: rand(4.4, 7.8),
-    bondWidth: rand(1.3, 2.6),
-    base,
+    beadRadius: kind === 'brush' ? rand(4.6, 6.8) : rand(4.8, 7.6),
+    bondWidth: rand(1.4, 2.5),
+    step,
+    base: points,
     frames,
-    world: []
+    modes: createModeSet(kind, step),
+    sideGroups,
+    world: [],
+    branchWorld: []
   };
 }
 
 function createParticle(state) {
   return {
-    x: rand(-40, state.width + 40),
-    y: rand(-40, state.height + 40),
-    z: rand(0.02, 1.15),
-    vx: rand(-18, 18),
-    vy: rand(-16, 16),
-    vz: rand(-0.03, 0.03),
-    radius: rand(1.4, 4.8),
-    drift: rand(0.2, 0.9),
+    x: rand(-54, state.width + 54),
+    y: rand(-54, state.height + 54),
+    z: rand(0.04, 1.2),
+    vx: rand(-12, 12),
+    vy: rand(-10, 10),
+    vz: rand(-0.015, 0.015),
+    radius: rand(1.6, 5.4),
+    drift: rand(0.2, 0.8),
     phase: rand(0, TAU),
     color: choice(state.chainColors)
   };
 }
 
 function projectPoint(state, point) {
-  const depth = clamp(point.z, 0.02, 1.2);
-  const scaleFactor = 0.48 + depth * 0.76;
+  const depth = clamp(point.z, 0.02, 1.24);
+  const cx = state.width * 0.5;
+  const cy = state.height * 0.5;
+  const perspective = 0.68 + depth * 0.66;
   return {
-    x: point.x,
-    y: point.y,
-    scale: scaleFactor,
-    alpha: clamp(0.12 + depth * 0.68, 0.1, 0.96),
-    blur: clamp((1.18 - depth) * 3.4, 0, 3.2)
+    x: cx + (point.x - cx) * perspective,
+    y: cy + (point.y - cy) * perspective,
+    scale: 0.44 + depth * 0.82,
+    alpha: clamp(0.16 + depth * 0.66, 0.1, 0.98),
+    blur: clamp((1.14 - depth) * 2.8, 0, 2.8)
   };
 }
 
 function drawSphere(ctx, x, y, radius, baseColor, darkColor, alpha = 1) {
   const gradient = ctx.createRadialGradient(x - radius * 0.35, y - radius * 0.38, radius * 0.15, x, y, radius);
-  gradient.addColorStop(0, 'rgba(255,255,255,0.92)');
+  gradient.addColorStop(0, 'rgba(255,255,255,0.94)');
   gradient.addColorStop(0.28, baseColor);
   gradient.addColorStop(1, darkColor);
   ctx.save();
@@ -332,12 +379,12 @@ function drawBackdrop(ctx, state, time) {
   ctx.fillStyle = glowB;
   ctx.fillRect(0, 0, width, height);
 
-  const drift = Math.sin(time * 0.00014) * 18;
+  const drift = Math.sin(time * 0.0001) * 14;
   ctx.save();
-  ctx.globalAlpha = 0.08;
+  ctx.globalAlpha = 0.065;
   ctx.strokeStyle = backdrop.particleSoft;
   ctx.lineWidth = 1;
-  const spacing = state.variant === 'hero' ? 108 : 126;
+  const spacing = state.variant === 'hero' ? 114 : 128;
   for (let x = -spacing; x < width + spacing; x += spacing) {
     ctx.beginPath();
     ctx.moveTo(x + drift, 0);
@@ -347,57 +394,70 @@ function drawBackdrop(ctx, state, time) {
   ctx.restore();
 }
 
-function updateChain(chain, state, time) {
-  const t = time * 0.001;
+function deformFrame(chain, frame, s, time) {
+  const ringLike = chain.kind === 'ring';
+  const envelope = ringLike ? 1 : Math.pow(Math.sin(Math.PI * s), 0.92) * 0.92 + 0.08;
+  let local = frame.point;
+  chain.modes.forEach((mode) => {
+    const angle = ringLike
+      ? mode.m * s * TAU + time * mode.omega + mode.phase
+      : mode.m * Math.PI * s + time * mode.omega + mode.phase;
+    local = add(local, scale(frame.normal, mode.an * envelope * Math.sin(angle)));
+    local = add(local, scale(frame.binormal, mode.ab * envelope * Math.cos(angle + 0.55)));
+    local = add(local, scale(frame.tangent, mode.at * envelope * Math.sin(angle * 0.7 + 0.4)));
+  });
+  const pulse = chain.pulse.amp * Math.sin(time * chain.pulse.omega + chain.pulse.phase + s * Math.PI * 1.5);
+  local = add(local, scale(frame.normal, pulse * 0.22 * chain.step));
+  local = add(local, scale(frame.binormal, pulse * 0.12 * chain.step));
+  return local;
+}
+
+function updateChain(chain, state, timeMs) {
+  const time = timeMs * 0.001;
   const anchor = vec3(
-    chain.anchor0.x + Math.sin(t * chain.wander.wx + chain.wander.px) * chain.wander.rx,
-    chain.anchor0.y + Math.cos(t * chain.wander.wy + chain.wander.py) * chain.wander.ry,
-    clamp(chain.anchor0.z + Math.sin(t * chain.wander.wz + chain.wander.pz) * chain.wander.rz, 0.02, 1.2)
+    chain.anchor0.x + Math.sin(time * chain.wander.wx + chain.wander.px) * chain.wander.rx,
+    chain.anchor0.y + Math.cos(time * chain.wander.wy + chain.wander.py) * chain.wander.ry,
+    clamp(chain.anchor0.z + Math.sin(time * chain.wander.wz + chain.wander.pz) * chain.wander.rz, 0.04, 1.22)
   );
-  const yaw = chain.orient.yaw + Math.sin(t * chain.orient.wy + chain.orient.py) * 0.18;
-  const pitch = chain.orient.pitch + Math.cos(t * chain.orient.wp + chain.orient.pp) * 0.14;
-  const roll = chain.orient.roll + Math.sin(t * chain.orient.wr + chain.orient.pr) * 0.1;
+  const yaw = chain.orient.yaw + Math.sin(time * chain.orient.wy + chain.orient.py) * 0.16;
+  const pitch = chain.orient.pitch + Math.cos(time * chain.orient.wp + chain.orient.pp) * 0.11;
+  const roll = chain.orient.roll + Math.sin(time * chain.orient.wr + chain.orient.pr) * 0.08;
 
-  chain.world = chain.frames.map((frame, index) => {
-    const u = chain.kind === 'ring'
-      ? 1
-      : 0.18 + 0.82 * Math.sin((index / Math.max(1, chain.frames.length - 1)) * Math.PI);
-    const wave1 = Math.sin(t * chain.osc.w1 + index * chain.osc.s1 + chain.osc.p1);
-    const wave2 = Math.cos(t * chain.osc.w2 + index * chain.osc.s2 + chain.osc.p2);
-    const wave3 = Math.sin(t * chain.osc.w3 + index * chain.osc.s3 + chain.osc.p3);
+  const localPoints = chain.frames.map((frame, index) => {
+    const s = chain.kind === 'ring'
+      ? index / chain.frames.length
+      : index / Math.max(1, chain.frames.length - 1);
+    return deformFrame(chain, frame, s, time);
+  });
 
-    const local = add(
-      frame.point,
-      add(
-        scale(frame.normal, chain.osc.a1 * u * wave1),
-        add(
-          scale(frame.binormal, chain.osc.a2 * u * wave2),
-          add(
-            scale(frame.tangent, chain.osc.a3 * (wave3 - 0.5 * wave1) * (u * 0.75 + 0.25)),
-            vec3(0, 0, chain.osc.az * u * (0.45 * wave1 + 0.55 * wave2))
-          )
-        )
-      )
-    );
-
-    const rotated = rotatePoint(local, yaw, pitch, roll);
-    return add(anchor, rotated);
+  chain.world = localPoints.map((point) => add(anchor, rotatePoint(point, yaw, pitch, roll)));
+  chain.branchWorld = chain.sideGroups.map((group) => {
+    const points = [];
+    const baseIndex = clamp(group.baseIndex, 1, chain.frames.length - 2);
+    const frame = chain.frames[baseIndex];
+    const localParent = localPoints[baseIndex];
+    for (let stepIndex = 1; stepIndex <= group.length; stepIndex += 1) {
+      const offset = group.dir * chain.step * (0.78 * stepIndex + 0.08 * Math.sin(time * 0.8 + group.phase));
+      let branchLocal = add(localParent, scale(frame.normal, offset));
+      branchLocal = add(branchLocal, scale(frame.binormal, Math.sin(time * 0.9 + group.phase + stepIndex * 0.7) * chain.step * 0.22));
+      points.push(add(anchor, rotatePoint(branchLocal, yaw, pitch, roll)));
+    }
+    return { baseIndex, points };
   });
 }
 
-function updateParticles(state, dt, time) {
-  const pad = 54;
+function updateParticles(state, dt, timeMs) {
+  const pad = 58;
+  const time = timeMs * 0.001;
   state.particles.forEach((particle) => {
-    const wobble = Math.sin(time * 0.0011 * particle.drift + particle.phase);
-    particle.x += (particle.vx + wobble * 6) * dt;
-    particle.y += (particle.vy + Math.cos(time * 0.0009 * particle.drift + particle.phase) * 5) * dt;
-    particle.z = clamp(particle.z + particle.vz * dt + Math.sin(time * 0.00055 + particle.phase) * 0.0006, 0.02, 1.16);
-
+    particle.x += (particle.vx + Math.sin(time * particle.drift + particle.phase) * 3.8) * dt;
+    particle.y += (particle.vy + Math.cos(time * particle.drift * 0.8 + particle.phase) * 3.2) * dt;
+    particle.z = clamp(particle.z + particle.vz * dt + Math.sin(time * 0.45 + particle.phase) * 0.0004, 0.04, 1.2);
     if (particle.x < -pad) particle.x = state.width + pad;
     if (particle.x > state.width + pad) particle.x = -pad;
     if (particle.y < -pad) particle.y = state.height + pad;
     if (particle.y > state.height + pad) particle.y = -pad;
-    if (particle.z <= 0.02 || particle.z >= 1.16) particle.vz *= -1;
+    if (particle.z <= 0.04 || particle.z >= 1.2) particle.vz *= -1;
   });
 }
 
@@ -409,10 +469,10 @@ function drawParticles(ctx, state) {
       const projected = projectPoint(state, particle);
       const radius = particle.radius * projected.scale;
       ctx.save();
-      ctx.globalAlpha = projected.alpha * 0.52;
-      ctx.fillStyle = tone(particle.color, 24, -6, 1);
+      ctx.globalAlpha = projected.alpha * 0.35;
+      ctx.fillStyle = tone(particle.color, 22, -8, 1);
       ctx.beginPath();
-      ctx.arc(projected.x, projected.y, radius * 1.9, 0, TAU);
+      ctx.arc(projected.x, projected.y, radius * 1.8, 0, TAU);
       ctx.fill();
       ctx.restore();
       drawSphere(
@@ -422,9 +482,33 @@ function drawParticles(ctx, state) {
         radius,
         tone(particle.color, 16, -5, 1),
         tone(particle.color, -12, 6, 1),
-        projected.alpha * 0.9
+        projected.alpha * 0.92
       );
     });
+}
+
+function drawBond(ctx, ax, ay, bx, by, width, glowColor, lineColor, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.45;
+  ctx.strokeStyle = glowColor;
+  ctx.lineWidth = width * 2.5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(ax, ay);
+  ctx.lineTo(bx, by);
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.8;
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = width;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(ax, ay);
+  ctx.lineTo(bx, by);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function drawChain(ctx, state, chain) {
@@ -434,43 +518,55 @@ function drawChain(ctx, state, chain) {
     const a = projected[i];
     const b = projected[i + 1];
     const width = chain.bondWidth * (a.screen.scale + b.screen.scale) * 0.5;
-    ctx.save();
-    ctx.globalAlpha = Math.min(a.screen.alpha, b.screen.alpha) * 0.42;
-    ctx.strokeStyle = chain.bondGlow;
-    ctx.lineWidth = width * 2.6;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(a.screen.x, a.screen.y);
-    ctx.lineTo(b.screen.x, b.screen.y);
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.save();
-    ctx.globalAlpha = Math.min(a.screen.alpha, b.screen.alpha) * 0.72;
-    ctx.strokeStyle = chain.bond;
-    ctx.lineWidth = width;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(a.screen.x, a.screen.y);
-    ctx.lineTo(b.screen.x, b.screen.y);
-    ctx.stroke();
-    ctx.restore();
+    const alpha = Math.min(a.screen.alpha, b.screen.alpha);
+    drawBond(ctx, a.screen.x, a.screen.y, b.screen.x, b.screen.y, width, chain.bondGlow, chain.bond, alpha);
   }
 
-  projected
-    .slice()
+  chain.branchWorld.forEach((branch) => {
+    const parent = projected[branch.baseIndex];
+    let last = parent;
+    branch.points.forEach((point) => {
+      const screen = projectPoint(state, point);
+      const width = chain.bondWidth * (last.screen.scale + screen.scale) * 0.36;
+      const alpha = Math.min(last.screen.alpha, screen.alpha) * 0.92;
+      drawBond(ctx, last.screen.x, last.screen.y, screen.x, screen.y, width, chain.bondGlow, chain.bond, alpha);
+      last = { point, screen };
+    });
+  });
+
+  const beads = projected.map((item, index) => ({
+    point: item.point,
+    screen: item.screen,
+    radiusScale: 1,
+    branch: false,
+    key: `b-${index}`
+  }));
+
+  chain.branchWorld.forEach((branch, branchIndex) => {
+    branch.points.forEach((point, beadIndex) => {
+      beads.push({
+        point,
+        screen: projectPoint(state, point),
+        radiusScale: 0.62 - beadIndex * 0.09,
+        branch: true,
+        key: `s-${branchIndex}-${beadIndex}`
+      });
+    });
+  });
+
+  beads
     .sort((a, b) => a.point.z - b.point.z)
-    .forEach(({ point, screen }, index) => {
-      const pulse = 0.92 + 0.12 * Math.sin(index * 0.8 + point.z * 2.2);
-      const radius = chain.beadRadius * screen.scale * pulse;
+    .forEach((item, orderIndex) => {
+      const pulse = 0.94 + 0.08 * Math.sin(orderIndex * 0.7 + item.point.z * 2.1);
+      const radius = chain.beadRadius * item.screen.scale * pulse * item.radiusScale;
       ctx.save();
-      ctx.globalAlpha = screen.alpha * 0.28;
+      ctx.globalAlpha = item.screen.alpha * 0.26;
       ctx.fillStyle = chain.shadow;
       ctx.beginPath();
-      ctx.arc(screen.x, screen.y, radius * 1.9, 0, TAU);
+      ctx.arc(item.screen.x, item.screen.y, radius * 1.85, 0, TAU);
       ctx.fill();
       ctx.restore();
-      drawSphere(ctx, screen.x, screen.y, radius, chain.beadLight, chain.beadDark, screen.alpha);
+      drawSphere(ctx, item.screen.x, item.screen.y, radius, chain.beadLight, chain.beadDark, item.screen.alpha);
     });
 }
 
@@ -497,8 +593,8 @@ function buildState(canvas, variant, density) {
     particles: []
   };
 
-  const chainCount = Math.max(variant === 'hero' ? 11 : 7, Math.round((variant === 'hero' ? 14 : 9) * density));
-  const particleCount = Math.max(variant === 'hero' ? 90 : 42, Math.round((variant === 'hero' ? 120 : 60) * density));
+  const chainCount = Math.max(variant === 'hero' ? 13 : 9, Math.round((variant === 'hero' ? 16 : 10) * density));
+  const particleCount = Math.max(variant === 'hero' ? 120 : 70, Math.round((variant === 'hero' ? 150 : 84) * density));
   state.chains = Array.from({ length: chainCount }, (_, index) => createChain(state, index, variant));
   state.particles = Array.from({ length: particleCount }, () => createParticle(state));
   return state;
@@ -507,7 +603,7 @@ function buildState(canvas, variant, density) {
 export function initMolecularField(canvas, options = {}) {
   if (!canvas) return null;
   const variant = options.variant || 'hero';
-  const density = clamp(options.density ?? 1, 0.45, 1.4);
+  const density = clamp(options.density ?? 1, 0.45, 1.5);
   let state = buildState(canvas, variant, density);
   let rafId = 0;
   let last = 0;
@@ -547,8 +643,8 @@ export function initMolecularField(canvas, options = {}) {
     state.chains
       .slice()
       .sort((a, b) => {
-        const az = a.world.reduce((sum, point) => sum + point.z, 0) / a.world.length;
-        const bz = b.world.reduce((sum, point) => sum + point.z, 0) / b.world.length;
+        const az = a.world.reduce((sum, point) => sum + point.z, 0) / Math.max(1, a.world.length);
+        const bz = b.world.reduce((sum, point) => sum + point.z, 0) / Math.max(1, b.world.length);
         return az - bz;
       })
       .forEach((chain) => drawChain(state.ctx, state, chain));

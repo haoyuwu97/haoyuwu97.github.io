@@ -1,5 +1,13 @@
 import { formatDOI, renderTagList, makeLinkButton } from './utils.js';
 
+function resolveAsset(path) {
+  try {
+    return new URL(path, window.location.href).href;
+  } catch {
+    return path;
+  }
+}
+
 export function publicationCard(item, compact = false) {
   const article = document.createElement('article');
   article.className = `glass-card publication-card tilt-card${compact ? ' compact' : ''}`;
@@ -44,7 +52,7 @@ export function publicationCard(item, compact = false) {
   const nodes = [meta];
 
   if (!compact) {
-    const figureShell = document.createElement('div');
+    const figureShell = document.createElement('figure');
     figureShell.className = 'publication-figure-shell';
 
     const placeholder = document.createElement('div');
@@ -63,22 +71,28 @@ export function publicationCard(item, compact = false) {
     img.loading = 'lazy';
     img.decoding = 'async';
     img.hidden = true;
+    img.referrerPolicy = 'no-referrer';
 
-    const figureNote = document.createElement('div');
+    const figureNote = document.createElement('figcaption');
     figureNote.className = 'publication-figure-note';
     figureNote.hidden = !item.figure?.caption;
     if (item.figure?.caption) figureNote.textContent = item.figure.caption;
 
-    const preferred = item.figure?.src || `assets/img/publications/${item.id}.png`;
-    const fallback = `assets/img/publications/${item.id}.jpg`;
-    img.addEventListener('load', () => {
+    const preferred = resolveAsset(item.figure?.src || `assets/img/publications/${item.id}.png`);
+    const fallback = resolveAsset(`assets/img/publications/${item.id}.jpg`);
+
+    const revealImage = () => {
       img.hidden = false;
       placeholder.hidden = true;
+      figureShell.classList.add('has-image');
       figureNote.hidden = !item.figure?.caption;
-    });
+    };
+
+    img.addEventListener('load', revealImage);
     img.addEventListener('error', () => {
       if (img.dataset.triedFallback === 'true') {
         img.hidden = true;
+        figureShell.classList.remove('has-image');
         placeholder.hidden = false;
         figureNote.hidden = true;
         return;
@@ -86,7 +100,9 @@ export function publicationCard(item, compact = false) {
       img.dataset.triedFallback = 'true';
       img.src = fallback;
     });
+
     img.src = preferred;
+    if (img.complete && img.naturalWidth > 0) revealImage();
 
     figureShell.append(img, placeholder, figureNote);
     nodes.push(figureShell);

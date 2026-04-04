@@ -2896,3 +2896,67 @@ body.leisure-page {
     bottom: 4.5rem;
   }
 }
+
+/* --- v7 publication / wiki / leisure refinements --- */
+.publication-figure-shell {
+  display: block;
+  position: relative;
+  isolation: isolate;
+}
+
+.publication-figure {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.publication-figure-placeholder,
+.publication-figure-note {
+  z-index: 2;
+}
+
+.publication-figure-shell.has-image .publication-figure-note {
+  background: rgba(6, 11, 21, 0.58);
+}
+
+body.subpage .repo-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.leisure-hud {
+  max-width: min(286px, calc(100% - 1rem));
+  padding: 0.44rem 0.58rem;
+}
+
+.leisure-hud-primary {
+  width: min(282px, calc(100% - 1.5rem));
+}
+
+.leisure-hud-note {
+  width: min(298px, calc(100% - 1.5rem));
+}
+
+.leisure-hud-controls {
+  right: 7.7rem;
+}
+
+.leisure-hud-controls select {
+  min-width: 184px;
+  min-height: 2.05rem;
+  padding: 0.42rem 0.6rem;
+}
+
+@media (max-width: 1180px) {
+  body.subpage .repo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  body.subpage .repo-grid {
+    grid-template-columns: 1fr;
+  }
+}

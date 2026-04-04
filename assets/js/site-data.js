@@ -494,81 +494,81 @@ export const leisureModes = [
   {
     id: 'chain-growth-runner',
     title: 'Living Chain Growth',
-    subtitle: 'Endless chain-growth polymerization',
+    subtitle: 'Chain-growth polymerization as a reactor sketch',
     description:
-      'Guide one active chain end through a reactor, capture monomers, lengthen the polymer, and keep inhibitors from cutting the backbone faster than you can grow it.',
+      'Guide an active chain end through a monomer bath. Monomer capture extends the backbone bead by bead, inhibitors quench activity, and catalyst beads restart a dormant chain.',
     instruction:
-      'Mouse / touch / WASD / arrows to steer. Monomer capture extends the chain; inhibitor collisions cut beads from the tail instead of causing an instant failure.',
+      'Mouse / touch / WASD / arrows to steer. Green and blue beads are monomers; red beads are inhibitors; touch a gold catalyst bead to re-activate a dormant chain end.',
     concept:
-      'This is a gentle cartoon of chain-growth polymerization: local addition at one reactive end changes the global geometry and collision probability of the entire chain.',
+      'This is a cartoon of radical chain growth: chemistry happens locally at one active end, but the growing global chain changes steering, crowding, and encounter rates everywhere.',
     learning: [
-      'Monomer addition is localized at the active end, but the growing tail changes crowding everywhere.',
-      'Chain scission shortens the backbone instead of simply ending the process, which makes the growth–damage competition visible.',
-      'Longer chains occupy more space and become more difficult to steer through the same reactor volume.'
+      'Propagation occurs at an active chain end, not along the whole backbone at once.',
+      'Quenching and re-activation change growth kinetics without deleting the entire chain.',
+      'Longer chains occupy more space and become harder to steer through the same reactor volume.'
     ]
   },
   {
     id: 'brush-channel',
     title: 'Brush Channel Transport',
-    subtitle: 'Tracer transport through grafted polymer brushes',
+    subtitle: 'Diffusive transport through breathing polymer brushes',
     description:
-      'Carry a tracer bead through a slowly scrolling channel whose walls are lined with swaying grafted chains. The gap opens and closes as the brushes breathe.',
+      'Carry a tracer through a channel whose walls are lined with grafted chains. The free-volume window opens and closes as the brushes fluctuate.',
     instruction:
-      'Mouse / touch / WASD / arrows to steer. Stay inside the moving free-volume window and collect bright transport markers while avoiding repeated brush collisions.',
+      'Mouse / touch / WASD / arrows to steer slowly. Follow the bright low-density corridor, collect flux markers, and avoid repeated collisions with brush beads.',
     concept:
-      'The mode emphasizes steric transport: confinement and fluctuating free volume can matter as much as the mean driving force.',
+      'The mode emphasizes steric transport: even with the same mean channel width, transport depends strongly on instantaneous free volume and chain motion.',
     learning: [
-      'Dense brushes reduce accessible free volume and create fluctuating bottlenecks.',
-      'Transport is easiest when the particle motion is synchronized with local brush motion.',
-      'Residence time and steric hindrance can dominate even in a simple one-particle cartoon.'
+      'Brushes create fluctuating bottlenecks rather than a fixed pore size.',
+      'Transport becomes easier when tracer motion is synchronized with local brush breathing.',
+      'Steric hindrance and residence time can dominate over simple geometric width.'
     ]
   },
   {
     id: 'bond-repair',
-    title: 'Scission & Repair Sweep',
-    subtitle: 'Bond scission versus dynamic healing',
+    title: 'Vitrimer Network Triage',
+    subtitle: 'Scission, exchange, and connectivity maintenance',
     description:
-      'Sweep a repair catalyst through an endless field of broken bond pairs. Reconnect cuts before reactive hot spots generate new damage and fragment the network.',
+      'A dynamic network is continuously damaged by thermal hot spots. Heal the most important broken links first to preserve the giant connected component.',
     instruction:
-      'Mouse / touch / WASD / arrows to move. Touch split bond pairs to heal them; avoid red hot spots that trigger new scission events and reduce network integrity.',
+      'Click a broken bond to repair it. New scission events appear over time; protect connectivity rather than trying to heal every red segment in order.',
     concept:
-      'The loop frames network lifetime as a competition between bond scission and local repair kinetics.',
+      'The puzzle reframes vitrimer self-healing as a connectivity problem: some local repairs matter much more than others because they preserve system-spanning pathways.',
     learning: [
-      'Damage is spatially localized, but enough local scission events disconnect macroscopic pathways.',
-      'Repair is useful only when it reaches newly broken pairs before additional damage accumulates nearby.',
-      'Dynamic networks survive by maintaining connectivity, not by preventing every bond from ever breaking.'
+      'Macroscopic integrity depends on network connectivity, not just the raw number of intact bonds.',
+      'Healing a bridge bond can matter more than healing a bond inside an already connected cluster.',
+      'Dynamic exchange is valuable because it redistributes stress and repairs the bonds that control topology.'
     ]
   },
   {
     id: 'reaction-match',
-    title: 'Organic Reaction Match',
-    subtitle: 'A chemistry-pair board inspired by mahjong / match play',
+    title: 'Reaction Match Lab',
+    subtitle: 'A polymer-chemistry mahjong board',
     description:
-      'Choose compatible reagent tiles—such as diol with diacid chloride or epoxide with amine—to build an endless stream of polymer-forming reaction pairs.',
+      'Match compatible reagents to satisfy a target polymer-forming reaction such as polyesterification, polyurethane formation, epoxy–amine curing, or polyamide formation.',
     instruction:
-      'Click or tap one tile, then a compatible partner anywhere on the board. Correct pairs react, score, and are replaced by fresh reagents.',
+      'Click two tiles. A correct pair for the current target reaction scores and replenishes the board; repeated correct chemistry builds combo and advances the target deck.',
     concept:
-      'It is not a literal synthesis simulator; it is a compact way to rehearse which functional groups commonly pair to form major polymer classes or dynamic linkages.',
+      'This mode is meant as a recognition puzzle: it trains the mapping from functional-group pairs to the polymer classes and dynamic chemistries they create.',
     learning: [
-      'Different functional-group pairs map to different polymerization chemistries.',
-      'Recognizing compatible partners quickly is a useful intuition-building exercise.',
-      'The board stays endless by replenishing reacted pairs with new reagent opportunities.'
+      'Different functional-group pairs correspond to distinct polymerization routes.',
+      'Recognizing reagent compatibility is a useful mental shortcut for synthesis planning.',
+      'Stoichiometric matching and target selection matter; not every plausible pair serves the same polymer chemistry.'
     ]
   },
   {
     id: 'charge-tactics',
-    title: 'Charge-Hopping Tactics',
-    subtitle: 'A small board game for disordered transport',
+    title: 'Percolation Circuit',
+    subtitle: 'A transport puzzle built from connectivity and disorder',
     description:
-      'Move a charge packet across a lattice of conducting, doped, blocked, and trap-rich sites. Reach the collector, reroll the field, and keep the transport pathway alive.',
+      'Rotate tiles to recover a conducting path from source to collector. Dopant tiles boost reward, trap tiles lower mobility, and the board re-scrambles after every successful transport event.',
     instruction:
-      'Click an adjacent site or use WASD / arrows. Blue sites conduct, gold sites boost score, gray sites block, and red sites trap and drain mobility.',
+      'Click a tile to rotate it. Build a left-to-right connected route before mobility decays, then let the charge pulse traverse the network and generate a new board.',
     concept:
-      'This mode is deliberately more strategic and board-like: transport is framed as path planning through energetic disorder rather than as arcade reflexes.',
+      'The puzzle turns charge transport into a connectivity problem: percolation, traps, and dopants are represented as local tile rules that determine whether a system-spanning path exists.',
     learning: [
-      'Percolation requires a connected pathway, not just a large number of sites.',
-      'Dopants can stabilize high-value routes, whereas trap states reduce useful mobility.',
-      'The transport problem becomes tactical when disorder and connectivity compete at each move.'
+      'A material conducts when a connected route exists, not merely when many conducting pieces are present.',
+      'Trap-rich regions can interrupt transport even inside a visually dense network.',
+      'Dopants can stabilize or reward useful routes, but only if they participate in a connected path.'
     ]
   }
 ];
@@ -589,6 +589,6 @@ export const pageMeta = {
   },
   leisure: {
     title: 'Rest Mode | Haoyu Wu',
-    description: 'Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion.'
+    description: 'Interactive polymer-physics sketches and strategy puzzles for polymerization, brush transport, network healing, reaction matching, and percolation-driven transport.'
   }
 };
