@@ -155,6 +155,32 @@ function buildCoil(count, step) {
   return centerPoints(raw);
 }
 
+function buildSwollenCoil(count, step) {
+  let raw = buildWormlike(count, step, 0.86, 0.32).map((point, index, arr) => {
+    const s = index / Math.max(1, arr.length - 1);
+    const swell = 1.04 + 0.16 * Math.sin(Math.PI * s);
+    return vec3(point.x * swell, point.y * swell, point.z * 0.72);
+  });
+  raw = relaxSelfAvoid(raw, step * 0.92, 2, 3);
+  return centerPoints(raw);
+}
+
+function buildArc(count, step) {
+  const radius = step * count * rand(0.16, 0.24);
+  const span = rand(1.15, 1.85);
+  const raw = [];
+  for (let i = 0; i < count; i += 1) {
+    const s = i / Math.max(1, count - 1);
+    const angle = (s - 0.5) * span;
+    raw.push(vec3(
+      Math.sin(angle) * radius,
+      (Math.cos(angle) - Math.cos(span * 0.5)) * radius * 0.86,
+      Math.sin(angle * 2.2) * radius * 0.12
+    ));
+  }
+  return centerPoints(raw);
+}
+
 function buildGlobule(count, step) {
   const raw = buildWormlike(count, step, 0.74, 0.28).map((point, index, arr) => {
     const s = index / Math.max(1, arr.length - 1);
@@ -209,10 +235,12 @@ function buildRing(count, radius) {
 }
 
 function createBaseShape(kind, count, step) {
-  if (kind === 'ring') return buildRing(count, step * count * 0.12);
+  if (kind === 'ring') return buildRing(count, step * count * 0.115);
   if (kind === 'hairpin') return buildHairpin(count, step);
   if (kind === 'semiflexible') return buildSemiflexible(count, step);
   if (kind === 'globule') return buildGlobule(count, step);
+  if (kind === 'swollen') return buildSwollenCoil(count, step);
+  if (kind === 'arc') return buildArc(count, step);
   return buildCoil(count, step);
 }
 
@@ -229,17 +257,29 @@ function computeFrames(points, ring = false) {
 }
 
 function createModeSet(kind, step, ring) {
-  const scaleFactor = kind === 'semiflexible' ? 0.42 : kind === 'globule' ? 0.24 : kind === 'hairpin' ? 0.3 : 0.34;
+  const ampBase = {
+    coil: 0.34,
+    swollen: 0.44,
+    globule: 0.24,
+    semiflexible: 0.2,
+    hairpin: 0.26,
+    arc: 0.22,
+    ring: 0.18
+  }[kind] ?? 0.3;
+
   if (ring) {
     return [
-      { m: 1, an: step * 0.22, ab: step * 0.18, at: step * 0.03, omega: rand(0.05, 0.11), phase: rand(0, TAU) },
-      { m: 2, an: step * 0.12, ab: step * 0.1, at: step * 0.02, omega: rand(0.08, 0.14), phase: rand(0, TAU) }
+      { m: 1, an: step * 0.2, ab: step * 0.17, at: step * 0.045, omega: rand(0.07, 0.12), phase: rand(0, TAU), travel: rand(0.55, 1.15) },
+      { m: 2, an: step * 0.12, ab: step * 0.1, at: step * 0.03, omega: rand(0.09, 0.16), phase: rand(0, TAU), travel: rand(0.8, 1.5) },
+      { m: 3, an: step * 0.06, ab: step * 0.05, at: step * 0.018, omega: rand(0.11, 0.19), phase: rand(0, TAU), travel: rand(1.0, 1.8) }
     ];
   }
+
   return [
-    { m: 1, an: step * 0.3 * scaleFactor, ab: step * 0.24 * scaleFactor, at: step * 0.05 * scaleFactor, omega: rand(0.04, 0.09), phase: rand(0, TAU) },
-    { m: 2, an: step * 0.18 * scaleFactor, ab: step * 0.15 * scaleFactor, at: step * 0.03 * scaleFactor, omega: rand(0.06, 0.12), phase: rand(0, TAU) },
-    { m: 3, an: step * 0.08 * scaleFactor, ab: step * 0.07 * scaleFactor, at: step * 0.015 * scaleFactor, omega: rand(0.08, 0.14), phase: rand(0, TAU) }
+    { m: 1, an: step * ampBase, ab: step * ampBase * 0.78, at: step * 0.065, omega: rand(0.05, 0.09), phase: rand(0, TAU), travel: rand(0.55, 1.1) },
+    { m: 2, an: step * ampBase * 0.55, ab: step * ampBase * 0.48, at: step * 0.042, omega: rand(0.08, 0.13), phase: rand(0, TAU), travel: rand(0.9, 1.6) },
+    { m: 3, an: step * ampBase * 0.28, ab: step * ampBase * 0.24, at: step * 0.024, omega: rand(0.11, 0.18), phase: rand(0, TAU), travel: rand(1.2, 2.2) },
+    { m: 4, an: step * ampBase * 0.12, ab: step * ampBase * 0.11, at: step * 0.012, omega: rand(0.14, 0.24), phase: rand(0, TAU), travel: rand(1.6, 2.8) }
   ];
 }
 
@@ -265,20 +305,47 @@ function enforceBonds(points, target, ring = false, iterations = 2) {
   return centerPoints(pts);
 }
 
+function relaxSelfAvoid(points, minDist, protectedSpan = 2, iterations = 1) {
+  const pts = points.map((point) => ({ ...point }));
+  for (let iter = 0; iter < iterations; iter += 1) {
+    for (let i = 0; i < pts.length; i += 1) {
+      for (let j = i + protectedSpan + 1; j < pts.length; j += 1) {
+        const delta = sub(pts[j], pts[i]);
+        const dist = Math.max(1e-6, length(delta));
+        if (dist >= minDist) continue;
+        const diff = (minDist - dist) / dist;
+        const corr = scale(delta, 0.09 * diff);
+        pts[i] = sub(pts[i], corr);
+        pts[j] = add(pts[j], corr);
+      }
+    }
+    const centered = centerPoints(pts);
+    for (let i = 0; i < pts.length; i += 1) pts[i] = centered[i];
+  }
+  return pts;
+}
+
 function estimateRadius(points) {
   return Math.max(...points.map((point) => Math.hypot(point.x, point.y))) + 8;
 }
 
 function createChain(state, index, variant) {
-  const kind = choice(['coil', 'coil', 'coil', 'globule', 'semiflexible', 'semiflexible', 'hairpin', 'ring']);
+  const kind = choice(['coil', 'coil', 'swollen', 'swollen', 'globule', 'semiflexible', 'semiflexible', 'hairpin', 'ring', 'arc']);
   const ring = kind === 'ring';
-  const count = ring ? Math.round(rand(14, 22)) : Math.round(rand(16, 26));
-  const step = variant === 'hero' ? rand(8.6, 10.2) : rand(7.4, 9.2);
-  const base = createBaseShape(kind, count, step);
+  const count = ring
+    ? Math.round(rand(18, 28))
+    : kind === 'globule'
+      ? Math.round(rand(24, 34))
+      : kind === 'semiflexible' || kind === 'arc'
+        ? Math.round(rand(20, 30))
+        : Math.round(rand(22, 36));
+  const step = variant === 'hero' ? rand(6.6, 8.4) : rand(6.0, 7.6);
+  let base = createBaseShape(kind, count, step);
+  if (kind === 'coil' || kind === 'swollen') base = relaxSelfAvoid(base, step * 0.9, 2, 2);
   const relaxed = enforceBonds(base, step, ring, 4);
   const frames = computeFrames(relaxed, ring);
   const radiusEstimate = estimateRadius(relaxed);
-  const margin = Math.max(variant === 'hero' ? 72 : 56, radiusEstimate + 18);
+  const margin = Math.max(variant === 'hero' ? 72 : 56, radiusEstimate + 16);
   const color = state.chainColors[index % state.chainColors.length];
   return {
     kind,
@@ -291,52 +358,65 @@ function createChain(state, index, variant) {
     bondGlow: tone(color, 18, 10, 0.09),
     beadLight: tone(color, 24, -4, 1),
     beadDark: tone(color, -12, 6, 1),
-    beadRadius: kind === 'globule' ? rand(4.8, 6.6) : rand(5.1, 7.2),
-    bondWidth: rand(1.3, 2.2),
+    beadRadius: kind === 'globule' ? rand(4.2, 5.4) : ring ? rand(4.6, 5.8) : rand(4.5, 6.2),
+    bondWidth: rand(1.25, 2.1),
+    spawnRadius: radiusEstimate + 18,
+    spawnMargin: margin,
     anchor0: vec3(
       rand(margin, Math.max(margin + 1, state.width - margin)),
       rand(margin, Math.max(margin + 1, state.height - margin)),
-      rand(0.16, 0.98)
+      rand(0.14, 1.0)
     ),
     anchor: vec3(0, 0, 0),
     wander: {
-      rx: rand(0.4, 1.8),
-      ry: rand(0.4, 1.8),
-      rz: rand(0.01, 0.03),
-      wx: rand(0.03, 0.08),
-      wy: rand(0.03, 0.08),
-      wz: rand(0.05, 0.12),
+      rx: rand(1.8, 5.8),
+      ry: rand(1.6, 5.2),
+      rz: rand(0.012, 0.04),
+      wx: rand(0.025, 0.06),
+      wy: rand(0.024, 0.058),
+      wz: rand(0.04, 0.09),
       px: rand(0, TAU),
       py: rand(0, TAU),
       pz: rand(0, TAU)
     },
     orient: {
-      yaw: rand(-0.22, 0.22),
-      pitch: rand(-0.14, 0.14),
+      yaw: rand(-0.2, 0.2),
+      pitch: rand(-0.12, 0.12),
       roll: rand(-0.08, 0.08),
-      ay: rand(0.01, 0.035),
-      ap: rand(0.008, 0.028),
-      ar: rand(0.006, 0.02),
-      wy: rand(0.01, 0.04),
-      wp: rand(0.01, 0.04),
-      wr: rand(0.01, 0.04),
+      ay: rand(0.02, 0.065),
+      ap: rand(0.015, 0.05),
+      ar: rand(0.01, 0.035),
+      wy: rand(0.012, 0.032),
+      wp: rand(0.014, 0.036),
+      wr: rand(0.014, 0.04),
       py: rand(0, TAU),
       pp: rand(0, TAU),
       pr: rand(0, TAU)
     },
     pulse: {
-      amp: rand(0.04, 0.11),
-      omega: rand(0.12, 0.22),
+      amp: rand(0.08, 0.2),
+      omega: rand(0.12, 0.24),
       phase: rand(0, TAU)
     },
     rept: {
-      amp: rand(step * 0.04, step * 0.1),
-      k: ring ? rand(0.8, 1.8) : rand(0.6, 1.4),
-      omega: rand(0.04, 0.1),
+      amp: rand(step * 0.08, step * 0.18),
+      k: ring ? rand(1.0, 2.2) : rand(0.7, 1.8),
+      omega: rand(0.06, 0.14),
+      phase: rand(0, TAU)
+    },
+    breathe: {
+      amp: rand(step * 0.05, step * 0.12),
+      omega: rand(0.06, 0.14),
+      k: rand(0.6, 1.4),
+      phase: rand(0, TAU)
+    },
+    contourShift: {
+      amp: ring ? rand(0.01, 0.035) : rand(0.015, 0.05),
+      omega: rand(0.03, 0.08),
       phase: rand(0, TAU)
     },
     microPhase: Array.from({ length: count }, () => rand(0, TAU)),
-    microAmp: rand(step * 0.02, step * 0.05),
+    microAmp: rand(step * 0.05, step * 0.12),
     base: relaxed,
     frames,
     modes: createModeSet(kind, step, ring),
@@ -357,6 +437,37 @@ function createParticle(state) {
     phase: rand(0, TAU),
     color: choice(state.chainColors)
   };
+}
+
+function spreadAnchors(chains, width, height) {
+  const anchors = chains.map((chain) => ({ ...chain.anchor0 }));
+  for (let iter = 0; iter < 28; iter += 1) {
+    for (let i = 0; i < anchors.length; i += 1) {
+      for (let j = i + 1; j < anchors.length; j += 1) {
+        const dx = anchors[j].x - anchors[i].x;
+        const dy = anchors[j].y - anchors[i].y;
+        const dist = Math.max(1, Math.hypot(dx, dy));
+        const minDist = (chains[i].spawnRadius + chains[j].spawnRadius) * 0.8;
+        if (dist >= minDist) continue;
+        const push = (minDist - dist) * 0.05;
+        const px = (dx / dist) * push;
+        const py = (dy / dist) * push;
+        anchors[i].x -= px;
+        anchors[i].y -= py;
+        anchors[j].x += px;
+        anchors[j].y += py;
+      }
+    }
+    anchors.forEach((anchor, index) => {
+      const margin = chains[index].spawnMargin;
+      anchor.x = clamp(anchor.x, margin, Math.max(margin + 1, width - margin));
+      anchor.y = clamp(anchor.y, margin, Math.max(margin + 1, height - margin));
+    });
+  }
+  chains.forEach((chain, index) => {
+    chain.anchor0.x = anchors[index].x;
+    chain.anchor0.y = anchors[index].y;
+  });
 }
 
 function projectPoint(state, point, origin = null) {
@@ -428,29 +539,31 @@ function drawBackdrop(ctx, state, time) {
 
 function deformFrame(chain, frame, s, time) {
   const ringLike = chain.ring;
-  const envelope = ringLike ? 1 : 0.14 + 0.86 * Math.pow(Math.sin(Math.PI * s), 0.85);
+  const envelope = ringLike ? 1 : 0.16 + 0.84 * Math.pow(Math.sin(Math.PI * s), 0.78);
   let local = frame.point;
   chain.modes.forEach((mode) => {
-    const angle = ringLike
-      ? mode.m * TAU * s + time * mode.omega + mode.phase
-      : mode.m * Math.PI * s + time * mode.omega + mode.phase;
+    const contour = ringLike ? mode.m * TAU * s : mode.m * Math.PI * s;
+    const angle = contour - time * mode.omega * TAU * mode.travel + mode.phase;
     local = add(local, scale(frame.normal, mode.an * envelope * Math.sin(angle)));
-    local = add(local, scale(frame.binormal, mode.ab * envelope * Math.cos(angle + 0.45)));
-    local = add(local, scale(frame.tangent, mode.at * envelope * Math.sin(angle * 0.72 + 0.3)));
+    local = add(local, scale(frame.binormal, mode.ab * envelope * Math.cos(angle + 0.4)));
+    local = add(local, scale(frame.tangent, mode.at * envelope * Math.sin(angle * 0.72 + 0.35)));
   });
-  const pulse = chain.pulse.amp * Math.sin(time * chain.pulse.omega + chain.pulse.phase + s * Math.PI * 1.2);
-  local = add(local, scale(frame.normal, pulse * chain.step * 0.18));
-  local = add(local, scale(frame.binormal, pulse * chain.step * 0.11));
+  const pulse = chain.pulse.amp * Math.sin(time * chain.pulse.omega + chain.pulse.phase + s * Math.PI * 1.8);
+  local = add(local, scale(frame.normal, pulse * chain.step * 0.26));
+  local = add(local, scale(frame.binormal, pulse * chain.step * 0.16));
   const rept = chain.rept.amp * Math.sin(TAU * (s * chain.rept.k - time * chain.rept.omega) + chain.rept.phase);
   local = add(local, scale(frame.tangent, rept));
+  const breathe = chain.breathe.amp * envelope * Math.sin(time * chain.breathe.omega + chain.breathe.phase + s * TAU * chain.breathe.k);
+  local = add(local, scale(frame.normal, breathe));
+  local = add(local, scale(frame.binormal, breathe * 0.65));
   return local;
 }
 
 function updateChain(chain, state, timeMs) {
   const time = timeMs * 0.001;
   const anchor = vec3(
-    chain.anchor0.x + Math.sin(time * chain.wander.wx + chain.wander.px) * chain.wander.rx,
-    chain.anchor0.y + Math.cos(time * chain.wander.wy + chain.wander.py) * chain.wander.ry,
+    chain.anchor0.x + Math.sin(time * chain.wander.wx + chain.wander.px) * chain.wander.rx + Math.cos(time * chain.wander.wx * 0.57 + chain.wander.py * 0.7) * chain.wander.rx * 0.34,
+    chain.anchor0.y + Math.cos(time * chain.wander.wy + chain.wander.py) * chain.wander.ry + Math.sin(time * chain.wander.wy * 0.61 + chain.wander.px * 0.65) * chain.wander.ry * 0.28,
     clamp(chain.anchor0.z + Math.sin(time * chain.wander.wz + chain.wander.pz) * chain.wander.rz, 0.06, 1.12)
   );
   chain.anchor = anchor;
@@ -458,13 +571,20 @@ function updateChain(chain, state, timeMs) {
   const yaw = chain.orient.yaw + Math.sin(time * chain.orient.wy + chain.orient.py) * chain.orient.ay;
   const pitch = chain.orient.pitch + Math.cos(time * chain.orient.wp + chain.orient.pp) * chain.orient.ap;
   const roll = chain.orient.roll + Math.sin(time * chain.orient.wr + chain.orient.pr) * chain.orient.ar;
+  const contourShift = Math.sin(time * chain.contourShift.omega + chain.contourShift.phase) * chain.contourShift.amp;
 
   let localPoints = chain.frames.map((frame, index) => {
-    const s = chain.ring ? index / chain.frames.length : index / Math.max(1, chain.frames.length - 1);
+    const s0 = chain.ring ? index / chain.frames.length : index / Math.max(1, chain.frames.length - 1);
+    const s = chain.ring
+      ? (s0 + contourShift + 1) % 1
+      : clamp(s0 + contourShift * Math.sin(Math.PI * s0), 0, 1);
     let local = deformFrame(chain, frame, s, time);
-    const micro = chain.microAmp * Math.sin(time * 0.3 + chain.microPhase[index]);
-    local = add(local, scale(frame.normal, micro * 0.7));
-    local = add(local, scale(frame.binormal, micro * 0.42));
+    const micro = chain.microAmp * (
+      0.62 * Math.sin(time * 0.44 + chain.microPhase[index]) +
+      0.38 * Math.sin(time * 0.81 + chain.microPhase[index] * 1.9)
+    );
+    local = add(local, scale(frame.normal, micro * 0.78));
+    local = add(local, scale(frame.binormal, micro * 0.5));
     return local;
   });
 
@@ -475,7 +595,7 @@ function updateChain(chain, state, timeMs) {
     return {
       x: anchor.x + rotated.x,
       y: anchor.y + rotated.y,
-      z: clamp(anchor.z + rotated.z * 0.0042, 0.05, 1.16)
+      z: clamp(anchor.z + rotated.z * 0.0046, 0.05, 1.16)
     };
   });
 }
@@ -604,9 +724,11 @@ function buildState(canvas, variant, density) {
     particles: []
   };
 
-  const chainCount = Math.max(variant === 'hero' ? 10 : 7, Math.round((variant === 'hero' ? 11 : 8) * density));
-  const particleCount = Math.max(variant === 'hero' ? 88 : 54, Math.round((variant === 'hero' ? 104 : 64) * density));
+  const areaFactor = clamp((width * height) / (1440 * 900), 0.82, 1.38);
+  const chainCount = Math.max(variant === 'hero' ? 14 : 9, Math.round((variant === 'hero' ? 15 : 10) * density * areaFactor));
+  const particleCount = Math.max(variant === 'hero' ? 118 : 72, Math.round((variant === 'hero' ? 136 : 82) * density * areaFactor));
   state.chains = Array.from({ length: chainCount }, (_, index) => createChain(state, index, variant));
+  spreadAnchors(state.chains, width, height);
   state.particles = Array.from({ length: particleCount }, () => createParticle(state));
   return state;
 }
