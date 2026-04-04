@@ -153,9 +153,117 @@ function buildRandomWalk(count, step, persistence = 0.84, zScale = 0.18) {
   return points;
 }
 
+
 function recenterPoints(points) {
   const center = centerOfPoints(points);
   return points.map((point) => sub(point, center));
+}
+
+function rotatePoints(points, angle, tilt = rand(-0.14, 0.14)) {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  return points.map((point) => {
+    const x = point.x * c - point.y * s;
+    const y = point.x * s + point.y * c;
+    return vec3(x, y, point.z + y * tilt * 0.18);
+  });
+}
+
+function buildLinearBonds(count, ring = false) {
+  const bonds = [];
+  const limit = ring ? count : count - 1;
+  for (let i = 0; i < limit; i += 1) {
+    bonds.push([i, ring ? (i + 1) % count : i + 1]);
+  }
+  return bonds;
+}
+
+function buildAngleTriples(ids, ring = false) {
+  const triples = [];
+  if (ids.length < 3) return triples;
+  if (ring) {
+    for (let i = 0; i < ids.length; i += 1) {
+      triples.push([
+        ids[mod(i - 1, ids.length)],
+        ids[i],
+        ids[mod(i + 1, ids.length)]
+      ]);
+    }
+    return triples;
+  }
+  for (let i = 1; i < ids.length - 1; i += 1) {
+    triples.push([ids[i - 1], ids[i], ids[i + 1]]);
+  }
+  return triples;
+}
+
+function relaxLocalGeometry(points, bonds, angleTriples, baseGap, passes = 14) {
+  const coords = points.map((point) => vec3(point.x, point.y, point.z));
+  const rest = bonds.map(([a, b]) => ({
+    a,
+    b,
+    len: Math.max(1e-6, length(sub(points[b], points[a])))
+  }));
+  const exclusion = buildExclusionSet(coords.length, bonds).set;
+  const minGap = Math.max(baseGap * 0.88, 8.6);
+
+  for (let pass = 0; pass < passes; pass += 1) {
+    rest.forEach(({ a, b, len }) => {
+      const pa = coords[a];
+      const pb = coords[b];
+      const dx = pb.x - pa.x;
+      const dy = pb.y - pa.y;
+      const dz = pb.z - pa.z;
+      const dist = Math.max(1e-6, Math.hypot(dx, dy, dz));
+      const corr = 0.34 * (dist - len) / dist;
+      pa.x += dx * corr;
+      pa.y += dy * corr;
+      pa.z += dz * corr;
+      pb.x -= dx * corr;
+      pb.y -= dy * corr;
+      pb.z -= dz * corr;
+    });
+
+    angleTriples.forEach(([ia, ib, ic]) => {
+      const a = coords[ia];
+      const b = coords[ib];
+      const c = coords[ic];
+      const midpoint = vec3(
+        (a.x + c.x) * 0.5,
+        (a.y + c.y) * 0.5,
+        (a.z + c.z) * 0.5
+      );
+      b.x = b.x * 0.91 + midpoint.x * 0.09;
+      b.y = b.y * 0.91 + midpoint.y * 0.09;
+      b.z = b.z * 0.93 + midpoint.z * 0.07;
+    });
+
+    for (let i = 0; i < coords.length; i += 1) {
+      for (let j = i + 1; j < coords.length; j += 1) {
+        if (exclusion.has(`${i}:${j}`)) continue;
+        const a = coords[i];
+        const b = coords[j];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dz = (b.z - a.z) * 1.1;
+        const dist = Math.max(1e-6, Math.hypot(dx, dy, dz));
+        if (dist >= minGap) continue;
+        const overlap = minGap - dist;
+        const nx = dx / dist;
+        const ny = dy / dist;
+        const nz = dz / dist;
+        const push = overlap * 0.20;
+        a.x -= nx * push;
+        a.y -= ny * push;
+        a.z -= nz * push * 0.55;
+        b.x += nx * push;
+        b.y += ny * push;
+        b.z += nz * push * 0.55;
+      }
+    }
+  }
+
+  return recenterPoints(coords);
 }
 
 function buildLinearCoil(count, step, stiffness = 0.86) {
@@ -167,10 +275,10 @@ function buildLinearCoil(count, step, stiffness = 0.86) {
 }
 
 function buildSwollen(count, step) {
-  const pts = buildRandomWalk(count, step, 0.88, 0.14).map((p, i) => {
+  const pts = buildRandomWalk(count, step, 0.89, 0.14).map((p, i) => {
     const s = i / Math.max(1, count - 1);
-    const swell = 1.06 + 0.16 * Math.sin(Math.PI * s);
-    return vec3(p.x * swell, p.y * swell, p.z * 0.75);
+    const swell = 1.06 + 0.18 * Math.sin(Math.PI * s);
+    return vec3(p.x * swell, p.y * swell, p.z * 0.76);
   });
   return recenterPoints(pts);
 }
@@ -178,21 +286,21 @@ function buildSwollen(count, step) {
 function buildSemiflexible(count, step) {
   const pts = buildRandomWalk(count, step, 0.95, 0.08).map((p, i) => {
     const s = i / Math.max(1, count - 1);
-    return vec3(p.x + (s - 0.5) * step * count * 0.06, p.y * 0.7, p.z * 0.45);
+    return vec3(p.x + (s - 0.5) * step * count * 0.06, p.y * 0.72, p.z * 0.45);
   });
   return recenterPoints(pts);
 }
 
 function buildHairpin(count, step) {
   const half = Math.max(4, Math.floor(count * 0.55));
-  const first = buildRandomWalk(half, step, 0.93, 0.1);
+  const first = buildRandomWalk(half, step, 0.93, 0.10);
   const last = first[first.length - 1];
   const second = [];
   for (let i = 1; i < count - half + 1; i += 1) {
     const s = i / Math.max(1, count - half);
-    const bend = Math.sin(Math.PI * s) * step * 1.1;
+    const bend = Math.sin(Math.PI * s) * step * 1.08;
     second.push(vec3(
-      last.x - s * step * (half - 1) * 0.78,
+      last.x - s * step * (half - 1) * 0.76,
       last.y + bend,
       last.z + bend * 0.08
     ));
@@ -208,49 +316,63 @@ function buildRing(count, step) {
     const a = s * TAU;
     pts.push(vec3(
       Math.cos(a) * radius,
-      Math.sin(a) * radius * rand(0.94, 1.06),
-      Math.sin(a * 2.0 + rand(-0.18, 0.18)) * radius * 0.16
+      Math.sin(a) * radius * rand(0.95, 1.05),
+      Math.sin(a * 2.0 + rand(-0.18, 0.18)) * radius * 0.15
     ));
   }
   return pts;
 }
 
-function buildGlobule(count, step) {
-  const pts = buildRandomWalk(count, step, 0.74, 0.2).map((p, i) => {
+function buildCrumpled(count, step) {
+  const pts = buildRandomWalk(count, step, 0.82, 0.16).map((p, i) => {
     const s = i / Math.max(1, count - 1);
-    const pull = 0.66 + 0.22 * Math.sin(Math.PI * s);
-    return vec3(p.x * pull, p.y * pull, p.z * 0.56);
+    const pull = 0.86 + 0.08 * Math.sin(Math.PI * s);
+    return vec3(p.x * pull, p.y * pull, p.z * 0.60);
   });
   return recenterPoints(pts);
 }
 
-function buildBottlebrush(backboneCount, sideLength, step) {
-  const backbone = buildRandomWalk(backboneCount, step, 0.94, 0.06).map((p) => vec3(p.x, p.y * 0.66, p.z * 0.32));
-  const nodes = [...backbone];
-  const bonds = [];
-  const backboneIndices = [];
-  for (let i = 0; i < backboneCount; i += 1) backboneIndices.push(i);
-  for (let i = 0; i < backboneCount - 1; i += 1) bonds.push([i, i + 1]);
-
-  for (let i = 1; i < backboneCount - 1; i += 2) {
-    const prev = backbone[Math.max(0, i - 1)];
-    const next = backbone[Math.min(backboneCount - 1, i + 1)];
-    const tangent = normalize(sub(next, prev), vec3(1, 0, 0));
-    const normal = normalize(vec3(-tangent.y, tangent.x, rand(-0.12, 0.12)), vec3(0, 1, 0));
-    let parent = i;
-    for (let j = 1; j <= sideLength; j += 1) {
-      const sign = j % 2 === 0 ? -1 : 1;
-      const base = add(backbone[i], scale(normal, sign * j * step * 0.86));
-      const id = nodes.length;
-      nodes.push(vec3(base.x, base.y, base.z + sign * j * step * 0.04));
-      bonds.push([parent, id]);
-      parent = id;
-    }
+function buildArc(count, step) {
+  const radius = step * count * rand(0.17, 0.23);
+  const span = rand(Math.PI * 0.55, Math.PI * 0.88);
+  const pts = [];
+  for (let i = 0; i < count; i += 1) {
+    const s = i / Math.max(1, count - 1);
+    const a = -span * 0.5 + span * s;
+    pts.push(vec3(
+      Math.sin(a) * radius,
+      (Math.cos(a) - Math.cos(span * 0.5)) * radius * 0.96,
+      Math.sin(a * 1.4 + 0.6) * radius * 0.10
+    ));
   }
-
-  return { points: recenterPoints(nodes), bonds, backbone: backboneIndices };
+  return recenterPoints(pts);
 }
 
+function buildLooped(count, step) {
+  const base = buildRandomWalk(count, step, 0.90, 0.12);
+  const pts = base.map((p, i) => {
+    const s = i / Math.max(1, count - 1);
+    const envelope = Math.exp(-Math.pow((s - 0.52) / 0.22, 2));
+    const loopY = Math.sin(s * TAU * 1.2) * step * 1.35 * envelope;
+    const loopZ = Math.cos(s * TAU * 1.2) * step * 0.22 * envelope;
+    return vec3(p.x, p.y + loopY, p.z * 0.6 + loopZ);
+  });
+  return recenterPoints(pts);
+}
+
+function buildSerpentine(count, step) {
+  const length = step * (count - 1) * 0.86;
+  const amplitude = step * rand(1.25, 1.85);
+  const pts = [];
+  for (let i = 0; i < count; i += 1) {
+    const s = i / Math.max(1, count - 1);
+    const x = (s - 0.5) * length;
+    const y = Math.sin((s - 0.5) * Math.PI * 2.3) * amplitude * (0.82 + 0.18 * Math.cos(Math.PI * s));
+    const z = Math.sin((s - 0.5) * Math.PI * 1.15 + 0.5) * amplitude * 0.16;
+    pts.push(vec3(x, y, z));
+  }
+  return recenterPoints(pts);
+}
 function makeSpreadCenters(count, width, height, margin, radiusHint) {
   const centers = [];
   for (let i = 0; i < count; i += 1) {
@@ -350,7 +472,7 @@ function periodicDeltaBetween(a, b, state) {
 }
 
 function unwrapChain(chain, state) {
-  const root = chain.backbone[0] ?? 0;
+  const root = chain.unwrapRoot ?? chain.backbone[Math.floor(chain.backbone.length * 0.5)] ?? 0;
   const positions = Array(chain.nodes.length);
   const screenRoot = {
     x: minimalDelta(chain.nodes[root].x - state.camera.x, state.worldWidth),
@@ -392,73 +514,99 @@ function unwrapChain(chain, state) {
   });
 }
 
+
 function createChain(state, index) {
   const kind = choice([
     'coil', 'coil', 'coil',
     'swollen', 'swollen',
     'semiflexible', 'semiflexible',
-    'globule', 'globule',
+    'crumpled', 'crumpled',
     'hairpin',
     'ring', 'ring',
-    'bottlebrush'
+    'arc',
+    'looped',
+    'serpentine'
   ]);
   const baseColor = state.chainColors[index % state.chainColors.length];
-  const beadRadius = kind === 'bottlebrush'
-    ? rand(4.2, 5.0)
-    : kind === 'globule'
-      ? rand(4.7, 5.6)
-      : rand(4.4, 5.3);
-  const step = rand(9.5, 11.0);
+  const beadRadius = kind === 'ring'
+    ? rand(4.6, 5.4)
+    : kind === 'crumpled'
+      ? rand(4.7, 5.5)
+      : rand(4.3, 5.2);
+  const step = rand(9.2, 10.8);
 
   let points = [];
   let bonds = [];
   let backbone = [];
+  let angleTriples = [];
   let ring = false;
 
   if (kind === 'ring') {
-    const count = Math.round(rand(13, 18));
+    const count = Math.round(rand(12, 18));
     points = buildRing(count, step * 0.92);
-    for (let i = 0; i < count; i += 1) bonds.push([i, (i + 1) % count]);
+    bonds = buildLinearBonds(count, true);
     backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, true);
     ring = true;
   } else if (kind === 'hairpin') {
-    const count = Math.round(rand(14, 20));
+    const count = Math.round(rand(15, 21));
     points = buildHairpin(count, step);
-    for (let i = 0; i < count - 1; i += 1) bonds.push([i, i + 1]);
+    bonds = buildLinearBonds(count, false);
     backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, false);
   } else if (kind === 'semiflexible') {
-    const count = Math.round(rand(14, 20));
+    const count = Math.round(rand(15, 21));
     points = buildSemiflexible(count, step);
-    for (let i = 0; i < count - 1; i += 1) bonds.push([i, i + 1]);
+    bonds = buildLinearBonds(count, false);
     backbone = Array.from({ length: count }, (_, i) => i);
-  } else if (kind === 'globule') {
-    const count = Math.round(rand(16, 21));
-    points = buildGlobule(count, step * 0.9);
-    for (let i = 0; i < count - 1; i += 1) bonds.push([i, i + 1]);
+    angleTriples = buildAngleTriples(backbone, false);
+  } else if (kind === 'crumpled') {
+    const count = Math.round(rand(15, 21));
+    points = buildCrumpled(count, step * 0.96);
+    bonds = buildLinearBonds(count, false);
     backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, false);
   } else if (kind === 'swollen') {
-    const count = Math.round(rand(14, 20));
+    const count = Math.round(rand(15, 21));
     points = buildSwollen(count, step);
-    for (let i = 0; i < count - 1; i += 1) bonds.push([i, i + 1]);
+    bonds = buildLinearBonds(count, false);
     backbone = Array.from({ length: count }, (_, i) => i);
-  } else if (kind === 'bottlebrush') {
-    const brush = buildBottlebrush(Math.round(rand(8, 11)), Math.round(rand(2, 3)), step * 0.84);
-    points = brush.points;
-    bonds = brush.bonds;
-    backbone = brush.backbone;
+    angleTriples = buildAngleTriples(backbone, false);
+  } else if (kind === 'arc') {
+    const count = Math.round(rand(14, 19));
+    points = buildArc(count, step);
+    bonds = buildLinearBonds(count, false);
+    backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, false);
+  } else if (kind === 'looped') {
+    const count = Math.round(rand(15, 20));
+    points = buildLooped(count, step);
+    bonds = buildLinearBonds(count, false);
+    backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, false);
+  } else if (kind === 'serpentine') {
+    const count = Math.round(rand(15, 20));
+    points = buildSerpentine(count, step);
+    bonds = buildLinearBonds(count, false);
+    backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, false);
   } else {
-    const count = Math.round(rand(14, 21));
+    const count = Math.round(rand(15, 22));
     points = buildLinearCoil(count, step);
-    for (let i = 0; i < count - 1; i += 1) bonds.push([i, i + 1]);
+    bonds = buildLinearBonds(count, false);
     backbone = Array.from({ length: count }, (_, i) => i);
+    angleTriples = buildAngleTriples(backbone, false);
   }
+
+  points = relaxLocalGeometry(points, bonds, angleTriples, step, kind === 'crumpled' ? 18 : 14);
+  points = rotatePoints(points, rand(0, TAU));
 
   const center = state.centers[index];
   const nodes = points.map((point) => makeNode(add(point, center), beadRadius));
   const restBonds = bonds.map(([a, b]) => ({
     a,
     b,
-    len: Math.max(8.2, length(sub(points[b], points[a])))
+    len: Math.max(8.1, length(sub(points[b], points[a])))
   }));
   const exclusion = buildExclusionSet(nodes.length, bonds);
   const renderTree = buildRenderTree(nodes.length, bonds, ring);
@@ -477,17 +625,28 @@ function createChain(state, index) {
     bonds: restBonds,
     rawBonds: bonds,
     backbone,
+    angleTriples,
+    unwrapRoot: backbone[Math.floor(backbone.length * 0.5)] ?? 0,
     adjacency: exclusion.adj,
     exclude: exclusion.set,
     renderTree,
-    bendK: kind === 'semiflexible' ? 0.22 : kind === 'ring' ? 0.18 : kind === 'bottlebrush' ? 0.12 : 0.14,
-    mobility: kind === 'bottlebrush' ? 0.11 : kind === 'semiflexible' ? 0.13 : 0.15,
-    diffusivity: kind === 'globule' ? 3.0 : kind === 'semiflexible' ? 3.4 : 3.8,
-    zDiffusivity: kind === 'globule' ? 0.22 : 0.28,
+    bendK: kind === 'semiflexible'
+      ? 0.22
+      : kind === 'ring'
+        ? 0.18
+        : kind === 'arc'
+          ? 0.18
+          : kind === 'hairpin'
+            ? 0.17
+            : kind === 'serpentine'
+              ? 0.16
+              : 0.14,
+    mobility: kind === 'semiflexible' ? 0.13 : kind === 'crumpled' ? 0.14 : 0.15,
+    diffusivity: kind === 'crumpled' ? 3.0 : kind === 'semiflexible' ? 3.35 : 3.8,
+    zDiffusivity: kind === 'crumpled' ? 0.22 : 0.28,
     zCenter: center.z
   };
 }
-
 function createParticle(state) {
   const color = choice(state.chainColors);
   const radius = rand(2.2, 4.8);
@@ -831,20 +990,15 @@ function addBondForces(state) {
   });
 }
 
+
 function addBendForces(state) {
   state.chains.forEach((chain) => {
-    const ids = chain.backbone;
-    if (ids.length < 3) return;
-    const size = ids.length;
-    const limit = chain.ring ? size : size - 2;
-    for (let i = 1; i <= limit; i += 1) {
-      const iPrev = chain.ring ? mod(i - 1, size) : i - 1;
-      const iCurr = chain.ring ? mod(i, size) : i;
-      const iNext = chain.ring ? mod(i + 1, size) : i + 1;
-      if (!chain.ring && (iNext >= size)) break;
-      const a = chain.nodes[ids[iPrev]];
-      const b = chain.nodes[ids[iCurr]];
-      const c = chain.nodes[ids[iNext]];
+    const triples = chain.angleTriples || buildAngleTriples(chain.backbone, chain.ring);
+    if (!triples.length) return;
+    triples.forEach(([ia, ib, ic]) => {
+      const a = chain.nodes[ia];
+      const b = chain.nodes[ib];
+      const c = chain.nodes[ic];
       const dba = {
         x: minimalDelta(a.x - b.x, state.worldWidth),
         y: minimalDelta(a.y - b.y, state.worldHeight),
@@ -870,10 +1024,9 @@ function addBendForces(state) {
       c.fx -= midpoint.x * k * 0.5;
       c.fy -= midpoint.y * k * 0.5;
       c.fz -= midpoint.z * k * 0.4;
-    }
+    });
   });
 }
-
 function addExcludedVolumeForces(state) {
   const items = buildInteractionItems(state);
   forEachNeighborPair(items, 26, state, (i, j) => {
@@ -996,6 +1149,42 @@ function updateCamera(state, timeMs) {
   );
 }
 
+
+function integrateDeterministic(state, dt) {
+  state.chains.forEach((chain) => {
+    chain.nodes.forEach((node) => {
+      node.x += chain.mobility * node.fx * dt;
+      node.y += chain.mobility * node.fy * dt;
+      node.z += chain.mobility * node.fz * dt + (chain.zCenter - node.z) * 0.018;
+      node.x = wrapCoord(node.x, state.worldWidth);
+      node.y = wrapCoord(node.y, state.worldHeight);
+      node.z = clamp(node.z, -34, 34);
+    });
+  });
+
+  state.particles.forEach((particle) => {
+    const node = particle.node;
+    node.x += particle.mobility * node.fx * dt;
+    node.y += particle.mobility * node.fy * dt;
+    node.z += particle.mobility * node.fz * dt + (particle.zCenter - node.z) * 0.022;
+    node.x = wrapCoord(node.x, state.worldWidth);
+    node.y = wrapCoord(node.y, state.worldHeight);
+    node.z = clamp(node.z, -34, 34);
+  });
+}
+
+function warmStartState(state, steps = 10) {
+  for (let pass = 0; pass < steps; pass += 1) {
+    resetForces(state);
+    addBondForces(state);
+    addBendForces(state);
+    addExcludedVolumeForces(state);
+    integrateDeterministic(state, 0.012);
+    solveBondConstraints(state, 0.70);
+    solveExcludedVolume(state, 2);
+  }
+}
+
 function simulate(state, dt, timeMs) {
   resetForces(state);
   addBondForces(state);
@@ -1010,7 +1199,6 @@ function simulate(state, dt, timeMs) {
 
   updateCamera(state, timeMs);
 }
-
 function buildState(canvas, variant, density) {
   const dpr = clamp(window.devicePixelRatio || 1, 1, 1.9);
   const width = canvas.clientWidth || window.innerWidth;
@@ -1020,10 +1208,10 @@ function buildState(canvas, variant, density) {
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const worldScale = variant === 'hero' ? 1.34 : 1.26;
+  const worldScale = variant === 'hero' ? 1.22 : 1.16;
   const worldWidth = width * worldScale;
   const worldHeight = height * worldScale;
-  const areaFactor = clamp((width * height) / (1500 * 900), 0.90, 1.14);
+  const areaFactor = clamp((width * height) / (1500 * 900), 0.92, 1.22);
 
   const state = {
     canvas,
@@ -1053,18 +1241,19 @@ function buildState(canvas, variant, density) {
     }
   };
 
-  const chainCount = Math.max(variant === 'hero' ? 36 : 18, Math.round((variant === 'hero' ? 44 : 22) * density * areaFactor));
-  const particleCount = Math.max(variant === 'hero' ? 250 : 110, Math.round((variant === 'hero' ? 330 : 135) * density * areaFactor));
+  const chainCount = Math.max(variant === 'hero' ? 44 : 22, Math.round((variant === 'hero' ? 58 : 30) * density * areaFactor));
+  const particleCount = Math.max(variant === 'hero' ? 310 : 130, Math.round((variant === 'hero' ? 440 : 185) * density * areaFactor));
 
   state.centers = makeSpreadCenters(
     chainCount,
     worldWidth,
     worldHeight,
-    84,
-    Math.max(72, Math.sqrt((worldWidth * worldHeight) / chainCount) * 0.48)
+    68,
+    Math.max(52, Math.sqrt((worldWidth * worldHeight) / chainCount) * 0.36)
   );
   state.chains = Array.from({ length: chainCount }, (_, index) => createChain(state, index));
   state.particles = Array.from({ length: particleCount }, () => createParticle(state));
+  warmStartState(state, variant === 'hero' ? 12 : 8);
   recolorState(state);
   return state;
 }
