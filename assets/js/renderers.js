@@ -63,46 +63,61 @@ export function publicationCard(item, compact = false) {
       <span class="figure-slot-path">${slotPath}</span>
       <span class="figure-slot-note">Place a PNG or JPG with this paper ID inside <code>assets/img/publications/</code>. The page will pick it up automatically.</span>
     `;
-    placeholder.hidden = true;
+    placeholder.hidden = false;
 
     const img = document.createElement('img');
     img.className = 'publication-figure';
     img.alt = item.figure?.alt || `${item.title} figure preview`;
-    img.loading = 'lazy';
     img.decoding = 'async';
-    img.hidden = true;
     img.referrerPolicy = 'no-referrer';
+    img.setAttribute('aria-hidden', 'true');
+    img.style.opacity = '0';
+    img.style.visibility = 'hidden';
 
     const figureNote = document.createElement('figcaption');
     figureNote.className = 'publication-figure-note';
-    figureNote.hidden = !item.figure?.caption;
+    figureNote.hidden = true;
     if (item.figure?.caption) figureNote.textContent = item.figure.caption;
 
     const preferred = resolveAsset(item.figure?.src || `assets/img/publications/${item.id}.png`);
     const fallback = resolveAsset(`assets/img/publications/${item.id}.jpg`);
 
-    const revealImage = () => {
-      img.hidden = false;
+    const revealImage = (src) => {
+      img.src = src;
+      img.style.visibility = 'visible';
+      img.style.opacity = '1';
+      img.removeAttribute('aria-hidden');
       placeholder.hidden = true;
       figureShell.classList.add('has-image');
       figureNote.hidden = !item.figure?.caption;
     };
 
-    img.addEventListener('load', revealImage);
-    img.addEventListener('error', () => {
-      if (img.dataset.triedFallback === 'true') {
-        img.hidden = true;
-        figureShell.classList.remove('has-image');
-        placeholder.hidden = false;
-        figureNote.hidden = true;
-        return;
-      }
-      img.dataset.triedFallback = 'true';
-      img.src = fallback;
-    });
+    const showPlaceholder = () => {
+      img.removeAttribute('src');
+      img.style.opacity = '0';
+      img.style.visibility = 'hidden';
+      img.setAttribute('aria-hidden', 'true');
+      figureShell.classList.remove('has-image');
+      placeholder.hidden = false;
+      figureNote.hidden = true;
+    };
 
-    img.src = preferred;
-    if (img.complete && img.naturalWidth > 0) revealImage();
+    const probeImage = (src, next = null) => {
+      const loader = new Image();
+      loader.decoding = 'async';
+      loader.referrerPolicy = 'no-referrer';
+      loader.onload = () => revealImage(src);
+      loader.onerror = () => {
+        if (next) {
+          probeImage(next, null);
+        } else {
+          showPlaceholder();
+        }
+      };
+      loader.src = src;
+    };
+
+    probeImage(preferred, fallback);
 
     figureShell.append(img, placeholder, figureNote);
     nodes.push(figureShell);

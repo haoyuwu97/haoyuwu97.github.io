@@ -2911,6 +2911,14 @@ body.leisure-page {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease;
+}
+
+.publication-figure-shell.has-image .publication-figure {
+  opacity: 1;
+  visibility: visible;
 }
 
 .publication-figure-placeholder,
@@ -2920,6 +2928,10 @@ body.leisure-page {
 
 .publication-figure-shell.has-image .publication-figure-note {
   background: rgba(6, 11, 21, 0.58);
+}
+
+.publication-figure-shell.has-image .publication-figure-placeholder {
+  display: none;
 }
 
 body.subpage .repo-grid {

@@ -255,13 +255,14 @@ function createModeSet(kind, step) {
 }
 
 function createChain(state, index, variant) {
-  const kind = choice(['coil', 'coil', 'semiflexible', 'hairpin', 'folded', 'ring', 'brush']);
-  const count = kind === 'ring' ? Math.round(rand(18, 28)) : Math.round(rand(16, 30));
-  const step = variant === 'hero' ? rand(12, 17) : rand(10, 14);
+  const kind = choice(['coil', 'coil', 'coil', 'semiflexible', 'semiflexible', 'hairpin', 'ring', 'folded', 'brush']);
+  const count = kind === 'ring' ? Math.round(rand(20, 30)) : Math.round(rand(20, 34));
+  const step = variant === 'hero' ? rand(7.6, 10.8) : rand(6.8, 9.2);
   const { points, sideGroups } = createBaseShape(kind, count, step);
   const frames = computeFrames(points);
   const color = state.chainColors[index % state.chainColors.length];
-  const margin = variant === 'hero' ? 86 : 62;
+  const radiusEstimate = Math.max(...points.map((point) => Math.hypot(point.x, point.y))) + step * 2.4;
+  const margin = Math.max(variant === 'hero' ? 90 : 72, radiusEstimate + 18);
   return {
     kind,
     color,
@@ -271,39 +272,39 @@ function createChain(state, index, variant) {
     beadLight: tone(color, 26, -8, 1),
     beadDark: tone(color, -10, 6, 1),
     anchor0: vec3(
-      rand(margin, state.width - margin),
-      rand(margin, state.height - margin),
-      rand(0.12, 1.04)
+      rand(margin, Math.max(margin + 1, state.width - margin)),
+      rand(margin, Math.max(margin + 1, state.height - margin)),
+      rand(0.16, 0.98)
     ),
     wander: {
-      rx: rand(8, variant === 'hero' ? 24 : 16),
-      ry: rand(8, variant === 'hero' ? 20 : 14),
-      rz: rand(0.03, 0.12),
-      wx: rand(0.02, 0.06),
-      wy: rand(0.02, 0.06),
-      wz: rand(0.03, 0.07),
+      rx: rand(3.5, variant === 'hero' ? 10.5 : 8),
+      ry: rand(3.5, variant === 'hero' ? 9.5 : 7.2),
+      rz: rand(0.02, 0.08),
+      wx: rand(0.016, 0.036),
+      wy: rand(0.016, 0.034),
+      wz: rand(0.022, 0.046),
       px: rand(0, TAU),
       py: rand(0, TAU),
       pz: rand(0, TAU)
     },
     orient: {
-      yaw: rand(-0.48, 0.48),
-      pitch: rand(-0.32, 0.32),
-      roll: rand(-0.22, 0.22),
-      wy: rand(0.01, 0.04),
-      wp: rand(0.01, 0.035),
-      wr: rand(0.01, 0.03),
+      yaw: rand(-0.24, 0.24),
+      pitch: rand(-0.18, 0.18),
+      roll: rand(-0.12, 0.12),
+      wy: rand(0.008, 0.022),
+      wp: rand(0.007, 0.02),
+      wr: rand(0.006, 0.018),
       py: rand(0, TAU),
       pp: rand(0, TAU),
       pr: rand(0, TAU)
     },
     pulse: {
-      amp: rand(0.16, 0.42),
-      omega: rand(0.45, 0.9),
+      amp: rand(0.08, 0.22),
+      omega: rand(0.32, 0.58),
       phase: rand(0, TAU)
     },
-    beadRadius: kind === 'brush' ? rand(4.6, 6.8) : rand(4.8, 7.6),
-    bondWidth: rand(1.4, 2.5),
+    beadRadius: kind === 'brush' ? rand(5.2, 7.2) : rand(5.8, 8.8),
+    bondWidth: rand(1.6, 2.8),
     step,
     base: points,
     frames,
@@ -319,10 +320,10 @@ function createParticle(state) {
     x: rand(-54, state.width + 54),
     y: rand(-54, state.height + 54),
     z: rand(0.04, 1.2),
-    vx: rand(-12, 12),
-    vy: rand(-10, 10),
+    vx: rand(-10, 10),
+    vy: rand(-8, 8),
     vz: rand(-0.015, 0.015),
-    radius: rand(1.6, 5.4),
+    radius: rand(1.8, 5.8),
     drift: rand(0.2, 0.8),
     phase: rand(0, TAU),
     color: choice(state.chainColors)
@@ -333,13 +334,13 @@ function projectPoint(state, point) {
   const depth = clamp(point.z, 0.02, 1.24);
   const cx = state.width * 0.5;
   const cy = state.height * 0.5;
-  const perspective = 0.68 + depth * 0.66;
+  const perspective = 0.8 + depth * 0.46;
   return {
     x: cx + (point.x - cx) * perspective,
     y: cy + (point.y - cy) * perspective,
-    scale: 0.44 + depth * 0.82,
+    scale: 0.5 + depth * 0.7,
     alpha: clamp(0.16 + depth * 0.66, 0.1, 0.98),
-    blur: clamp((1.14 - depth) * 2.8, 0, 2.8)
+    blur: clamp((1.08 - depth) * 2.1, 0, 2.1)
   };
 }
 
@@ -381,14 +382,14 @@ function drawBackdrop(ctx, state, time) {
 
   const drift = Math.sin(time * 0.0001) * 14;
   ctx.save();
-  ctx.globalAlpha = 0.065;
+  ctx.globalAlpha = 0.038;
   ctx.strokeStyle = backdrop.particleSoft;
   ctx.lineWidth = 1;
-  const spacing = state.variant === 'hero' ? 114 : 128;
+  const spacing = state.variant === 'hero' ? 132 : 146;
   for (let x = -spacing; x < width + spacing; x += spacing) {
     ctx.beginPath();
-    ctx.moveTo(x + drift, 0);
-    ctx.lineTo(x - drift, height);
+    ctx.moveTo(x + drift * 0.5, 0);
+    ctx.lineTo(x - drift * 0.5, height);
     ctx.stroke();
   }
   ctx.restore();
@@ -419,9 +420,9 @@ function updateChain(chain, state, timeMs) {
     chain.anchor0.y + Math.cos(time * chain.wander.wy + chain.wander.py) * chain.wander.ry,
     clamp(chain.anchor0.z + Math.sin(time * chain.wander.wz + chain.wander.pz) * chain.wander.rz, 0.04, 1.22)
   );
-  const yaw = chain.orient.yaw + Math.sin(time * chain.orient.wy + chain.orient.py) * 0.16;
-  const pitch = chain.orient.pitch + Math.cos(time * chain.orient.wp + chain.orient.pp) * 0.11;
-  const roll = chain.orient.roll + Math.sin(time * chain.orient.wr + chain.orient.pr) * 0.08;
+  const yaw = chain.orient.yaw + Math.sin(time * chain.orient.wy + chain.orient.py) * 0.08;
+  const pitch = chain.orient.pitch + Math.cos(time * chain.orient.wp + chain.orient.pp) * 0.055;
+  const roll = chain.orient.roll + Math.sin(time * chain.orient.wr + chain.orient.pr) * 0.04;
 
   const localPoints = chain.frames.map((frame, index) => {
     const s = chain.kind === 'ring'
@@ -557,10 +558,10 @@ function drawChain(ctx, state, chain) {
   beads
     .sort((a, b) => a.point.z - b.point.z)
     .forEach((item, orderIndex) => {
-      const pulse = 0.94 + 0.08 * Math.sin(orderIndex * 0.7 + item.point.z * 2.1);
+      const pulse = 0.97 + 0.05 * Math.sin(orderIndex * 0.54 + item.point.z * 1.8);
       const radius = chain.beadRadius * item.screen.scale * pulse * item.radiusScale;
       ctx.save();
-      ctx.globalAlpha = item.screen.alpha * 0.26;
+      ctx.globalAlpha = item.screen.alpha * 0.22;
       ctx.fillStyle = chain.shadow;
       ctx.beginPath();
       ctx.arc(item.screen.x, item.screen.y, radius * 1.85, 0, TAU);
@@ -593,8 +594,8 @@ function buildState(canvas, variant, density) {
     particles: []
   };
 
-  const chainCount = Math.max(variant === 'hero' ? 13 : 9, Math.round((variant === 'hero' ? 16 : 10) * density));
-  const particleCount = Math.max(variant === 'hero' ? 120 : 70, Math.round((variant === 'hero' ? 150 : 84) * density));
+  const chainCount = Math.max(variant === 'hero' ? 11 : 8, Math.round((variant === 'hero' ? 13 : 9) * density));
+  const particleCount = Math.max(variant === 'hero' ? 110 : 66, Math.round((variant === 'hero' ? 136 : 78) * density));
   state.chains = Array.from({ length: chainCount }, (_, index) => createChain(state, index, variant));
   state.particles = Array.from({ length: particleCount }, () => createParticle(state));
   return state;
