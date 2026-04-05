@@ -269,6 +269,7 @@ class RestEngine {
     this.message = '';
     this.messageTimer = 0;
     this.mode = factory(this);
+    if (this.mode?.resize) this.mode.resize(this);
     updateHud(modeMeta, this);
   }
 
@@ -313,20 +314,22 @@ class RestEngine {
     if (!this.metricsText && !this.message) return;
     const ctx = this.ctx;
     const lines = [this.metricsText, this.message].filter(Boolean);
-    const width = Math.min(460, this.width - 30);
+    const width = Math.min(520, this.width - 30);
     const lineHeight = 16;
     const height = 16 + lines.length * lineHeight;
+    const x = Math.max(14, (this.width - width) * 0.5);
+    const y = this.height - height - 16;
     ctx.save();
-    ctx.globalAlpha = 0.92;
-    ctx.fillStyle = 'rgba(4, 8, 18, 0.56)';
-    roundRect(ctx, 14, this.height - height - 14, width, height, 16);
+    ctx.globalAlpha = 0.94;
+    ctx.fillStyle = 'rgba(4, 8, 18, 0.64)';
+    roundRect(ctx, x, y, width, height, 16);
     ctx.fill();
     ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.stroke();
     ctx.fillStyle = this.palette.ink;
     ctx.font = '12px Inter, system-ui, sans-serif';
     lines.forEach((line, index) => {
-      ctx.fillText(line, 28, this.height - height + 10 + index * lineHeight);
+      ctx.fillText(line, x + 14, y + 18 + index * lineHeight);
     });
     ctx.restore();
   }
@@ -350,6 +353,22 @@ function getSteering(engine, origin) {
 
 function respawnPoint(engine, pad = 50) {
   return { x: rand(pad, engine.width - pad), y: rand(pad, engine.height - pad) };
+}
+
+function playInsets(engine) {
+  const compact = engine.width < 960;
+  const left = compact ? 18 : clamp(engine.width * 0.15, 170, 240);
+  const right = compact ? 18 : clamp(engine.width * 0.16, 190, 280);
+  const top = compact ? 104 : 114;
+  const bottom = compact ? 104 : 124;
+  return {
+    left,
+    right,
+    top,
+    bottom,
+    width: Math.max(260, engine.width - left - right),
+    height: Math.max(220, engine.height - top - bottom)
+  };
 }
 
 function drawBar(ctx, x, y, width, value, color, label, engine) {
@@ -547,85 +566,91 @@ function createChainGrowthMode(engine) {
 }
 
 function createBrushChannelMode(engine) {
-  const tracer = { x: engine.width * 0.24, y: engine.height * 0.5, vx: 0, vy: 0, r: 10.5 };
+  const tracer = { x: engine.width * 0.22, y: engine.height * 0.5, vx: 0, vy: 0, r: 11.5 };
   const rootsTop = [];
   const rootsBottom = [];
   const markers = [];
   let progress = 0;
   let mobility = 100;
+  let shimmer = 0;
 
   function seedRoots(nextEngine) {
     rootsTop.length = 0;
     rootsBottom.length = 0;
-    const spacing = 44;
-    const count = Math.ceil(nextEngine.width / spacing) + 6;
+    const spacing = 34;
+    const count = Math.ceil(nextEngine.width / spacing) + 10;
     for (let index = 0; index < count; index += 1) {
-      const x = index * spacing - 80;
-      rootsTop.push({ x, len: Math.floor(rand(4, 8)), phase: rand(0, TAU), sway: rand(0.7, 1.3) });
-      rootsBottom.push({ x, len: Math.floor(rand(4, 8)), phase: rand(0, TAU), sway: rand(0.7, 1.3) });
+      const x = index * spacing - 110;
+      rootsTop.push({ x, len: Math.floor(rand(5, 10)), phase: rand(0, TAU), sway: rand(0.65, 1.2) });
+      rootsBottom.push({ x, len: Math.floor(rand(5, 10)), phase: rand(0, TAU), sway: rand(0.65, 1.2) });
     }
     markers.length = 0;
-    for (let i = 0; i < 7; i += 1) {
-      markers.push({ x: rand(100, nextEngine.width - 40), y: rand(nextEngine.height * 0.28, nextEngine.height * 0.72), r: 8, speed: rand(46, 72) });
+    for (let i = 0; i < 10; i += 1) {
+      markers.push({ x: rand(140, nextEngine.width - 50), y: rand(nextEngine.height * 0.24, nextEngine.height * 0.76), r: 8.5, speed: rand(42, 68) });
     }
   }
 
   function brushBeads(root, top, nextEngine) {
     const beads = [];
     const sign = top ? 1 : -1;
-    const baseY = top ? 12 : nextEngine.height - 12;
+    const baseY = top ? 14 : nextEngine.height - 14;
     for (let i = 1; i <= root.len; i += 1) {
       const s = i / root.len;
-      const x = root.x + Math.sin(nextEngine.time * 0.001 * root.sway + root.phase + s * 1.8) * (10 + s * 10);
-      const y = baseY + sign * (16 + i * 15) + Math.cos(nextEngine.time * 0.0011 + root.phase + s) * 4;
-      beads.push({ x, y, r: 6.2 - s * 1.6 });
+      const x = root.x + Math.sin(nextEngine.time * 0.0009 * root.sway + root.phase + s * 2.2) * (8 + s * 12);
+      const y = baseY + sign * (16 + i * 14.5) + Math.cos(nextEngine.time * 0.001 + root.phase + s * 1.2) * (2.5 + s * 2.8);
+      beads.push({ x, y, r: 6.6 - s * 1.5 });
     }
     return beads;
   }
 
   return {
     resize(nextEngine) {
-      tracer.x = nextEngine.width * 0.24;
+      tracer.x = nextEngine.width * 0.2;
       tracer.y = nextEngine.height * 0.5;
       tracer.vx = 0;
       tracer.vy = 0;
       progress = 0;
       mobility = 100;
+      shimmer = 0;
       seedRoots(nextEngine);
     },
     update(dt, nextEngine) {
       const steer = getSteering(nextEngine, tracer);
-      tracer.vx = lerp(tracer.vx, steer.x * 110, 0.08);
-      tracer.vy = lerp(tracer.vy, steer.y * 110, 0.08);
-      tracer.x = clamp(tracer.x + tracer.vx * dt, 32, nextEngine.width * 0.42);
+      tracer.vx = lerp(tracer.vx, steer.x * 96, 0.07);
+      tracer.vy = lerp(tracer.vy, steer.y * 96, 0.07);
+      tracer.x = clamp(tracer.x + tracer.vx * dt, 34, nextEngine.width * 0.68);
       tracer.y = clamp(tracer.y + tracer.vy * dt, 30, nextEngine.height - 30);
 
-      const scroll = 58 * dt;
+      const scroll = 54 * dt;
       progress += scroll;
       nextEngine.setScore(Math.floor(progress * 0.08));
-      mobility = clamp(mobility + dt * 4.5, 0, 100);
+      mobility = clamp(mobility + dt * 3.6, 0, 100);
+      shimmer = Math.max(0, shimmer - dt * 1.8);
 
       [...rootsTop, ...rootsBottom].forEach((root) => {
         root.x -= scroll;
-        if (root.x < -100) {
-          root.x = nextEngine.width + rand(10, 70);
-          root.len = Math.floor(rand(4, 8));
+        if (root.x < -120) {
+          root.x = nextEngine.width + rand(20, 90);
+          root.len = Math.floor(rand(5, 10));
           root.phase = rand(0, TAU);
+          root.sway = rand(0.65, 1.2);
         }
       });
 
       markers.forEach((marker) => {
         marker.x -= marker.speed * dt;
-        marker.y += Math.sin(nextEngine.time * 0.001 + marker.x * 0.01) * 0.8;
-        if (marker.x < -20) {
-          marker.x = nextEngine.width + rand(20, 90);
-          marker.y = rand(nextEngine.height * 0.26, nextEngine.height * 0.74);
+        marker.y += Math.sin(nextEngine.time * 0.001 + marker.x * 0.012) * 0.7;
+        if (marker.x < -22) {
+          marker.x = nextEngine.width + rand(30, 120);
+          marker.y = rand(nextEngine.height * 0.24, nextEngine.height * 0.76);
         }
         if (circleHit(tracer, marker, 1)) {
-          nextEngine.addScore(2);
-          mobility = clamp(mobility + 7, 0, 100);
-          marker.x = nextEngine.width + rand(40, 120);
-          marker.y = rand(nextEngine.height * 0.26, nextEngine.height * 0.74);
+          nextEngine.addScore(3);
+          mobility = clamp(mobility + 9, 0, 100);
+          shimmer = 1;
+          marker.x = nextEngine.width + rand(40, 130);
+          marker.y = rand(nextEngine.height * 0.24, nextEngine.height * 0.76);
+          nextEngine.setMessage('high-free-volume pocket captured', 0.8);
         }
       });
 
@@ -633,15 +658,15 @@ function createBrushChannelMode(engine) {
       [rootsTop, rootsBottom].forEach((roots, idx) => {
         roots.forEach((root) => {
           brushBeads(root, idx === 0, nextEngine).forEach((bead) => {
-            if (circleHit(tracer, bead, -1)) collisionCount += 1;
+            if (circleHit(tracer, bead, -0.5)) collisionCount += 1;
           });
         });
       });
       if (collisionCount) {
-        mobility = clamp(mobility - collisionCount * dt * 18, 0, 100);
-        nextEngine.addScore(-collisionCount * 0.12);
+        mobility = clamp(mobility - collisionCount * dt * 16, 0, 100);
+        nextEngine.addScore(-collisionCount * 0.1);
       }
-      nextEngine.metricsText = 'follow transient low-density corridors • transport depends on instantaneous free volume';
+      nextEngine.metricsText = 'thread the transient free-volume corridor • brushes gate transport through steric breathing';
     },
     draw(ctx, nextEngine) {
       drawBackdrop(ctx, nextEngine, 'rgba(125,211,252,0.15)', 'rgba(110,224,198,0.12)');
@@ -649,22 +674,22 @@ function createBrushChannelMode(engine) {
       ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(0, 14);
-      ctx.lineTo(nextEngine.width, 14);
-      ctx.moveTo(0, nextEngine.height - 14);
-      ctx.lineTo(nextEngine.width, nextEngine.height - 14);
+      ctx.moveTo(0, 16);
+      ctx.lineTo(nextEngine.width, 16);
+      ctx.moveTo(0, nextEngine.height - 16);
+      ctx.lineTo(nextEngine.width, nextEngine.height - 16);
       ctx.stroke();
       ctx.restore();
 
       [rootsTop, rootsBottom].forEach((roots, idx) => {
         roots.forEach((root) => {
           const beads = brushBeads(root, idx === 0, nextEngine);
-          const baseY = idx === 0 ? 12 : nextEngine.height - 12;
+          const baseY = idx === 0 ? 14 : nextEngine.height - 14;
           let lastX = root.x;
           let lastY = baseY;
           beads.forEach((bead) => {
             ctx.save();
-            ctx.globalAlpha = 0.4;
+            ctx.globalAlpha = 0.42;
             ctx.strokeStyle = idx === 0 ? 'rgba(143,243,255,0.24)' : 'rgba(136,164,255,0.24)';
             ctx.lineWidth = 5;
             ctx.lineCap = 'round';
@@ -673,7 +698,7 @@ function createBrushChannelMode(engine) {
             ctx.lineTo(bead.x, bead.y);
             ctx.stroke();
             ctx.restore();
-            drawSphere(ctx, bead.x, bead.y, bead.r, idx === 0 ? '#a6efff' : '#c0d0ff', idx === 0 ? '#224d6c' : '#2f3f78', 0.92);
+            drawSphere(ctx, bead.x, bead.y, bead.r, idx === 0 ? '#a6efff' : '#c0d0ff', idx === 0 ? '#224d6c' : '#2f3f78', 0.94);
             lastX = bead.x;
             lastY = bead.y;
           });
@@ -684,6 +709,7 @@ function createBrushChannelMode(engine) {
         drawGlow(ctx, marker.x, marker.y, marker.r * 1.9, nextEngine.palette.good, 0.14);
         drawSphere(ctx, marker.x, marker.y, marker.r, '#bdfae8', '#185f56', 0.96);
       });
+      if (shimmer > 0) drawGlow(ctx, tracer.x, tracer.y, tracer.r * (2.3 + shimmer), nextEngine.palette.good, 0.14 * shimmer);
       drawGlow(ctx, tracer.x, tracer.y, tracer.r * 2.1, nextEngine.palette.accent, 0.16);
       drawSphere(ctx, tracer.x, tracer.y, tracer.r, '#ffffff', '#244b70', 1);
       drawBar(ctx, 18, 18, 220, mobility / 100, nextEngine.palette.accent, 'mobility', nextEngine);
@@ -696,16 +722,21 @@ function createBondRepairMode(engine) {
   let nodes = [];
   let bonds = [];
   let integrity = 1;
-  let breakTimer = 0;
   let level = 1;
+  let repairsUsed = 0;
+  let repairsLimit = 0;
+  let state = 'playing';
+  let pulse = 0;
+  const goalIntegrity = 0.96;
 
-  function buildNetwork(nextEngine, keepLevel = level) {
+  function layout(nextEngine, keepLevel = level) {
     level = keepLevel;
+    const insets = playInsets(nextEngine);
     const rows = 4 + Math.min(2, Math.floor(level / 3));
     const cols = 6 + Math.min(2, Math.floor(level / 4));
-    const cell = Math.min((nextEngine.width - 120) / cols, (nextEngine.height - 180) / rows);
-    const originX = (nextEngine.width - cell * (cols - 1)) * 0.5;
-    const originY = Math.max(110, (nextEngine.height - cell * (rows - 1)) * 0.5);
+    const cell = Math.min((insets.width - 110) / cols, (insets.height - 90) / rows, 108);
+    const originX = insets.left + Math.max(26, (insets.width - cell * (cols - 1)) * 0.5);
+    const originY = insets.top + Math.max(22, (insets.height - cell * (rows - 1)) * 0.5);
     nodes = [];
     bonds = [];
     for (let row = 0; row < rows; row += 1) {
@@ -714,8 +745,8 @@ function createBondRepairMode(engine) {
           id: row * cols + col,
           row,
           col,
-          x: originX + col * cell + rand(-6, 6),
-          y: originY + row * cell + rand(-6, 6),
+          x: originX + col * cell + rand(-4, 4),
+          y: originY + row * cell + rand(-4, 4),
           r: 7.2
         });
       }
@@ -723,20 +754,25 @@ function createBondRepairMode(engine) {
     const nodeAt = (row, col) => nodes[row * cols + col];
     for (let row = 0; row < rows; row += 1) {
       for (let col = 0; col < cols; col += 1) {
-        if (col < cols - 1) bonds.push({ a: nodeAt(row, col).id, b: nodeAt(row, col + 1).id, state: 'intact', age: 0 });
-        if (row < rows - 1) bonds.push({ a: nodeAt(row, col).id, b: nodeAt(row + 1, col).id, state: 'intact', age: 0 });
-        if (row < rows - 1 && col < cols - 1 && Math.random() < 0.18) bonds.push({ a: nodeAt(row, col).id, b: nodeAt(row + 1, col + 1).id, state: 'intact', age: 0 });
+        if (col < cols - 1) bonds.push({ a: nodeAt(row, col).id, b: nodeAt(row, col + 1).id, state: 'intact' });
+        if (row < rows - 1) bonds.push({ a: nodeAt(row, col).id, b: nodeAt(row + 1, col).id, state: 'intact' });
+        if (row < rows - 1 && col < cols - 1 && Math.random() < 0.18) bonds.push({ a: nodeAt(row, col).id, b: nodeAt(row + 1, col + 1).id, state: 'intact' });
       }
     }
-    for (let i = 0; i < 4 + Math.floor(level * 0.5); i += 1) {
-      choice(bonds).state = 'broken';
+    const brokenTarget = 5 + Math.min(4, Math.floor(level * 0.7));
+    let broken = 0;
+    while (broken < brokenTarget) {
+      const candidate = choice(bonds);
+      if (candidate.state === 'intact') {
+        candidate.state = 'broken';
+        broken += 1;
+      }
     }
     integrity = computeIntegrity();
-    breakTimer = 1.8;
-  }
-
-  function intactNeighbors(nodeId) {
-    return bonds.filter((bond) => bond.state === 'intact' && (bond.a === nodeId || bond.b === nodeId));
+    repairsUsed = 0;
+    repairsLimit = Math.max(3, Math.ceil(brokenTarget * 0.62));
+    state = 'playing';
+    pulse = 0;
   }
 
   function computeIntegrity() {
@@ -768,28 +804,29 @@ function createBondRepairMode(engine) {
     return nodes.length ? best / nodes.length : 0;
   }
 
-  function breakImportantBond() {
-    const candidates = bonds.filter((bond) => bond.state === 'intact');
-    if (!candidates.length) return;
-    const weighted = candidates
-      .map((bond) => ({ bond, weight: intactNeighbors(bond.a).length + intactNeighbors(bond.b).length + Math.random() * 2 }))
-      .sort((a, b) => b.weight - a.weight);
-    weighted[Math.floor(rand(0, Math.min(4, weighted.length)))].bond.state = 'broken';
-  }
-
   function bondMidpoint(bond) {
     const a = nodes[bond.a];
     const b = nodes[bond.b];
     return { x: (a.x + b.x) * 0.5, y: (a.y + b.y) * 0.5 };
   }
 
-  buildNetwork(engine, 1);
+  layout(engine, 1);
 
   return {
     resize(nextEngine) {
-      buildNetwork(nextEngine, level);
+      layout(nextEngine, level);
     },
     pointerDown(point, nextEngine) {
+      if (state === 'won') {
+        layout(nextEngine, level + 1);
+        nextEngine.setMessage('new topology loaded', 0.8);
+        return;
+      }
+      if (state === 'lost') {
+        layout(nextEngine, level);
+        nextEngine.setMessage('retrying the same topology', 0.8);
+        return;
+      }
       let bestBond = null;
       let bestDist = 22;
       bonds.forEach((bond) => {
@@ -801,39 +838,34 @@ function createBondRepairMode(engine) {
           bestBond = bond;
         }
       });
-      if (bestBond) {
-        const before = integrity;
-        bestBond.state = 'intact';
-        bestBond.age = 0;
-        integrity = computeIntegrity();
-        const bonus = Math.max(1, Math.round((integrity - before) * 20));
-        nextEngine.addScore(1 + bonus);
-        nextEngine.setMessage(integrity > before ? 'bridge restored — global connectivity improved' : 'local repair completed', 1.2);
+      if (!bestBond) return;
+      const before = integrity;
+      bestBond.state = 'intact';
+      repairsUsed += 1;
+      integrity = computeIntegrity();
+      nextEngine.addScore(2 + Math.max(0, Math.round((integrity - before) * 24)));
+      if (integrity >= goalIntegrity) {
+        state = 'won';
+        pulse = 1.35;
+        nextEngine.addScore(10 + Math.max(0, repairsLimit - repairsUsed) * 2 + level);
+        nextEngine.setMessage('network-spanning connectivity restored — click to continue', 1.8);
+      } else if (repairsUsed >= repairsLimit) {
+        state = 'lost';
+        pulse = 1.1;
+        nextEngine.setMessage('repair budget exhausted — click to retry', 1.8);
+      } else {
+        nextEngine.setMessage(integrity > before ? 'bridge restored' : 'local repair completed', 1.0);
       }
     },
     update(dt, nextEngine) {
-      breakTimer -= dt;
-      bonds.forEach((bond) => {
-        if (bond.state === 'broken') bond.age += dt;
-      });
-      if (breakTimer <= 0) {
-        breakImportantBond();
-        breakTimer = clamp(2.4 - level * 0.08, 1.15, 2.4);
+      pulse = Math.max(0, pulse - dt);
+      if (state === 'playing') {
+        nextEngine.metricsText = `restore the giant component to ${(goalIntegrity * 100).toFixed(0)}% before the repair budget is exhausted`;
+      } else if (state === 'won') {
+        nextEngine.metricsText = 'topology rescued — click anywhere for the next network';
+      } else {
+        nextEngine.metricsText = 'repair budget exhausted — click anywhere to retry this network';
       }
-      bonds.forEach((bond) => {
-        if (bond.state === 'broken' && bond.age > 5.5 && Math.random() < 0.002) {
-          const neighbors = bonds.filter((other) => other.state === 'intact' && (other.a === bond.a || other.b === bond.a || other.a === bond.b || other.b === bond.b));
-          if (neighbors.length) choice(neighbors).state = 'broken';
-          bond.age = 0;
-        }
-      });
-      integrity = computeIntegrity();
-      nextEngine.setScore(nextEngine.score + dt * (2 + integrity * 6));
-      if (integrity < 0.36) {
-        nextEngine.setMessage('network lost a spanning component — reconfiguring topology', 1.6);
-        buildNetwork(nextEngine, level + 1);
-      }
-      nextEngine.metricsText = `repair bridge bonds first • largest connected component ${(integrity * 100).toFixed(0)}%`;
     },
     draw(ctx, nextEngine) {
       drawBackdrop(ctx, nextEngine, 'rgba(255,142,164,0.13)', 'rgba(110,224,198,0.12)');
@@ -842,7 +874,7 @@ function createBondRepairMode(engine) {
         const b = nodes[bond.b];
         if (bond.state === 'intact') {
           ctx.save();
-          ctx.globalAlpha = 0.36;
+          ctx.globalAlpha = 0.34;
           ctx.strokeStyle = 'rgba(143,243,255,0.34)';
           ctx.lineWidth = 6;
           ctx.lineCap = 'round';
@@ -856,8 +888,8 @@ function createBondRepairMode(engine) {
           const nx = (b.x - a.x) * 0.2;
           const ny = (b.y - a.y) * 0.2;
           ctx.save();
-          ctx.globalAlpha = 0.7;
-          ctx.strokeStyle = bond.age > 3 ? '#ffb36d' : nextEngine.palette.warn;
+          ctx.globalAlpha = 0.76;
+          ctx.strokeStyle = '#ffb36d';
           ctx.lineWidth = 6;
           ctx.lineCap = 'round';
           ctx.beginPath();
@@ -867,14 +899,19 @@ function createBondRepairMode(engine) {
           ctx.lineTo(b.x, b.y);
           ctx.stroke();
           ctx.restore();
-          drawGlow(ctx, mid.x, mid.y, 14 + Math.sin(nextEngine.time * 0.01) * 2, bond.age > 3 ? '#ffb36d' : nextEngine.palette.warn, 0.12);
+          drawGlow(ctx, mid.x, mid.y, 14 + Math.sin(nextEngine.time * 0.01) * 2, '#ffb36d', 0.12);
         }
       });
-      nodes.forEach((node) => {
-        drawSphere(ctx, node.x, node.y, node.r, '#eaf3ff', '#24496e', 0.98);
-      });
+      nodes.forEach((node) => drawSphere(ctx, node.x, node.y, node.r, '#eaf3ff', '#24496e', 0.98));
+      if (pulse > 0) {
+        ctx.save();
+        ctx.globalAlpha = pulse * 0.14;
+        ctx.fillStyle = state === 'won' ? nextEngine.palette.good : nextEngine.palette.warn;
+        ctx.fillRect(0, 0, nextEngine.width, nextEngine.height);
+        ctx.restore();
+      }
       drawBar(ctx, 18, 18, 220, integrity, nextEngine.palette.good, `largest component ${(integrity * 100).toFixed(0)}%`, nextEngine);
-      drawBar(ctx, 18, 38, 220, clamp(level / 8, 0, 1), nextEngine.palette.accent2, `network stage ${level}`, nextEngine);
+      drawBar(ctx, 18, 38, 220, clamp((repairsLimit - repairsUsed) / Math.max(1, repairsLimit), 0, 1), '#f8d15a', `repairs left ${Math.max(0, repairsLimit - repairsUsed)}`, nextEngine);
     }
   };
 }
@@ -900,6 +937,8 @@ const TARGETS = [
 function createReactionMatchMode(engine) {
   const rows = 5;
   const cols = 6;
+  const targetGoal = 5;
+  const maxMistakes = 3;
   let board = [];
   let cellSize = 84;
   let originX = 0;
@@ -909,6 +948,9 @@ function createReactionMatchMode(engine) {
   let targetCount = 0;
   let combo = 0;
   let flashBad = 0;
+  let state = 'playing';
+  let mistakes = 0;
+  let successPulse = 0;
 
   function randomReagent(preferTarget = false) {
     if (preferTarget && Math.random() < 0.55) return choice(target.reactants);
@@ -931,10 +973,23 @@ function createReactionMatchMode(engine) {
     });
   }
 
+  function resetStage(nextEngine, nextTarget = target) {
+    target = nextTarget;
+    targetCount = 0;
+    combo = 0;
+    mistakes = 0;
+    selected = null;
+    state = 'playing';
+    successPulse = 0;
+    setGeometry(nextEngine);
+    refillBoard();
+  }
+
   function setGeometry(nextEngine) {
-    cellSize = Math.min(88, (nextEngine.width - 160) / cols, (nextEngine.height - 240) / rows);
-    originX = (nextEngine.width - cellSize * cols) * 0.5;
-    originY = Math.max(120, (nextEngine.height - cellSize * rows) * 0.5 + 16);
+    const insets = playInsets(nextEngine);
+    cellSize = Math.min(88, (insets.width - 36) / cols, (insets.height - 110) / rows);
+    originX = insets.left + (insets.width - cellSize * cols) * 0.5;
+    originY = insets.top + Math.max(24, (insets.height - cellSize * rows) * 0.5 + 12);
   }
 
   function cellAt(point) {
@@ -962,6 +1017,17 @@ function createReactionMatchMode(engine) {
       setGeometry(nextEngine);
     },
     pointerDown(point, nextEngine) {
+      if (state === 'won') {
+        const candidates = TARGETS.filter((item) => item.id !== target.id);
+        resetStage(nextEngine, choice(candidates.length ? candidates : TARGETS));
+        nextEngine.setMessage(`next target → ${target.label}`, 1.1);
+        return;
+      }
+      if (state === 'lost') {
+        resetStage(nextEngine, target);
+        nextEngine.setMessage('deck reset — try again', 1.0);
+        return;
+      }
       const cell = cellAt(point);
       if (!cell) return;
       if (!selected) {
@@ -979,24 +1045,36 @@ function createReactionMatchMode(engine) {
         combo += 1;
         targetCount += 1;
         nextEngine.addScore(8 + combo * 2);
-        nextEngine.setMessage(`${target.label} matched`, 1.0);
-        if (targetCount >= 5) {
-          target = choice(TARGETS.filter((item) => item.id !== target.id));
-          targetCount = 0;
-          combo = 0;
-          ensurePlayable();
-          nextEngine.setMessage(`target advanced → ${target.label}`, 1.5);
+        nextEngine.setMessage(`${target.label} matched`, 0.9);
+        if (targetCount >= targetGoal) {
+          state = 'won';
+          successPulse = 1.35;
+          nextEngine.addScore(12 + Math.max(0, maxMistakes - mistakes) * 2);
+          nextEngine.setMessage(`target satisfied — click for next reaction`, 1.6);
         }
       } else {
         combo = 0;
+        mistakes += 1;
         flashBad = 1;
-        nextEngine.setMessage('wrong chemistry for the current target', 1.0);
+        nextEngine.setMessage('incompatible chemistry for the current target', 0.9);
+        if (mistakes >= maxMistakes) {
+          state = 'lost';
+          successPulse = 1.1;
+          nextEngine.setMessage('reagent budget exhausted — click to retry', 1.6);
+        }
       }
       selected = null;
     },
     update(dt, nextEngine) {
       flashBad = Math.max(0, flashBad - dt * 2);
-      nextEngine.metricsText = `target reaction: ${target.label.toLowerCase()} • recognize compatible functional-group pairs`;
+      successPulse = Math.max(0, successPulse - dt);
+      if (state === 'playing') {
+        nextEngine.metricsText = `target reaction: ${target.label.toLowerCase()} • complete ${targetGoal} valid pairings before ${maxMistakes} mistakes`;
+      } else if (state === 'won') {
+        nextEngine.metricsText = 'target chemistry satisfied — click anywhere to load the next reaction deck';
+      } else {
+        nextEngine.metricsText = 'mistake budget exhausted — click anywhere to retry the same reaction deck';
+      }
     },
     draw(ctx, nextEngine) {
       drawBackdrop(ctx, nextEngine, 'rgba(244,167,255,0.12)', 'rgba(245,203,107,0.12)');
@@ -1045,8 +1123,15 @@ function createReactionMatchMode(engine) {
         ctx.fillRect(0, 0, nextEngine.width, nextEngine.height);
         ctx.restore();
       }
-      drawBar(ctx, 18, 18, 220, clamp(targetCount / 5, 0, 1), nextEngine.palette.accent, `target deck progress ${targetCount}/5`, nextEngine);
-      drawBar(ctx, 18, 38, 220, clamp(combo / 6, 0, 1), '#f8d15a', `combo ${combo}`, nextEngine);
+      if (successPulse > 0) {
+        ctx.save();
+        ctx.globalAlpha = successPulse * 0.16;
+        ctx.fillStyle = state === 'won' ? nextEngine.palette.good : nextEngine.palette.warn;
+        ctx.fillRect(0, 0, nextEngine.width, nextEngine.height);
+        ctx.restore();
+      }
+      drawBar(ctx, 18, 18, 220, clamp(targetCount / targetGoal, 0, 1), nextEngine.palette.accent, `target progress ${targetCount}/${targetGoal}`, nextEngine);
+      drawBar(ctx, 18, 38, 220, clamp((maxMistakes - mistakes) / maxMistakes, 0, 1), '#f8d15a', `mistakes left ${Math.max(0, maxMistakes - mistakes)}`, nextEngine);
     }
   };
 }
@@ -1086,15 +1171,18 @@ function createPercolationMode(engine) {
   let originY = 0;
   let sourceRow = 0;
   let sinkRow = 0;
-  let mobility = 100;
   let solvedPath = [];
   let pulseTimer = 0;
   let level = 1;
+  let state = 'playing';
+  let movesLeft = 0;
+  let movesTotal = 0;
 
   function setGeometry(nextEngine) {
-    cellSize = Math.min(86, (nextEngine.width - 150) / cols, (nextEngine.height - 210) / rows);
-    originX = (nextEngine.width - cellSize * cols) * 0.5;
-    originY = Math.max(120, (nextEngine.height - cellSize * rows) * 0.5 + 18);
+    const insets = playInsets(nextEngine);
+    cellSize = Math.min(86, (insets.width - 36) / cols, (insets.height - 110) / rows);
+    originX = insets.left + (insets.width - cellSize * cols) * 0.5;
+    originY = insets.top + Math.max(20, (insets.height - cellSize * rows) * 0.5 + 12);
   }
 
   function buildPathCells() {
@@ -1125,7 +1213,8 @@ function createPercolationMode(engine) {
     };
   }
 
-  function generateBoard(nextEngine) {
+  function generateBoard(nextEngine, keepLevel = level) {
+    level = keepLevel;
     rows = 6 + Math.min(1, Math.floor(level / 4));
     cols = 6 + Math.min(1, Math.floor(level / 5));
     setGeometry(nextEngine);
@@ -1158,9 +1247,11 @@ function createPercolationMode(engine) {
     });
     board[sinkRow][cols - 1].special = 'collector';
     board[sourceRow][0].special = 'source';
-    mobility = clamp(mobility, 45, 100);
     solvedPath = [];
     pulseTimer = 0;
+    movesTotal = Math.max(10, rows + cols + 4);
+    movesLeft = movesTotal;
+    state = 'playing';
   }
 
   function cellAt(point) {
@@ -1212,36 +1303,45 @@ function createPercolationMode(engine) {
       setGeometry(nextEngine);
     },
     pointerDown(point, nextEngine) {
+      if (state === 'won') {
+        generateBoard(nextEngine, level + 1);
+        nextEngine.setMessage('new disorder field loaded', 0.9);
+        return;
+      }
+      if (state === 'lost') {
+        generateBoard(nextEngine, level);
+        nextEngine.setMessage('same stage reshuffled', 0.9);
+        return;
+      }
       const cell = cellAt(point);
-      if (!cell || pulseTimer > 0) return;
+      if (!cell) return;
       const tile = board[cell.row][cell.col];
       if (tile.kind === 'block' || tile.special === 'source' || tile.special === 'collector') return;
       tile.rotation = (tile.rotation + 1) % 4;
+      movesLeft = Math.max(0, movesLeft - 1);
       const solved = solvePath();
       if (solved.length) {
         solvedPath = solved;
-        pulseTimer = 1.15;
+        pulseTimer = 1.25;
+        state = 'won';
         const bonus = solved.reduce((sum, step) => sum + (board[step.row][step.col].special === 'dopant' ? 3 : 1), 0);
-        nextEngine.addScore(10 + bonus + level);
-        mobility = clamp(mobility + 22, 0, 100);
-        nextEngine.setMessage('connected transport pathway recovered', 1.2);
+        nextEngine.addScore(12 + bonus + movesLeft + level);
+        nextEngine.setMessage('conducting path recovered — click for next field', 1.6);
+      } else if (movesLeft <= 0) {
+        state = 'lost';
+        pulseTimer = 1.1;
+        nextEngine.setMessage('move budget exhausted — click to retry', 1.6);
       }
     },
     update(dt, nextEngine) {
-      mobility = clamp(mobility - dt * 4.2, 0, 100);
-      if (mobility <= 0) {
-        nextEngine.setMessage('mobility collapsed — reshuffling disorder field', 1.4);
-        generateBoard(nextEngine);
-        mobility = 100;
+      pulseTimer = Math.max(0, pulseTimer - dt);
+      if (state === 'playing') {
+        nextEngine.metricsText = 'rotate tiles to recover a source-to-collector pathway before the move budget is exhausted';
+      } else if (state === 'won') {
+        nextEngine.metricsText = 'source-to-collector path established — click anywhere for the next disorder field';
+      } else {
+        nextEngine.metricsText = 'move budget exhausted — click anywhere to retry this disorder field';
       }
-      if (pulseTimer > 0) {
-        pulseTimer -= dt;
-        if (pulseTimer <= 0) {
-          level += 1;
-          generateBoard(nextEngine);
-        }
-      }
-      nextEngine.metricsText = 'rotate tiles to recover a source-to-collector pathway through disorder';
     },
     draw(ctx, nextEngine) {
       drawBackdrop(ctx, nextEngine, 'rgba(136,164,255,0.16)', 'rgba(248,209,90,0.12)');
@@ -1277,14 +1377,12 @@ function createPercolationMode(engine) {
             });
             drawSphere(ctx, centerX, centerY, cellSize * 0.1, tile.special === 'dopant' ? '#ffe68d' : '#d9efff', tile.special === 'trap' ? '#6d2234' : '#284b75', 0.96);
           }
-          if (tile.special === 'trap') {
-            drawGlow(ctx, centerX, centerY, cellSize * 0.18, nextEngine.palette.warn, 0.14);
-          }
+          if (tile.special === 'trap') drawGlow(ctx, centerX, centerY, cellSize * 0.18, nextEngine.palette.warn, 0.14);
           ctx.restore();
         }
       }
       if (solvedPath.length && pulseTimer > 0) {
-        const t = 1 - pulseTimer / 1.15;
+        const t = 1 - pulseTimer / 1.25;
         const pulseIndex = Math.min(solvedPath.length - 1, Math.floor(t * solvedPath.length));
         solvedPath.forEach((step, index) => {
           const x = originX + step.col * cellSize + cellSize * 0.5;
@@ -1292,7 +1390,14 @@ function createPercolationMode(engine) {
           drawGlow(ctx, x, y, cellSize * 0.18, index <= pulseIndex ? nextEngine.palette.good : nextEngine.palette.accent, index <= pulseIndex ? 0.18 : 0.06);
         });
       }
-      drawBar(ctx, 18, 18, 220, mobility / 100, nextEngine.palette.accent, 'mobility window', nextEngine);
+      if (state !== 'playing' && pulseTimer > 0) {
+        ctx.save();
+        ctx.globalAlpha = pulseTimer * 0.15;
+        ctx.fillStyle = state === 'won' ? nextEngine.palette.good : nextEngine.palette.warn;
+        ctx.fillRect(0, 0, nextEngine.width, nextEngine.height);
+        ctx.restore();
+      }
+      drawBar(ctx, 18, 18, 220, clamp(movesLeft / Math.max(1, movesTotal), 0, 1), nextEngine.palette.accent, `moves left ${movesLeft}`, nextEngine);
       drawBar(ctx, 18, 38, 220, clamp(level / 8, 0, 1), '#f8d15a', `percolation stage ${level}`, nextEngine);
     }
   };

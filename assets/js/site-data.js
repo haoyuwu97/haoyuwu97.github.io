@@ -605,11 +605,11 @@ export const leisureModes = [
     title: 'Brush Channel Transport',
     subtitle: 'Transport through breathing brushes',
     description:
-      'Carry a tracer through a channel whose walls are lined with grafted chains. The free-volume window opens and closes as the brushes fluctuate.',
+      'Carry a tracer through a fluctuating brush-lined channel. Grafted chains create transient steric bottlenecks, while bright pockets mark favorable transport windows.',
     instruction:
-      'Mouse / touch / WASD / arrows to steer slowly. Follow the bright low-density corridor, collect flux markers, and avoid repeated collisions with brush beads.',
+      'Mouse / touch / WASD / arrows to steer. Stay inside transient free-volume corridors, collect bright pockets, and avoid repeated collisions with brush beads.',
     concept:
-      'The mode emphasizes steric transport: even with the same mean channel width, transport depends strongly on instantaneous free volume and chain motion.',
+      'The mode emphasizes steric transport through breathing polymer brushes: mobility depends on instantaneous free volume and local chain motion rather than a single fixed pore size.',
     learning: [
       'Brushes create fluctuating bottlenecks rather than a fixed pore size.',
       'Transport becomes easier when tracer motion is synchronized with local brush breathing.',
@@ -621,11 +621,11 @@ export const leisureModes = [
     title: 'Vitrimer Network Triage',
     subtitle: 'Scission, exchange, and connectivity',
     description:
-      'A dynamic network is continuously damaged by thermal hot spots. Heal the most important broken links first to preserve the giant connected component.',
+      'Repair strategically chosen broken links to recover a system-spanning vitrimer network before the repair budget is exhausted.',
     instruction:
-      'Click a broken bond to repair it. New scission events appear over time; protect connectivity rather than trying to heal every red segment in order.',
+      'Click a broken bond to repair it. Aim to restore the giant connected component with as few repairs as possible; after a win or loss, click once to continue.',
     concept:
-      'The puzzle reframes vitrimer self-healing as a connectivity problem: some local repairs matter much more than others because they preserve system-spanning pathways.',
+      'The puzzle reframes vitrimer healing as a topology problem: bridge bonds matter disproportionately because they preserve system-spanning connectivity.',
     learning: [
       'Macroscopic integrity depends on network connectivity, not just the raw number of intact bonds.',
       'Healing a bridge bond can matter more than healing a bond inside an already connected cluster.',
@@ -639,9 +639,9 @@ export const leisureModes = [
     description:
       'Match compatible reagents to satisfy a target polymer-forming reaction such as polyesterification, polyurethane formation, epoxy–amine curing, or polyamide formation.',
     instruction:
-      'Click two tiles. A correct pair for the current target reaction scores and replenishes the board; repeated correct chemistry builds combo and advances the target deck.',
+      'Click two tiles. Complete the target reaction deck before the mistake budget is exhausted; after success or failure, click once to continue.',
     concept:
-      'This mode is meant as a recognition puzzle: it trains the mapping from functional-group pairs to the polymer classes and dynamic chemistries they create.',
+      'This mode is a chemistry-recognition puzzle: it trains the mapping from functional-group pairs to the polymer classes and dynamic chemistries they create.',
     learning: [
       'Different functional-group pairs correspond to distinct polymerization routes.',
       'Recognizing reagent compatibility is a useful mental shortcut for synthesis planning.',
@@ -653,11 +653,11 @@ export const leisureModes = [
     title: 'Percolation Circuit',
     subtitle: 'Connectivity and disorder',
     description:
-      'Rotate tiles to recover a conducting path from source to collector. Dopant tiles boost reward, trap tiles lower mobility, and the board re-scrambles after every successful transport event.',
+      'Rotate tiles to recover a conducting path from source to collector. Dopant tiles enrich a solved pathway, while trap tiles mark unfavorable local environments.',
     instruction:
-      'Click a tile to rotate it. Build a left-to-right connected route before mobility decays, then let the charge pulse traverse the network and generate a new board.',
+      'Click a tile to rotate it. Recover a left-to-right connected route before the move budget is exhausted; after success or failure, click once to continue.',
     concept:
-      'The puzzle turns charge transport into a connectivity problem: percolation, traps, and dopants are represented as local tile rules that determine whether a system-spanning path exists.',
+      'The puzzle turns charge transport into a connectivity problem: percolation, traps, and dopants become local tile rules that determine whether a system-spanning path exists.',
     learning: [
       'A material conducts when a connected route exists, not merely when many conducting pieces are present.',
       'Trap-rich regions can interrupt transport even inside a visually dense network.',
