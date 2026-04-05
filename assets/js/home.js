@@ -1,5 +1,5 @@
 import { experienceTimeline, pageMeta, profile } from './site-data.js';
-import { activateNav, initReveal, renderLinkRow, renderTagList, setMeta, smoothScrollForHashes } from './utils.js';
+import { activateNav, initReveal, renderLinkRow, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
 
 function tryLoadPortrait(img, candidates) {
@@ -19,24 +19,20 @@ function tryLoadPortrait(img, candidates) {
 }
 
 function renderHero() {
-  document.getElementById('hero-kicker').textContent = profile.heroKicker;
   document.getElementById('hero-name').textContent = profile.name;
   document.getElementById('hero-title').textContent = `${profile.shortTitle} · ${profile.affiliation}`;
   document.getElementById('hero-summary').textContent = profile.heroSummary;
-  renderTagList(document.getElementById('focus-tags'), profile.focusAreas.slice(0, 4));
   renderLinkRow(document.getElementById('hero-links'), profile.links.slice(0, 5), 'ghost');
 }
 
-function renderExperience() {
-  const panel = document.getElementById('experience-panel');
-  if (!panel) return;
+function buildExperiencePanel(panel) {
+  if (!panel || panel.dataset.built === 'true') return;
   panel.innerHTML = `
     <div class="experience-panel-head">
-      <span class="meta-chip">Experience</span>
-      <p class="experience-panel-copy">Training, advising, and current affiliation in one compact block.</p>
+      <span class="meta-chip">Academic path</span>
+      <p class="experience-panel-copy">Education and research appointments.</p>
     </div>
     <div class="experience-list"></div>
-    <div class="experience-link-row"></div>
   `;
 
   const list = panel.querySelector('.experience-list');
@@ -54,11 +50,7 @@ function renderExperience() {
     list.appendChild(row);
   });
 
-  renderLinkRow(
-    panel.querySelector('.experience-link-row'),
-    profile.links.filter((link) => ['ORCID', 'Google Scholar', 'Whitmer Group'].includes(link.label)),
-    'secondary'
-  );
+  panel.dataset.built = 'true';
 }
 
 function initExperienceToggle() {
@@ -70,18 +62,20 @@ function initExperienceToggle() {
     button.setAttribute('aria-expanded', open ? 'true' : 'false');
     button.classList.toggle('is-open', open);
     panel.classList.toggle('open', open);
-    if (open) {
-      panel.removeAttribute('hidden');
-    } else {
-      panel.setAttribute('hidden', '');
-    }
+    panel.toggleAttribute('hidden', !open);
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
   };
 
   setOpen(false);
   button.addEventListener('click', () => {
     const next = panel.hasAttribute('hidden');
+    if (next) buildExperiencePanel(panel);
     setOpen(next);
-    if (next) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (next) {
+      window.requestAnimationFrame(() => {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
   });
 }
 
@@ -98,7 +92,6 @@ window.addEventListener('DOMContentLoaded', () => {
   smoothScrollForHashes();
   initPortrait();
   renderHero();
-  renderExperience();
   initExperienceToggle();
   initReveal();
   initMolecularField(document.getElementById('bg-canvas'), { variant: 'hero', density: 1.08 });

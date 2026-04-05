@@ -3607,3 +3607,91 @@ body.subpage .repo-grid {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- v16 minimal refinements: corrected academic path, cleaner home hero, more professional research prose --- */
+.hero-copy.compact-hero-copy {
+  gap: 0.85rem;
+}
+
+.home-hero-grid {
+  align-items: center;
+}
+
+.hero-summary {
+  max-width: 46rem;
+}
+
+.hero-link-row {
+  margin-top: 0.95rem;
+}
+
+.hero-link-row .btn {
+  margin-bottom: 0;
+}
+
+.experience-toggle-btn {
+  min-width: 9.4rem;
+}
+
+#experience-panel[hidden],
+.experience-panel[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.experience-panel {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.experience-panel-head {
+  margin-bottom: 0.1rem;
+}
+
+.experience-panel-copy {
+  max-width: 42rem;
+}
+
+.experience-item {
+  grid-template-columns: 8.2rem minmax(0, 1fr);
+  align-items: start;
+}
+
+.experience-body strong {
+  line-height: 1.38;
+}
+
+.research-page-head {
+  max-width: 74rem;
+}
+
+.research-block-copy {
+  max-width: 76ch;
+}
+
+.research-project-copy {
+  gap: 0.8rem;
+}
+
+.research-project-lead,
+.archive-lead {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.research-prose,
+.archive-prose {
+  gap: 0.8rem;
+}
+
+.research-prose p,
+.archive-prose p {
+  max-width: 74ch;
+}
+
+@media (max-width: 820px) {
+  .experience-item {
+    grid-template-columns: 1fr;
+    gap: 0.48rem;
+  }
+}

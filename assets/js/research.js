@@ -4,88 +4,88 @@ import { initMolecularField } from './background.js';
 
 const RESEARCH_PAGE = {
   intro:
-    'The present agenda is organized around two current projects, while earlier project lines are grouped into three mechanistic themes that still shape how I think about polymer structure–property relations.',
+    'The current research program combines polymer-network mechanics with mixed ionic/electronic transport, while earlier work built complementary expertise in polymer informatics, nanocomposite transport, and rheology.',
   currentProjects: [
     {
-      kicker: 'Current project 01',
-      title: 'Vitrimer mechanics, damage localization, and topological reorganization',
+      kicker: 'Current project',
+      title: 'Electrochemical hysteresis in organic mixed ionic–electronic conductors (OMIECs)',
       lead:
-        'This project asks how exchangeable interfaces and network topology redistribute stress, delay or accelerate fracture, and reopen a route to healing once damage has already localized.',
+        'This project develops a multiscale simulation-and-theory framework for OMIECs, with particular emphasis on the microscopic origin of electrochemical hysteresis and its translation into continuum and device metrics.',
       paragraphs: [
-        'The emphasis is not only on whether a vitrimer heals, but on which microscopic rearrangements preserve load-bearing pathways and which merely reshuffle damage. That requires following bond exchange, interface-mediated stress transfer, and the topology of the evolving network at the same time.',
-        'The goal is a mechanistic picture of how dynamic exchange changes fracture trajectories, post-damage recovery, and the structural signatures that distinguish reversible topological repair from simple softening.'
+        'The central question is how ionic motion, electronic motion, microstructural evolution, and electrostatic boundary conditions jointly generate history dependence during charging and discharging. The work therefore combines molecularly resolved models with electrochemically faithful boundary treatments so that simulated state variables remain physically interpretable rather than merely descriptive.',
+        'A second objective is methodological: to identify reduced observables and free-energy representations that can be transferred from molecular simulation to mesoscale and device-scale descriptions. The intended outcome is a predictive framework for comparing OMIEC chemistries, hydration states, morphologies, and operating protocols on the same thermodynamically consistent footing.'
       ],
-      tags: ['vitrimers', 'fracture', 'self-healing', 'dynamic exchange'],
-      figure: {
-        src: 'assets/img/publications/vitrimer-topological-transition-2024.png',
-        alt: 'Vitrimer mechanics and exchangeable-interface schematic',
-        caption: 'Current project line: exchangeable interfaces, fracture pathways, and self-healing in vitrimer composites.'
-      }
-    },
-    {
-      kicker: 'Current project 02',
-      title: 'OMIEC transport, electrochemical hysteresis, and multiscale closure',
-      lead:
-        'A second active line studies organic mixed ionic-electronic conductors, with the aim of linking molecular observables to mesoscopic transport response and hysteretic device behavior.',
-      paragraphs: [
-        'The immediate challenge is that ionic motion, electronic motion, morphology, and nonequilibrium charging are strongly coupled. Useful models therefore need both physically interpretable state variables and a clean bridge from microscopic simulation to continuum-scale transport descriptions.',
-        'The work focuses on building that bridge: extracting the right observables, understanding which microscopic bottlenecks control mixed transport, and turning those kernels into device-relevant models rather than isolated simulation snapshots.'
-      ],
-      tags: ['OMIEC', 'mixed transport', 'electrochemistry', 'hysteresis'],
+      tags: ['OMIEC', 'electrochemical hysteresis', 'mixed transport', 'multiscale modeling'],
       figure: {
         src: 'assets/img/research/omiec-transport.svg',
         alt: 'Schematic for mixed ionic-electronic transport in OMIECs',
-        caption: 'Current project line: coupled ionic and electronic pathways, charging fronts, and transport closure in OMIECs.'
+        caption: 'Current project: coupled ionic/electronic transport, electrochemical history dependence, and multiscale closure in OMIECs.'
+      }
+    },
+    {
+      kicker: 'Current project',
+      title: 'Topological reorganization, viscoelasticity, and damage recovery in vitrimers',
+      lead:
+        'A second active direction examines how bond-exchange chemistry and network topology reorganize load-bearing pathways, viscoelastic relaxation, fracture processes, and post-damage recovery in vitrimer systems.',
+      paragraphs: [
+        'The emphasis is mechanistic: which exchange events alter connectivity in a mechanically meaningful way, which topological motifs stabilize or weaken the response, and how interface-mediated exchange changes crack initiation, crack deflection, and healing trajectories.',
+        'By combining network-level descriptors with molecular simulation, the project aims to distinguish reversible topological reorganization from simple softening and to connect microscopic rearrangements with viscoelastic signatures that can support constitutive interpretation.'
+      ],
+      tags: ['vitrimers', 'dynamic networks', 'viscoelasticity', 'fracture'],
+      figure: {
+        src: 'assets/img/publications/vitrimer-topological-transition-2024.png',
+        alt: 'Vitrimer mechanics and exchangeable-interface schematic',
+        caption: 'Current project: topological transition, viscoelastic response, fracture, and self-healing in vitrimer composites.'
       }
     }
   ],
   oldProjects: [
     {
-      kicker: 'Earlier line 01',
+      kicker: 'Earlier research theme',
       title: 'Machine-learning prediction of polymer structure–property relations',
       lead:
-        'One earlier branch explored how polymer descriptors and curated simulation-informed data can be used to predict properties such as glass-transition temperature with interpretable machine-learning models.',
+        'One earlier branch of the work explored how chemically and physically meaningful descriptors can be used to predict polymer properties with interpretable machine-learning models.',
       paragraphs: [
-        'The point was not to replace physics with black-box fitting. Instead, the aim was to test which descriptors carry enough mechanistic signal to support useful prediction, screening, and comparison across polymer families.',
-        'That work now feeds directly into current interests in transport and device modeling, where data reduction and model selection matter just as much as simulation fidelity.'
+        'The objective was not to treat machine learning as a black-box substitute for physics. Instead, the focus was on descriptor design, dataset curation, and identifying which chemistry- and structure-level variables carry predictive signal for target properties such as glass-transition temperature.',
+        'That effort now informs current work on reduced-order modeling and surrogate construction, especially when multiscale problems require a compact but physically defensible mapping from high-dimensional simulation outputs to experimentally relevant observables.'
       ],
-      tags: ['machine learning', 'structure–property', 'glass transition', 'prediction'],
+      tags: ['polymer informatics', 'structure–property mapping', 'glass transition', 'interpretable ML'],
       figure: {
         src: 'assets/img/publications/ml-tg-sbr-2026.png',
         alt: 'Machine-learning summary for polymer property prediction',
-        caption: 'Earlier project line: descriptor-based prediction of polymer properties.'
+        caption: 'Earlier research theme: descriptor-based prediction of polymer properties with an emphasis on interpretability.'
       }
     },
     {
-      kicker: 'Earlier line 02',
-      title: 'Transport in polymer nanocomposites: electrical percolation and thermal conduction',
+      kicker: 'Earlier research theme',
+      title: 'Electrical percolation and thermal conduction in polymer nanocomposites',
       lead:
-        'Another earlier branch focused on transport in polymer nanocomposites, especially how filler geometry, polydispersity, connectivity, and interfacial defects generate or suppress system-spanning pathways.',
+        'A substantial earlier program examined how filler morphology, polydispersity, mixed-filler organization, and interfacial quality control transport in polymer nanocomposites.',
       paragraphs: [
-        'This included conductive-percolation questions for rod-like fillers and mixed networks, together with thermal-transport questions in systems where interfacial defects and filler dispersion determine the effective response.',
-        'Across both conduction and thermal transport, the recurring theme was that morphology is not a decorative detail. It is the transport problem itself, because the useful pathways are created or destroyed by structure.'
+        'The electrical-transport side focused on conductive percolation, including rod-like filler networks and the way non-conductive additives or mixed-filler populations reorganize connectivity. The thermal-transport side examined how surface defects and interfaces modify effective heat-conduction pathways in filled polymers.',
+        'Across both cases, the recurring conclusion was that transport is governed by network structure and interfacial physics rather than filler loading alone. The work therefore emphasized morphology-resolved interpretation instead of empirical trend fitting.'
       ],
-      tags: ['percolation', 'thermal transport', 'nanocomposites', 'connectivity'],
+      tags: ['percolation', 'electrical transport', 'thermal conduction', 'nanocomposites'],
       figure: {
         src: 'assets/img/publications/percolation-polydisperse-nanorods-2020.jpg',
         alt: 'Percolation and nanocomposite transport schematic',
-        caption: 'Earlier project line: connectivity-driven transport in polymer nanocomposites.'
+        caption: 'Earlier research theme: morphology-controlled electrical and thermal transport in polymer nanocomposites.'
       }
     },
     {
-      kicker: 'Earlier line 03',
-      title: 'Rheology and viscoelastic reinforcement in polymer nanocomposites',
+      kicker: 'Earlier research theme',
+      title: 'Rheology and viscoelasticity of polymer nanocomposites',
       lead:
-        'A third earlier branch asked how filler shape, size, and local organization reshape the rheological and viscoelastic response of polymer matrices.',
+        'A parallel research line investigated how filler size, shape, and local organization reshape chain relaxation and the rheological response of filled polymer systems.',
       paragraphs: [
-        'These studies linked emergent viscoelastic signatures to microscopic rearrangement, particle-induced constraints on chain motion, and the evolving structure of filled-polymer microenvironments.',
-        'That line of work built the habit of reading mechanical response mechanistically rather than phenomenologically: the constitutive curve only becomes meaningful when its structural origin is identified.'
+        'These studies linked macroscopic viscoelastic signatures to microscopic constraints on chain motion, filler-induced heterogeneity, and the evolution of local polymer environments under deformation or thermal variation.',
+        'The broader value of this work was methodological as well as scientific: it established a consistent habit of interpreting rheology through underlying structure and dynamics rather than treating constitutive curves as self-contained observables.'
       ],
-      tags: ['rheology', 'viscoelasticity', 'nanofillers', 'mechanism'],
+      tags: ['rheology', 'viscoelasticity', 'chain dynamics', 'filled polymers'],
       figure: {
         src: 'assets/img/publications/rheological-mechanism-spherical-np-2021.jpg',
         alt: 'Rheology and viscoelastic reinforcement figure',
-        caption: 'Earlier project line: rheological and viscoelastic consequences of nanofiller-induced microstructure.'
+        caption: 'Earlier research theme: filler-controlled relaxation and viscoelastic reinforcement in polymer nanocomposites.'
       }
     }
   ]

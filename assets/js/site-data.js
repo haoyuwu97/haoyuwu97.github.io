@@ -1,10 +1,10 @@
 export const profile = {
   name: 'Haoyu Wu',
   headline: 'Soft Matter Simulation · Polymer Physics · Scientific Software',
-  shortTitle: 'PhD Student in Chemical & Biomolecular Engineering',
+  shortTitle: 'Ph.D. Student in Chemical & Biomolecular Engineering',
   affiliation: 'University of Notre Dame',
   location: 'South Bend, Indiana, USA',
-  heroKicker: 'Polymer physics · soft-matter simulation · multiscale transport',
+  heroKicker: '',
   portrait: 'assets/img/profile-haoyu.jpg',
   portraitSquare: 'assets/img/profile-haoyu-square.webp',
   portraitCandidates: [
@@ -20,44 +20,43 @@ export const profile = {
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haoyu-wu-439bba323' }
   ],
   heroSummary:
-    'I study how chain architecture, dynamic bonding, and mesoscale morphology govern mechanics and transport in polymeric materials, using coarse-grained simulation together with reusable analysis software.',
+    'My research integrates molecular simulation, coarse-grained and multiscale modeling, statistical-mechanical interpretation, and reusable scientific software to study polymer networks, filled soft materials, and mixed ionic/electronic transport. The goal is to identify microscopic variables that control macroscopic mechanical, rheological, and electrochemical response.',
   bio: [
-    'My work sits at the interface of polymer physics, simulation methodology, and multiscale modeling. The central question is mechanistic: which microscopic features actually control the macroscopic response?',
-    'That question appears in different forms across filled polymers, vitrimer networks, rheology, fracture, and transport. I try to answer it with models that are physically explicit and with analysis code that can be reused rather than rewritten for each project.'
+    'My work spans polymer physics, simulation methodology, and multiscale modeling, with an emphasis on mechanism rather than phenomenology alone.',
+    'I build workflows that connect trajectories, structural observables, transport kernels, and higher-level models so that simulation results remain physically interpretable and reusable.'
   ],
-  focusAreas: [
-    'Vitrimer mechanics',
-    'OMIEC transport',
-    'Composite transport',
-    'Rheology & viscoelasticity'
-  ],
-  quickFacts: [
-    { label: 'Current base', value: 'Notre Dame · Whitmer Group' },
-    { label: 'Earlier training', value: 'BUCT · B.E. 2020, M.S. 2023' }
-  ]
+  focusAreas: [],
+  quickFacts: []
 };
 
 export const experienceTimeline = [
   {
-    period: '2023–present',
-    title: 'PhD Student · University of Notre Dame',
-    detail: 'Chemical & Biomolecular Engineering · Whitmer Group',
+    period: 'Sep. 2024 – Present',
+    title: 'Ph.D. Student · University of Notre Dame',
+    detail: 'Chemical & Biomolecular Engineering · Advisers: Jonathan K. Whitmer and Bryan D. Paulsen',
     body:
-      'Current work focuses on simulation-driven polymer physics and multiscale transport, especially the link between microscopic observables, constitutive interpretation, and device-relevant models.'
+      'Current research focuses on molecularly informed mechanics and transport in polymeric materials, especially electrochemical hysteresis in OMIECs, vitrimer topology, and multiscale model construction.'
   },
   {
-    period: '2020–2023',
-    title: 'M.S. · Beijing University of Chemical Technology',
+    period: 'Jun. 2023 – Jun. 2024',
+    title: 'Research Assistant · Center of Advanced Elastomer Materials, Beijing University of Chemical Technology',
+    detail: 'Advanced elastomers and polymer-composite simulation workflows',
+    body:
+      'Continued research on elastomeric and composite polymer systems while extending simulation and analysis workflows developed during graduate work.'
+  },
+  {
+    period: 'Sep. 2020 – Jun. 2023',
+    title: 'M.S. in Materials Science and Engineering · Beijing University of Chemical Technology',
     detail: 'Adviser: Liqun Zhang · collaborating adviser: Yangyang Gao',
     body:
-      'Master’s work centered on molecular simulation of polymer nanocomposites and soft polymer systems, covering percolation, glass transition, rheology, fracture, and related structure–property questions.'
+      'Graduate research centered on polymer nanocomposites and soft polymer systems, including conductive percolation, glass transition, viscoelasticity, fracture, and broader structure–property relations.'
   },
   {
-    period: 'B.E. 2020',
-    title: 'B.E. · Beijing University of Chemical Technology',
-    detail: 'Chemical engineering and polymer materials training',
+    period: 'Sep. 2016 – Jun. 2020',
+    title: 'B.E. in Polymer Materials and Engineering · Beijing University of Chemical Technology',
+    detail: 'Undergraduate training in chemical engineering and polymer materials',
     body:
-      'Undergraduate training established the chemical-engineering and polymer-materials foundation that led into simulation-first graduate research.'
+      'Undergraduate study established the thermodynamics, transport, materials, and polymer-physics foundation that later supported simulation-led research.'
   }
 ];
 
@@ -671,7 +670,7 @@ export const pageMeta = {
   index: {
     title: 'Haoyu Wu | Soft Matter Simulation & Scientific Software',
     description:
-      'Personal research homepage for Haoyu Wu: soft-matter simulation, polymer nanocomposites, multiscale transport, publications, software, and a playable rest mode.'
+      'Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, and scientific software.'
   },
   publications: {
     title: 'Publications | Haoyu Wu',
@@ -679,7 +678,7 @@ export const pageMeta = {
   },
   research: {
     title: 'Research | Haoyu Wu',
-    description: 'Current projects in vitrimer mechanics and OMIEC transport, plus earlier project lines in machine learning, transport, and rheology for polymer nanocomposites.'
+    description: 'Current research on OMIEC electrochemical hysteresis and vitrimer mechanics, together with earlier programs in polymer informatics, transport, and rheology of polymer nanocomposites.'
   },
   wiki: {
     title: 'Research Wiki | Haoyu Wu',
