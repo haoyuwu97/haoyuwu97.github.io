@@ -3812,3 +3812,58 @@ body.subpage .repo-grid {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- v18 leisure refinements: clearer HUD, longer brushes, solvable static puzzles --- */
+.leisure-hud-primary {
+  top: 1.15rem;
+  left: 1rem;
+  width: min(262px, calc(100% - 2.2rem));
+  gap: 0.24rem;
+  padding: 0.8rem 0.84rem 0.78rem;
+}
+
+.leisure-page .leisure-hud-primary .kicker {
+  align-self: start;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 0.3rem;
+  padding: 0.38rem 0.68rem;
+  font-size: 0.78rem;
+  line-height: 1.06;
+}
+
+.leisure-page .leisure-hud-primary .mode-title {
+  font-size: 1.08rem;
+  line-height: 1.08;
+}
+
+.leisure-page .leisure-hud-primary .hud-copy {
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.leisure-hud-note {
+  left: 1rem;
+  bottom: 1rem;
+  width: min(276px, calc(100% - 2rem));
+  padding: 0.76rem 0.84rem;
+  gap: 0.28rem;
+}
+
+.leisure-page .leisure-hud-note .hud-copy {
+  font-size: 0.89rem;
+  line-height: 1.48;
+}
+
+.leisure-page .leisure-hud-note .hud-note {
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 960px) {
+  .leisure-hud-primary,
+  .leisure-hud-note,
+  .leisure-hud-controls {
+    width: min(280px, calc(100% - 1.5rem));
+  }
+}

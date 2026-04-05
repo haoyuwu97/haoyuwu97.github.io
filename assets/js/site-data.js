@@ -603,13 +603,13 @@ export const leisureModes = [
   {
     id: 'brush-channel',
     title: 'Brush Channel Transport',
-    subtitle: 'Transport through breathing brushes',
+    subtitle: 'Brush-gated transport',
     description:
-      'Carry a tracer through a fluctuating brush-lined channel. Grafted chains create transient steric bottlenecks, while bright pockets mark favorable transport windows.',
+      'Carry a tracer through a fluctuating bottlebrush-lined channel. Longer grafted chains breathe and interdigitate, creating transient steric bottlenecks while bright pockets mark favorable transport windows.',
     instruction:
-      'Mouse / touch / WASD / arrows to steer. Stay inside transient free-volume corridors, collect bright pockets, and avoid repeated collisions with brush beads.',
+      'Mouse / touch / WASD / arrows to steer. Stay inside transient free-volume corridors, collect bright pockets, and avoid repeated collisions with long brush beads.',
     concept:
-      'The mode emphasizes steric transport through breathing polymer brushes: mobility depends on instantaneous free volume and local chain motion rather than a single fixed pore size.',
+      'The mode emphasizes steric transport through breathing polymer brushes: mobility depends on instantaneous free volume, chain relaxation, and local crowding rather than a single fixed pore size.',
     learning: [
       'Brushes create fluctuating bottlenecks rather than a fixed pore size.',
       'Transport becomes easier when tracer motion is synchronized with local brush breathing.',
@@ -619,13 +619,13 @@ export const leisureModes = [
   {
     id: 'bond-repair',
     title: 'Vitrimer Network Triage',
-    subtitle: 'Scission, exchange, and connectivity',
+    subtitle: 'Vitrimer network repair',
     description:
-      'Repair strategically chosen broken links to recover a system-spanning vitrimer network before the repair budget is exhausted.',
+      'Repair orange broken links to regrow the bright cyan giant cluster of a vitrimer network before the repair budget is exhausted.',
     instruction:
-      'Click a broken bond to repair it. Aim to restore the giant connected component with as few repairs as possible; after a win or loss, click once to continue.',
+      'Click an orange broken bond to heal it. You win when the bright cyan cluster reaches the target size shown in the top bar; after a win or loss, click once to continue.',
     concept:
-      'The puzzle reframes vitrimer healing as a topology problem: bridge bonds matter disproportionately because they preserve system-spanning connectivity.',
+      'The puzzle reframes vitrimer healing as a topology problem: not every bond contributes equally, because bridge bonds disproportionately control whether a giant connected cluster survives.',
     learning: [
       'Macroscopic integrity depends on network connectivity, not just the raw number of intact bonds.',
       'Healing a bridge bond can matter more than healing a bond inside an already connected cluster.',
@@ -651,13 +651,13 @@ export const leisureModes = [
   {
     id: 'charge-tactics',
     title: 'Percolation Circuit',
-    subtitle: 'Connectivity and disorder',
+    subtitle: 'Percolation under disorder',
     description:
-      'Rotate tiles to recover a conducting path from source to collector. Dopant tiles enrich a solved pathway, while trap tiles mark unfavorable local environments.',
+      'Rotate tiles to recover a conducting path from source to collector. Each disorder field is generated from a solvable hidden route; dopant tiles enrich a solved pathway while trap tiles mark unfavorable local environments.',
     instruction:
-      'Click a tile to rotate it. Recover a left-to-right connected route before the move budget is exhausted; after success or failure, click once to continue.',
+      'Click a tile to rotate it. Recover any left-to-right connected route before the move budget is exhausted; after success or failure, click once to continue.',
     concept:
-      'The puzzle turns charge transport into a connectivity problem: percolation, traps, and dopants become local tile rules that determine whether a system-spanning path exists.',
+      'The puzzle turns charge transport into a connectivity problem: percolation, traps, and dopants become local tile rules that determine whether a system-spanning path exists through a disordered medium.',
     learning: [
       'A material conducts when a connected route exists, not merely when many conducting pieces are present.',
       'Trap-rich regions can interrupt transport even inside a visually dense network.',
