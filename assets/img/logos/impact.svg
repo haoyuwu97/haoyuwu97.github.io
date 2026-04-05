@@ -1,23 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
   <defs>
-    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#102240" flood-opacity="0.14"/>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <g filter="url(#shadow)">
-    <rect x="120" y="142" width="272" height="20" rx="10" fill="#18325f"/>
-    <rect x="136" y="198" width="240" height="16" rx="8" fill="#58d8d0"/>
-    <rect x="112" y="248" width="288" height="22" rx="11" fill="#18325f"/>
-    <rect x="136" y="300" width="240" height="16" rx="8" fill="#58d8d0"/>
-    <rect x="120" y="350" width="272" height="20" rx="10" fill="#18325f"/>
-    <path d="M256 164V348" stroke="#f0b34f" stroke-width="14" stroke-linecap="round" opacity="0.96"/>
-    <rect x="214" y="220" width="84" height="84" rx="20" transform="rotate(45 256 262)" fill="#f0b34f"/>
-    <circle cx="256" cy="262" r="23" fill="#eef5ff"/>
-    <path d="M194 202L220 228M318 326L292 300M318 202L292 228M194 326L220 300" stroke="#24a6b8" stroke-width="12" stroke-linecap="round"/>
-    <circle cx="194" cy="202" r="7" fill="#eef5ff"/>
-    <circle cx="318" cy="202" r="7" fill="#eef5ff"/>
-    <circle cx="194" cy="326" r="7" fill="#eef5ff"/>
-    <circle cx="318" cy="326" r="7" fill="#eef5ff"/>
-    <path d="M168 262H210M302 262H344" stroke="#f0b34f" stroke-width="12" stroke-linecap="round"/>
-  </g>
+  
+<path d="M58 62 L118 128 L58 194" stroke="#0b1b3c" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M118 128 H176" stroke="#0b1b3c" stroke-width="18" stroke-linecap="round"/>
+<circle cx="58" cy="62" r="12" fill="#49d7f5"/>
+<circle cx="58" cy="194" r="12" fill="#67e0c4"/>
+<circle cx="118" cy="128" r="14" fill="#6887ff"/>
+<circle cx="176" cy="128" r="20" fill="#f08aa7" filter="url(#softGlow)"/>
+<circle cx="176" cy="128" r="12" fill="#f08aa7"/>
+<path d="M226 128 H196" stroke="#f4c85f" stroke-width="14" stroke-linecap="round"/>
+<path d="M210 112 L226 128 L210 144" stroke="#f4c85f" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M188 86 C212 96 222 112 224 128" stroke="#0b1b3c" stroke-width="10" stroke-linecap="round" opacity="0.28"/>
+<path d="M188 170 C212 160 222 144 224 128" stroke="#0b1b3c" stroke-width="10" stroke-linecap="round" opacity="0.18"/>
+
 </svg>

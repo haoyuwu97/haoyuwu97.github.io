@@ -1,7 +1,6 @@
 import { experienceTimeline, pageMeta, profile } from './site-data.js';
 import { activateNav, initReveal, renderLinkRow, renderTagList, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
-import { renderStats } from './renderers.js';
 
 function tryLoadPortrait(img, candidates) {
   const queue = [...candidates];
@@ -25,7 +24,6 @@ function renderHero() {
   document.getElementById('hero-title').textContent = `${profile.shortTitle} · ${profile.affiliation}`;
   document.getElementById('hero-summary').textContent = profile.heroSummary;
   renderTagList(document.getElementById('focus-tags'), profile.focusAreas.slice(0, 4));
-  renderStats(document.getElementById('hero-facts'), profile.quickFacts.slice(0, 2));
   renderLinkRow(document.getElementById('hero-links'), profile.links.slice(0, 5), 'ghost');
 }
 
@@ -34,8 +32,8 @@ function renderExperience() {
   if (!panel) return;
   panel.innerHTML = `
     <div class="experience-panel-head">
-      <span class="meta-chip">Academic path</span>
-      <p class="experience-panel-copy">Training, advisers, and public profile links in one compact block.</p>
+      <span class="meta-chip">Experience</span>
+      <p class="experience-panel-copy">Training, advising, and current affiliation in one compact block.</p>
     </div>
     <div class="experience-list"></div>
     <div class="experience-link-row"></div>
@@ -56,7 +54,11 @@ function renderExperience() {
     list.appendChild(row);
   });
 
-  renderLinkRow(panel.querySelector('.experience-link-row'), profile.links.filter((link) => ['ORCID', 'Google Scholar', 'Whitmer Group'].includes(link.label)), 'secondary');
+  renderLinkRow(
+    panel.querySelector('.experience-link-row'),
+    profile.links.filter((link) => ['ORCID', 'Google Scholar', 'Whitmer Group'].includes(link.label)),
+    'secondary'
+  );
 }
 
 function initExperienceToggle() {
@@ -64,17 +66,21 @@ function initExperienceToggle() {
   const panel = document.getElementById('experience-panel');
   if (!button || !panel) return;
 
-  const update = (open) => {
+  const setOpen = (open) => {
     button.setAttribute('aria-expanded', open ? 'true' : 'false');
-    button.textContent = open ? 'Hide academic path' : 'Academic path';
-    panel.hidden = !open;
+    button.classList.toggle('is-open', open);
     panel.classList.toggle('open', open);
+    if (open) {
+      panel.removeAttribute('hidden');
+    } else {
+      panel.setAttribute('hidden', '');
+    }
   };
 
-  update(false);
+  setOpen(false);
   button.addEventListener('click', () => {
-    const next = panel.hidden;
-    update(next);
+    const next = panel.hasAttribute('hidden');
+    setOpen(next);
     if (next) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 }

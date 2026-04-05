@@ -4,7 +4,7 @@ export const profile = {
   shortTitle: 'PhD Student in Chemical & Biomolecular Engineering',
   affiliation: 'University of Notre Dame',
   location: 'South Bend, Indiana, USA',
-  heroKicker: 'Coarse-grained simulation · network mechanics · soft-matter transport',
+  heroKicker: 'Polymer physics · soft-matter simulation · multiscale transport',
   portrait: 'assets/img/profile-haoyu.jpg',
   portraitSquare: 'assets/img/profile-haoyu-square.webp',
   portraitCandidates: [
@@ -20,16 +20,16 @@ export const profile = {
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haoyu-wu-439bba323' }
   ],
   heroSummary:
-    'I use molecular and coarse-grained simulation to connect polymer-network structure, nonlinear mechanics, and transport in soft materials to interpretable observables and reusable scientific software.',
+    'I study how chain architecture, dynamic bonding, and mesoscale morphology govern mechanics and transport in polymeric materials, using coarse-grained simulation together with reusable analysis software.',
   bio: [
     'My work sits at the interface of polymer physics, simulation methodology, and multiscale modeling. The central question is mechanistic: which microscopic features actually control the macroscopic response?',
     'That question appears in different forms across filled polymers, vitrimer networks, rheology, fracture, and transport. I try to answer it with models that are physically explicit and with analysis code that can be reused rather than rewritten for each project.'
   ],
   focusAreas: [
-    'Networked polymers',
-    'Dynamic bond exchange',
-    'Soft-matter transport',
-    'Analysis infrastructure'
+    'Vitrimer mechanics',
+    'OMIEC transport',
+    'Composite transport',
+    'Rheology & viscoelasticity'
   ],
   quickFacts: [
     { label: 'Current base', value: 'Notre Dame · Whitmer Group' },
@@ -588,7 +588,7 @@ export const leisureModes = [
   {
     id: 'chain-growth-runner',
     title: 'Living Chain Growth',
-    subtitle: 'Chain-growth polymerization as a reactor sketch',
+    subtitle: 'Chain-growth polymerization',
     description:
       'Guide an active chain end through a monomer bath. Monomer capture extends the backbone bead by bead, inhibitors quench activity, and catalyst beads restart a dormant chain.',
     instruction:
@@ -604,7 +604,7 @@ export const leisureModes = [
   {
     id: 'brush-channel',
     title: 'Brush Channel Transport',
-    subtitle: 'Diffusive transport through breathing polymer brushes',
+    subtitle: 'Transport through breathing brushes',
     description:
       'Carry a tracer through a channel whose walls are lined with grafted chains. The free-volume window opens and closes as the brushes fluctuate.',
     instruction:
@@ -620,7 +620,7 @@ export const leisureModes = [
   {
     id: 'bond-repair',
     title: 'Vitrimer Network Triage',
-    subtitle: 'Scission, exchange, and connectivity maintenance',
+    subtitle: 'Scission, exchange, and connectivity',
     description:
       'A dynamic network is continuously damaged by thermal hot spots. Heal the most important broken links first to preserve the giant connected component.',
     instruction:
@@ -636,7 +636,7 @@ export const leisureModes = [
   {
     id: 'reaction-match',
     title: 'Reaction Match Lab',
-    subtitle: 'A polymer-chemistry mahjong board',
+    subtitle: 'Polymer chemistry matching',
     description:
       'Match compatible reagents to satisfy a target polymer-forming reaction such as polyesterification, polyurethane formation, epoxy–amine curing, or polyamide formation.',
     instruction:
@@ -652,7 +652,7 @@ export const leisureModes = [
   {
     id: 'charge-tactics',
     title: 'Percolation Circuit',
-    subtitle: 'A transport puzzle built from connectivity and disorder',
+    subtitle: 'Connectivity and disorder',
     description:
       'Rotate tiles to recover a conducting path from source to collector. Dopant tiles boost reward, trap tiles lower mobility, and the board re-scrambles after every successful transport event.',
     instruction:
@@ -679,7 +679,7 @@ export const pageMeta = {
   },
   research: {
     title: 'Research | Haoyu Wu',
-    description: 'Research directions in polymer network mechanics, transport and connectivity in filled soft matter, and scientific software for simulation-driven modeling.'
+    description: 'Current projects in vitrimer mechanics and OMIEC transport, plus earlier project lines in machine learning, transport, and rheology for polymer nanocomposites.'
   },
   wiki: {
     title: 'Research Wiki | Haoyu Wu',

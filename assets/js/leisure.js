@@ -1333,7 +1333,7 @@ window.addEventListener('DOMContentLoaded', () => {
   leisureModes.forEach((mode) => {
     const option = document.createElement('option');
     option.value = mode.id;
-    option.textContent = `${mode.title} · ${mode.subtitle}`;
+    option.textContent = mode.title;
     selector.appendChild(option);
   });
 

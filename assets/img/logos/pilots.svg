@@ -1,25 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
   <defs>
-    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#102240" flood-opacity="0.14"/>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <g filter="url(#shadow)">
-    <path d="M150 94V418" stroke="#18325f" stroke-width="58" stroke-linecap="round"/>
-    <path d="M150 146
-             C220 102 306 108 350 148
-             C388 183 388 252 350 286
-             C307 324 225 322 150 284"
-          stroke="#5ad7cf" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M186 166C236 136 303 137 336 170" stroke="#8fe8df" stroke-width="10" stroke-linecap="round" opacity="0.7"/>
-    <path d="M404 148v24M404 236v24M404 326v24" stroke="#d7e2ef" stroke-width="10" stroke-linecap="round" opacity="0.92"/>
-    <circle cx="150" cy="284" r="28" fill="#24a6b8"/>
-    <circle cx="150" cy="284" r="10" fill="#eef5ff"/>
-    <circle cx="350" cy="148" r="30" fill="#61d095"/>
-    <circle cx="350" cy="148" r="10" fill="#eef5ff"/>
-    <circle cx="270" cy="124" r="26" fill="#f0b34f"/>
-    <circle cx="270" cy="124" r="9" fill="#eef5ff"/>
-    <path d="M184 378h156" stroke="#18325f" stroke-width="14" stroke-linecap="round" opacity="0.22"/>
-    <path d="M184 412h114" stroke="#18325f" stroke-width="14" stroke-linecap="round" opacity="0.14"/>
-  </g>
+  
+<path d="M84 206 V50 M84 50 H142 Q176 50 176 88 Q176 126 142 126 H84" stroke="#0b1b3c" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M46 188 C58 176 67 166 84 154" stroke="#7d92b8" stroke-width="12" stroke-linecap="round"/>
+<circle cx="52" cy="186" r="10" fill="#49d7f5"/>
+<circle cx="67" cy="172" r="9" fill="#67e0c4"/>
+<circle cx="84" cy="154" r="9" fill="#6887ff"/>
+<circle cx="130" cy="89" r="16" fill="#49d7f5" filter="url(#softGlow)"/>
+<circle cx="130" cy="89" r="10" fill="#6887ff"/>
+<path d="M104 166 H176" stroke="#0b1b3c" stroke-width="12" stroke-linecap="round" opacity="0.22"/>
+<path d="M104 188 H156" stroke="#0b1b3c" stroke-width="12" stroke-linecap="round" opacity="0.16"/>
+
 </svg>
