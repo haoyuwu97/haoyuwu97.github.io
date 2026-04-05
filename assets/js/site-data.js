@@ -4,74 +4,168 @@ export const profile = {
   shortTitle: 'PhD Student in Chemical & Biomolecular Engineering',
   affiliation: 'University of Notre Dame',
   location: 'South Bend, Indiana, USA',
-  heroKicker: 'Coarse-grained molecular simulation · polymer physics · multiscale transport',
+  heroKicker: 'Coarse-grained simulation · network mechanics · soft-matter transport',
   portrait: 'assets/img/profile-haoyu.jpg',
   portraitSquare: 'assets/img/profile-haoyu-square.webp',
+  portraitCandidates: [
+    'assets/img/profile-haoyu-manual.jpg',
+    'assets/img/profile-haoyu-manual.png',
+    'assets/img/profile-haoyu.jpg'
+  ],
   links: [
     { label: 'GitHub', href: 'https://github.com/haoyuwu97' },
     { label: 'Google Scholar', href: 'https://scholar.google.com/citations?hl=en&user=NSpr644AAAAJ' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haoyu-wu-439bba323' },
+    { label: 'ORCID', href: 'https://orcid.org/0000-0002-2805-4911' },
     { label: 'Whitmer Group', href: 'https://whitmergroup.github.io/people.html' },
-    { label: 'ORCID', href: 'https://orcid.org/0000-0002-2805-4911' }
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haoyu-wu-439bba323' }
   ],
   heroSummary:
-    'I study polymeric soft matter, vitrimer mechanics, and multiscale transport with simulation-first workflows that turn trajectories into observables, software, and device-relevant models.',
+    'I use molecular and coarse-grained simulation to connect polymer-network structure, nonlinear mechanics, and transport in soft materials to interpretable observables and reusable scientific software.',
   bio: [
-    'I am a PhD student at the University of Notre Dame in the Whitmer group. My workflow is simulation-first and physics-first: generate trajectories, formalize the observable, and turn the analysis into code that is reusable rather than one-off.',
-    'Before Notre Dame, I completed both my B.E. and M.S. at Beijing University of Chemical Technology. Earlier work centered on polymers and polymer nanocomposites, especially percolation, rheology, thermal transport, glass transition, fracture, and vitrimer self-healing.'
+    'My work sits at the interface of polymer physics, simulation methodology, and multiscale modeling. The central question is mechanistic: which microscopic features actually control the macroscopic response?',
+    'That question appears in different forms across filled polymers, vitrimer networks, rheology, fracture, and transport. I try to answer it with models that are physically explicit and with analysis code that can be reused rather than rewritten for each project.'
   ],
   focusAreas: [
-    'Soft-matter simulation',
-    'Polymer nanocomposites',
-    'Vitrimers & fracture',
-    'Rheology',
-    'Scientific software',
-    'Transport modeling'
+    'Networked polymers',
+    'Dynamic bond exchange',
+    'Soft-matter transport',
+    'Analysis infrastructure'
   ],
   quickFacts: [
-    { label: 'Current home', value: 'Notre Dame' },
-    { label: 'Training', value: 'B.E. 2020 + M.S. 2023, BUCT' },
-    { label: 'Paper window', value: '2020–2026 on this site' },
-    { label: 'Code style', value: 'Trajectory → observable → model' }
+    { label: 'Current base', value: 'Notre Dame · Whitmer Group' },
+    { label: 'Earlier training', value: 'BUCT · B.E. 2020, M.S. 2023' }
   ]
 };
 
+export const experienceTimeline = [
+  {
+    period: '2023–present',
+    title: 'PhD Student · University of Notre Dame',
+    detail: 'Chemical & Biomolecular Engineering · Whitmer Group',
+    body:
+      'Current work focuses on simulation-driven polymer physics and multiscale transport, especially the link between microscopic observables, constitutive interpretation, and device-relevant models.'
+  },
+  {
+    period: '2020–2023',
+    title: 'M.S. · Beijing University of Chemical Technology',
+    detail: 'Adviser: Liqun Zhang · collaborating adviser: Yangyang Gao',
+    body:
+      'Master’s work centered on molecular simulation of polymer nanocomposites and soft polymer systems, covering percolation, glass transition, rheology, fracture, and related structure–property questions.'
+  },
+  {
+    period: 'B.E. 2020',
+    title: 'B.E. · Beijing University of Chemical Technology',
+    detail: 'Chemical engineering and polymer materials training',
+    body:
+      'Undergraduate training established the chemical-engineering and polymer-materials foundation that led into simulation-first graduate research.'
+  }
+];
+
 export const researchPillars = [
   {
-    id: 'soft-materials',
-    title: 'Polymer microstructure and emergent properties',
+    id: 'network-mechanics',
+    title: 'Networked polymers and nonlinear mechanics',
     body:
-      'Coarse-grained and molecular-dynamics studies of percolation, rheology, fracture, vitrimer healing, and transport in filled and cross-linked polymer systems.'
+      'Cross-linked polymers, filled systems, vitrimers, fracture, healing, and the structural origins of nonlinear response.'
   },
   {
-    id: 'analysis-systems',
-    title: 'Reusable analysis systems',
+    id: 'transport-connectivity',
+    title: 'Transport, percolation, and connectivity',
     body:
-      'Trajectory parsing, structural observables, crystallization analysis, modulus extraction, and other analysis routines organized as durable software instead of one-off scripts.'
+      'How filler networks, morphology, and defects control conduction, thermal transport, and mobility in composite soft matter.'
   },
   {
-    id: 'multiscale-transport',
-    title: 'Microscopic kernels to continuum response',
+    id: 'simulation-systems',
+    title: 'Simulation infrastructure and model linkage',
     body:
-      'A current direction connects molecular observables to mesoscale and device-scale transport, especially electrochemical and mixed ionic/electronic systems.'
+      'Reusable analysis software that turns trajectories into observables, kernels, and higher-level physical models.'
+  }
+];
+
+export const researchDirections = [
+  {
+    id: 'networked-polymers',
+    kicker: 'Direction 01 · network mechanics',
+    title: 'Networked polymers, vitrimers, and nonlinear mechanics',
+    lead:
+      'A large part of the work asks how molecular architecture, bond exchange, and filler topology reshape fracture, healing, stiffening, and stress redistribution in polymer networks.',
+    paragraphs: [
+      'At the molecular level, many mechanically important polymer systems are not simple homogeneous melts. They are cross-linked, filled, dynamically rearranging, or topologically frustrated. In that setting, the interesting physics is usually not just “stronger versus weaker”; it is which microscopic pathways carry stress, which regions localize damage, and which rearrangements preserve or destroy connectivity.',
+      'This direction therefore focuses on filled elastomers, double and interpenetrated networks, and vitrimer-like systems with exchangeable interactions. The goal is to understand how network structure and local dynamics control fracture initiation, bond-exchange-enabled healing, and the emergence of macroscopic mechanical signatures from microscopic pathways.'
+    ],
+    questions: [
+      'Which local motifs actually control crack initiation and crack deflection?',
+      'When does dynamic bond exchange improve integrity, and when does it only redistribute damage?',
+      'How do filler geometry and network topology change nonlinear mechanical response?'
+    ],
+    keywords: ['fracture', 'vitrimers', 'dynamic networks', 'mechanics'],
+    figure: {
+      src: 'assets/img/publications/vitrimer-topological-transition-2024.png',
+      alt: 'Topological transition and healing schematic for vitrimer composites',
+      caption: 'Representative figure space for network rearrangement, fracture, and self-healing in vitrimer composites.'
+    }
+  },
+  {
+    id: 'transport-connectivity',
+    kicker: 'Direction 02 · connectivity and transport',
+    title: 'Percolation, filler networks, and transport in composite soft matter',
+    lead:
+      'Another recurring question is transport: how morphology, polydispersity, defects, and network connectivity convert a collection of particles and chains into a conducting or insulating medium.',
+    paragraphs: [
+      'Polymer nanocomposites are a natural setting for this question because transport rarely depends on a single scalar descriptor. Conductive pathways, thermal interfaces, excluded volume, and filler shape all matter at once. Small structural changes can produce disproportionate changes in emergent connectivity.',
+      'This direction studies percolation of rods and mixed fillers, the role of filler size and shape in viscoelastic and transport behavior, and the way interfacial defects alter thermal response. The guiding idea is that connectivity is a physical object that can be analyzed, perturbed, and ultimately linked to higher-level observables rather than treated as a black-box correlation.'
+    ],
+    questions: [
+      'How does polydispersity reorganize the onset of system-spanning connectivity?',
+      'Which filler-shape effects are geometric, and which are genuinely dynamical?',
+      'How do interfacial defects alter transport beyond simple loading-fraction arguments?'
+    ],
+    keywords: ['percolation', 'nanocomposites', 'thermal transport', 'connectivity'],
+    figure: {
+      src: 'assets/img/publications/percolation-polydisperse-nanorods-2020.jpg',
+      alt: 'Graphical abstract for polydisperse nanorod percolation',
+      caption: 'Representative figure space for filler connectivity, percolation, and transport pathways in polymer nanocomposites.'
+    }
+  },
+  {
+    id: 'software-linkage',
+    kicker: 'Direction 03 · software and model linkage',
+    title: 'Scientific software for trajectories, observables, and multiscale linkage',
+    lead:
+      'The software layer is not separate from the science: it is how the physical questions stay reproducible, extensible, and connected across scales.',
+    paragraphs: [
+      'Trajectory analysis, structural metrics, stress-response transforms, and continuum transport closures all become fragile when they live only as project-specific scripts. I therefore treat the software stack as part of the research program itself: the code should preserve assumptions, expose provenance, and make it easy to extend the physics without rebuilding the workflow from scratch.',
+      'This direction includes analysis runners, crystallization and rheology toolkits, Monte Carlo teaching code, and continuum transport solvers. Together they form a path from simulation output to observables, from observables to kernels, and from kernels to higher-level device or materials interpretation.'
+    ],
+    questions: [
+      'How can trajectory-derived observables be preserved with enough metadata to stay reusable?',
+      'Which software abstractions make new physics easy to add without rewriting the pipeline?',
+      'How should molecular data be passed into continuum descriptions without losing physical meaning?'
+    ],
+    keywords: ['PILOTS', 'CHANNEL', 'VELA', 'analysis systems'],
+    figure: {
+      src: 'assets/img/research/software-stack.png',
+      alt: 'Software stack schematic connecting simulation, observables, and transport models',
+      caption: 'Figure space for the connected software stack linking simulations, observables, and continuum-side models.'
+    }
   }
 ];
 
 export const homeSpotlights = [
   {
-    title: 'Polymer nanocomposites',
+    title: 'Network mechanics',
     text:
-      'Microstructure–property analysis across filler size, shape, percolation, thermal transport, and rheology.'
+      'Dynamic polymer networks, fracture, healing, and the molecular structure of nonlinear mechanical response.'
   },
   {
-    title: 'Fracture and vitrimer physics',
+    title: 'Connectivity and transport',
     text:
-      'Failure pathways, bond exchange, topological transition, and self-healing in dynamic polymer networks.'
+      'Percolation, filler networks, and the transport signatures that emerge from soft composite morphology.'
   },
   {
     title: 'Scientific software',
     text:
-      'From trajectory analysis to continuum solvers, the code stack is designed as a connected research system.'
+      'Reusable tools that connect trajectories, observables, and higher-level physical models.'
   }
 ];
 
@@ -582,6 +676,10 @@ export const pageMeta = {
   publications: {
     title: 'Publications | Haoyu Wu',
     description: 'Publications spanning polymer nanocomposites, thermal transport, rheology, glass transition, fracture, vitrimers, and molecular simulation.'
+  },
+  research: {
+    title: 'Research | Haoyu Wu',
+    description: 'Research directions in polymer network mechanics, transport and connectivity in filled soft matter, and scientific software for simulation-driven modeling.'
   },
   wiki: {
     title: 'Research Wiki | Haoyu Wu',

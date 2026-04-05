@@ -6,14 +6,14 @@
     <title>Haoyu Wu | Soft Matter Simulation &amp; Scientific Software</title>
     <meta
       name="description"
-      content="Personal research homepage for Haoyu Wu: soft-matter simulation, polymer nanocomposites, multiscale transport, publications, software, and interactive chemistry/physics sketches."
+      content="Personal research homepage for Haoyu Wu: polymer physics, soft-matter simulation, multiscale transport, publications, scientific software, and interactive teaching sketches."
     />
     <meta name="theme-color" content="#050816" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Haoyu Wu | Soft Matter Simulation &amp; Scientific Software" />
     <meta
       property="og:description"
-      content="Personal research homepage for Haoyu Wu: soft-matter simulation, polymer nanocomposites, multiscale transport, publications, software, and interactive chemistry/physics sketches."
+      content="Personal research homepage for Haoyu Wu: polymer physics, soft-matter simulation, multiscale transport, publications, scientific software, and interactive teaching sketches."
     />
     <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
     <meta property="og:url" content="https://haoyuwu97.github.io/" />
@@ -21,7 +21,7 @@
     <meta name="twitter:title" content="Haoyu Wu | Soft Matter Simulation &amp; Scientific Software" />
     <meta
       name="twitter:description"
-      content="Personal research homepage for Haoyu Wu: soft-matter simulation, polymer nanocomposites, multiscale transport, publications, software, and interactive chemistry/physics sketches."
+      content="Personal research homepage for Haoyu Wu: polymer physics, soft-matter simulation, multiscale transport, publications, scientific software, and interactive teaching sketches."
     />
     <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -55,6 +55,7 @@
           </a>
           <nav class="nav-links" aria-label="Primary navigation">
             <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+            <a class="nav-link" data-nav="research" href="research.html">Research</a>
             <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
             <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
             <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
@@ -68,20 +69,25 @@
 
       <main class="site-main">
         <section class="hero compact-hero">
-          <div class="container hero-shell compact-home-shell">
-            <div class="hero-grid compact-hero-grid">
+          <div class="container hero-shell compact-home-shell hero-shell-strong">
+            <div class="hero-grid compact-hero-grid home-hero-grid">
               <div class="hero-copy compact-hero-copy">
                 <span id="hero-kicker" class="kicker">Research profile</span>
                 <h1 id="hero-name" class="hero-title">Haoyu Wu</h1>
                 <p id="hero-title" class="hero-subtitle">PhD Student in Chemical &amp; Biomolecular Engineering · University of Notre Dame</p>
                 <p id="hero-summary" class="hero-summary"></p>
-                <div id="focus-tags" class="focus-tags" aria-label="Research focus areas"></div>
-                <div id="hero-facts" class="metric-strip compact-metric-strip" aria-label="Profile facts"></div>
-                <div id="hero-links" class="button-row hero-link-row" aria-label="External profiles"></div>
+                <div id="focus-tags" class="focus-tags compact-focus-tags" aria-label="Research focus areas"></div>
+                <div class="hero-action-row" aria-label="Primary homepage actions">
+                  <a class="btn primary" href="research.html">Research directions</a>
+                  <button id="experience-toggle" class="btn ghost" type="button" aria-expanded="false" aria-controls="experience-panel">Academic path</button>
+                </div>
+                <div id="hero-facts" class="metric-strip compact-metric-strip compact-metric-strip-fit" aria-label="Profile facts"></div>
+                <div id="experience-panel" class="glass-card experience-panel" hidden></div>
+                <div id="hero-links" class="button-row hero-link-row compact-profile-links" aria-label="External profiles"></div>
               </div>
 
               <div class="hero-visual" aria-hidden="true">
-                <div class="portrait-shell compact-portrait-shell">
+                <div class="portrait-shell compact-portrait-shell portrait-shell-strong">
                   <span class="portrait-orbit"></span>
                   <span class="portrait-orbit--b"></span>
                   <span class="portrait-orbit--c"></span>
@@ -91,28 +97,13 @@
                   <div class="portrait-image-wrap">
                     <img id="hero-portrait" class="portrait-image" src="assets/img/profile-haoyu.jpg" alt="Portrait of Haoyu Wu" />
                   </div>
-                  <div class="portrait-caption compact-portrait-caption">
-                    <strong>Mechanism-oriented simulation</strong>
-                    <span>Only the high-level research map stays here; detailed papers and software notes stay inside the top navigation.</span>
+                  <div class="portrait-caption compact-portrait-caption portrait-caption-strong">
+                    <strong>Mechanism-first simulation</strong>
+                    <span>Networked polymers, transport in soft media, and reusable analysis systems.</span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section id="pillars" class="section compact-home-section compact-home-section-tight">
-          <div class="container">
-            <div class="section-head compact-section-head" data-reveal>
-              <div>
-                <span class="kicker">Research snapshot</span>
-                <h2 class="section-title">Three compact directions</h2>
-                <p class="section-copy compact-copy">
-                  The front page stays intentionally short. Publications, code documentation, and interactive content live on their own pages.
-                </p>
-              </div>
-            </div>
-            <div id="pillar-grid" class="section-grid grid-3 compact-grid"></div>
           </div>
         </section>
       </main>

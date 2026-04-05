@@ -1,38 +1,89 @@
-import { profile, researchPillars, pageMeta } from './site-data.js';
-import { activateNav, initReveal, renderTagList, renderLinkRow, smoothScrollForHashes, setMeta } from './utils.js';
+import { experienceTimeline, pageMeta, profile } from './site-data.js';
+import { activateNav, initReveal, renderLinkRow, renderTagList, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
 import { renderStats } from './renderers.js';
+
+function tryLoadPortrait(img, candidates) {
+  const queue = [...candidates];
+  const next = () => {
+    if (!queue.length) return;
+    const src = queue.shift();
+    const probe = new Image();
+    probe.onload = () => {
+      img.src = src;
+      img.alt = `${profile.name} portrait`;
+    };
+    probe.onerror = next;
+    probe.src = src;
+  };
+  next();
+}
 
 function renderHero() {
   document.getElementById('hero-kicker').textContent = profile.heroKicker;
   document.getElementById('hero-name').textContent = profile.name;
   document.getElementById('hero-title').textContent = `${profile.shortTitle} · ${profile.affiliation}`;
   document.getElementById('hero-summary').textContent = profile.heroSummary;
-  renderTagList(document.getElementById('focus-tags'), profile.focusAreas.slice(0, 6));
-  renderStats(document.getElementById('hero-facts'), profile.quickFacts.slice(0, 3));
-  renderLinkRow(document.getElementById('hero-links'), profile.links.slice(0, 4), 'ghost');
+  renderTagList(document.getElementById('focus-tags'), profile.focusAreas.slice(0, 4));
+  renderStats(document.getElementById('hero-facts'), profile.quickFacts.slice(0, 2));
+  renderLinkRow(document.getElementById('hero-links'), profile.links.slice(0, 5), 'ghost');
 }
 
-function renderSnapshot() {
-  const container = document.getElementById('pillar-grid');
-  container.innerHTML = '';
-  researchPillars.forEach((pillar) => {
-    const article = document.createElement('article');
-    article.className = 'glass-card pillar-card compact-pillar';
-    article.dataset.reveal = '';
-    article.innerHTML = `
-      <span class="meta-chip">${pillar.id.replaceAll('-', ' ')}</span>
-      <h2 class="card-title">${pillar.title}</h2>
-      <p class="card-body">${pillar.body}</p>
+function renderExperience() {
+  const panel = document.getElementById('experience-panel');
+  if (!panel) return;
+  panel.innerHTML = `
+    <div class="experience-panel-head">
+      <span class="meta-chip">Academic path</span>
+      <p class="experience-panel-copy">Training, advisers, and public profile links in one compact block.</p>
+    </div>
+    <div class="experience-list"></div>
+    <div class="experience-link-row"></div>
+  `;
+
+  const list = panel.querySelector('.experience-list');
+  experienceTimeline.forEach((item) => {
+    const row = document.createElement('article');
+    row.className = 'experience-item';
+    row.innerHTML = `
+      <div class="experience-period">${item.period}</div>
+      <div class="experience-body">
+        <strong>${item.title}</strong>
+        <span>${item.detail}</span>
+        <p>${item.body}</p>
+      </div>
     `;
-    container.appendChild(article);
+    list.appendChild(row);
+  });
+
+  renderLinkRow(panel.querySelector('.experience-link-row'), profile.links.filter((link) => ['ORCID', 'Google Scholar', 'Whitmer Group'].includes(link.label)), 'secondary');
+}
+
+function initExperienceToggle() {
+  const button = document.getElementById('experience-toggle');
+  const panel = document.getElementById('experience-panel');
+  if (!button || !panel) return;
+
+  const update = (open) => {
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    button.textContent = open ? 'Hide academic path' : 'Academic path';
+    panel.hidden = !open;
+    panel.classList.toggle('open', open);
+  };
+
+  update(false);
+  button.addEventListener('click', () => {
+    const next = panel.hidden;
+    update(next);
+    if (next) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 }
 
 function initPortrait() {
   const portrait = document.getElementById('hero-portrait');
-  portrait.src = profile.portrait;
-  portrait.alt = `${profile.name} portrait`;
+  if (!portrait) return;
+  const candidates = profile.portraitCandidates?.length ? profile.portraitCandidates : [profile.portrait];
+  tryLoadPortrait(portrait, candidates);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -41,7 +92,8 @@ window.addEventListener('DOMContentLoaded', () => {
   smoothScrollForHashes();
   initPortrait();
   renderHero();
-  renderSnapshot();
+  renderExperience();
+  initExperienceToggle();
   initReveal();
-  initMolecularField(document.getElementById('bg-canvas'), { variant: 'hero', density: 1.04 });
+  initMolecularField(document.getElementById('bg-canvas'), { variant: 'hero', density: 1.08 });
 });

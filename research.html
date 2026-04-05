@@ -3,25 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rest Mode | Haoyu Wu</title>
+    <title>Research | Haoyu Wu</title>
     <meta
       name="description"
-      content="Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion."
+      content="Research directions in polymer network mechanics, filled soft-matter transport, and scientific software for simulation-driven materials modeling."
     />
     <meta name="theme-color" content="#050816" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Rest Mode | Haoyu Wu" />
+    <meta property="og:title" content="Research | Haoyu Wu" />
     <meta
       property="og:description"
-      content="Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion."
+      content="Research directions in polymer network mechanics, filled soft-matter transport, and scientific software for simulation-driven materials modeling."
     />
     <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <meta property="og:url" content="https://haoyuwu97.github.io/leisure.html" />
+    <meta property="og:url" content="https://haoyuwu97.github.io/research.html" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Rest Mode | Haoyu Wu" />
+    <meta name="twitter:title" content="Research | Haoyu Wu" />
     <meta
       name="twitter:description"
-      content="Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion."
+      content="Research directions in polymer network mechanics, filled soft-matter transport, and scientific software for simulation-driven materials modeling."
     />
     <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -41,8 +41,9 @@
     </script>
     <link rel="stylesheet" href="assets/css/main.css" />
   </head>
-  <body class="leisure-page">
-    <div class="site-shell leisure-shell">
+  <body class="subpage subpage-research">
+    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+    <div class="site-shell">
       <div class="topbar-wrap">
         <header class="container topbar">
           <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
@@ -66,37 +67,33 @@
         </header>
       </div>
 
-      <main class="site-main leisure-main">
-        <section class="leisure-stage" aria-label="Interactive browser game">
-          <canvas id="playground" class="playground-canvas-full" aria-label="Playable chemistry-inspired browser game"></canvas>
-
-          <div class="leisure-hud leisure-hud-primary glass-card">
-            <span id="mode-subtitle" class="kicker">Rest mode</span>
-            <h1 id="mode-title" class="mode-title">Interactive mode</h1>
-            <p id="mode-description" class="hud-copy"></p>
-          </div>
-
-          <div class="leisure-hud leisure-hud-controls leisure-control-cluster glass-card" aria-live="polite">
-            <div class="leisure-select-row">
-              <label class="sr-only" for="mode-selector">Choose a mode</label>
-              <select id="mode-selector"></select>
-              <button id="mode-reroll" class="btn secondary inline-btn" type="button">Random</button>
-            </div>
-            <div class="leisure-metric-row">
-              <div class="hud-chip"><span>Score</span><strong id="hud-score">0</strong></div>
-              <div class="hud-chip"><span>Best</span><strong id="hud-best">0</strong></div>
+      <main class="site-main">
+        <section class="page-hero page-hero-compact research-page-hero">
+          <div class="container">
+            <div class="page-hero-shell compact-shell hero-shell-strong">
+              <div class="page-head compact-page-head">
+                <span class="kicker">Research</span>
+                <h1 class="page-title">Three linked directions</h1>
+                <p class="page-subtitle compact-page-subtitle" id="research-intro"></p>
+                <div class="compact-meta-row" aria-label="Research summary">
+                  <span class="meta-chip"><strong id="research-count">0</strong> directions</span>
+                  <span class="meta-chip">polymer physics · transport · software</span>
+                  <span class="meta-chip">large figures and long-form notes</span>
+                </div>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div class="leisure-hud leisure-hud-note leisure-bottom-note glass-card">
-            <p id="mode-instruction" class="hud-copy"></p>
-            <p id="mode-concept" class="hud-note"></p>
+        <section class="section section-tight-bottom">
+          <div class="container">
+            <div id="research-directions" class="research-directions-stack"></div>
           </div>
         </section>
       </main>
     </div>
 
     <script src="assets/js/theme.js"></script>
-    <script type="module" src="assets/js/leisure.js"></script>
+    <script type="module" src="assets/js/research.js"></script>
   </body>
 </html>
