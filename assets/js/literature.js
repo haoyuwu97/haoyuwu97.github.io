@@ -517,7 +517,7 @@ function layoutNetworkForActive() {
   const canvas = $('lit-network');
   if (!canvas) return;
   const width = canvas.clientWidth || 760;
-  const height = canvas.clientHeight || 430;
+  const height = canvas.clientHeight || 520;
   const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
   const id = activeNodeId();
 
@@ -526,7 +526,9 @@ function layoutNetworkForActive() {
     node.role = 'hidden';
     node.x = -999;
     node.y = -999;
+    node.hitbox = null;
   });
+  STATE.graphCards = null;
 
   if (!id) {
     STATE.layoutEdges = [];
@@ -539,13 +541,13 @@ function layoutNetworkForActive() {
     return;
   }
 
-  const relations = activeRelations(width < 560 ? 6 : 8);
-  const relatedIds = relations.map((edge) => edgeOther(edge, id));
-  let relatedNodes = relatedIds.map((otherId) => nodeMap.get(otherId)).filter(Boolean);
+  const maxRelated = width < 620 ? 4 : height > 570 ? 6 : 5;
+  const relations = activeRelations(maxRelated);
   let layoutEdges = relations;
+  let relatedNodes = relations.map((edge) => nodeMap.get(edgeOther(edge, id))).filter(Boolean);
 
   if (!relatedNodes.length) {
-    relatedNodes = STATE.nodes.filter((node) => node.id !== id).slice(0, width < 560 ? 5 : 7);
+    relatedNodes = STATE.nodes.filter((node) => node.id !== id).slice(0, maxRelated);
     layoutEdges = relatedNodes.map((node) => ({
       source: id,
       target: node.id,
@@ -554,33 +556,161 @@ function layoutNetworkForActive() {
     }));
   }
 
-  const top = 68;
-  const bottom = 38;
-  const usable = Math.max(120, height - top - bottom);
-  const activeX = clamp(width * 0.22, 76, 132);
-  const relatedX = clamp(width * 0.67, 245, width - 130);
+  const pad = width < 620 ? 12 : 16;
+  const footer = 24;
+  const cardGap = width < 620 ? 10 : 14;
+  const top = pad;
+  const bottom = Math.max(pad + footer, 38);
+  const activeW = clamp(width * (width < 620 ? 0.36 : 0.34), width < 620 ? 150 : 220, width < 620 ? 205 : 310);
+  const rightX = pad + activeW + cardGap;
+  const rightW = Math.max(150, width - rightX - pad);
+  const bodyH = Math.max(260, height - top - bottom);
+  const rowCount = Math.max(1, relatedNodes.length);
+  const rowGap = 8;
+  const rowH = clamp((bodyH - rowGap * (rowCount - 1)) / rowCount, 58, 86);
+  const activeCard = { x: pad, y: top, w: activeW, h: bodyH };
 
   active.visible = true;
   active.role = 'active';
-  active.x = activeX;
-  active.y = clamp(height * 0.52, top + 30, height - bottom - 30);
+  active.x = activeCard.x + activeCard.w - 26;
+  active.y = activeCard.y + Math.min(activeCard.h * 0.52, activeCard.h - 58);
   active.r = Math.max(active.r, 15);
+  active.hitbox = activeCard;
 
+  const relatedCards = [];
   relatedNodes.forEach((node, index) => {
-    const count = relatedNodes.length;
-    const y = top + ((index + 0.5) / Math.max(count, 1)) * usable;
+    const y = top + index * (rowH + rowGap);
+    const card = { x: rightX, y, w: rightW, h: rowH };
     node.visible = true;
     node.role = layoutEdges[index]?.weight ? 'related' : 'fallback';
-    node.x = relatedX;
-    node.y = clamp(y, top + node.r, height - bottom - node.r);
+    node.x = card.x + 18;
+    node.y = card.y + card.h / 2;
+    node.r = clamp(node.r, 10, 13);
+    node.hitbox = card;
+    relatedCards.push({ node, edge: layoutEdges[index], card });
   });
 
   STATE.layoutEdges = layoutEdges;
+  STATE.graphCards = { activeCard, relatedCards, footerY: height - 13 };
 }
 
 function runLayout() {
   layoutNetworkForActive();
   drawNetwork();
+}
+
+function graphPalette() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  const styles = getComputedStyle(document.documentElement);
+  const accent = styles.getPropertyValue('--academic-accent').trim() || '#8b6f3d';
+  if (isDark) {
+    return {
+      isDark,
+      bg0: '#111722',
+      bg1: '#161d2a',
+      bg2: '#202735',
+      card: 'rgba(24, 30, 42, 0.94)',
+      cardSoft: 'rgba(20, 26, 36, 0.92)',
+      stroke: 'rgba(214, 199, 165, 0.24)',
+      strokeSoft: 'rgba(214, 199, 165, 0.14)',
+      ink: 'rgba(245, 247, 250, 0.94)',
+      muted: 'rgba(208, 215, 226, 0.68)',
+      faint: 'rgba(208, 215, 226, 0.32)',
+      accent: '#c2a060',
+      accentSoft: 'rgba(194, 160, 96, 0.18)',
+      nodeFill: '#f7f1df',
+      nodeText: '#17202a'
+    };
+  }
+  return {
+    isDark,
+    bg0: '#fffdf8',
+    bg1: '#f7f9fb',
+    bg2: '#eef3f8',
+    card: 'rgba(255, 253, 248, 0.94)',
+    cardSoft: 'rgba(248, 250, 252, 0.88)',
+    stroke: 'rgba(101, 86, 61, 0.22)',
+    strokeSoft: 'rgba(101, 86, 61, 0.12)',
+    ink: '#17202a',
+    muted: '#5e6875',
+    faint: 'rgba(94, 104, 117, 0.35)',
+    accent,
+    accentSoft: 'rgba(139, 111, 61, 0.12)',
+    nodeFill: '#ffffff',
+    nodeText: '#17202a'
+  };
+}
+
+function roundRectPath(ctx, x, y, w, h, r = 12) {
+  const radius = Math.min(r, w / 2, h / 2);
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(x, y, w, h, radius);
+    return;
+  }
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + w, y, x + w, y + h, radius);
+  ctx.arcTo(x + w, y + h, x, y + h, radius);
+  ctx.arcTo(x, y + h, x, y, radius);
+  ctx.arcTo(x, y, x + w, y, radius);
+}
+
+function fillStrokeRoundRect(ctx, x, y, w, h, r, fill, stroke, lineWidth = 1) {
+  ctx.beginPath();
+  roundRectPath(ctx, x, y, w, h, r);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  if (stroke) {
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+  }
+}
+
+function fitText(ctx, text = '', maxWidth = 120) {
+  const value = normalizeSpace(text);
+  if (ctx.measureText(value).width <= maxWidth) return value;
+  let lo = 0;
+  let hi = value.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    if (ctx.measureText(`${value.slice(0, mid)}…`).width <= maxWidth) lo = mid;
+    else hi = mid - 1;
+  }
+  return `${value.slice(0, Math.max(0, lo - 1))}…`;
+}
+
+function wrapCanvasLines(ctx, text = '', maxWidth = 180, maxLines = 2) {
+  const words = normalizeSpace(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  words.forEach((word) => {
+    const trial = line ? `${line} ${word}` : word;
+    if (ctx.measureText(trial).width <= maxWidth) {
+      line = trial;
+      return;
+    }
+    if (line) lines.push(line);
+    line = word;
+  });
+  if (line) lines.push(line);
+  if (lines.length > maxLines) {
+    const kept = lines.slice(0, maxLines);
+    kept[maxLines - 1] = fitText(ctx, kept[maxLines - 1], maxWidth);
+    return kept;
+  }
+  return lines;
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines, options = {}) {
+  ctx.save();
+  ctx.font = options.font || '12px "Times New Roman", serif';
+  ctx.fillStyle = options.color || '#17202a';
+  ctx.textAlign = options.align || 'left';
+  ctx.textBaseline = 'top';
+  const lines = wrapCanvasLines(ctx, text, maxWidth, maxLines);
+  lines.forEach((line, index) => ctx.fillText(line, x, y + index * lineHeight));
+  ctx.restore();
+  return y + lines.length * lineHeight;
 }
 
 function drawText(ctx, text, x, y, maxChars, options = {}) {
@@ -589,32 +719,44 @@ function drawText(ctx, text, x, y, maxChars, options = {}) {
   ctx.font = options.font || '12px "Times New Roman", serif';
   ctx.fillStyle = options.color || '#17202a';
   ctx.textAlign = options.align || 'left';
-  ctx.textBaseline = 'top';
+  ctx.textBaseline = options.baseline || 'top';
   ctx.fillText(value, x, y);
   ctx.restore();
 }
 
 function drawPill(ctx, text, x, y, options = {}) {
-  const value = truncate(text, options.maxChars || 28);
+  const palette = graphPalette();
+  const value = normalizeSpace(text);
   ctx.save();
   ctx.font = options.font || '11px "Times New Roman", serif';
-  const w = Math.min(options.maxWidth || 210, ctx.measureText(value).width + 14);
-  const h = 20;
-  ctx.globalAlpha = options.alpha || 0.94;
-  ctx.fillStyle = options.fill || 'rgba(255, 253, 248, 0.92)';
-  ctx.strokeStyle = options.stroke || 'rgba(101, 86, 61, 0.22)';
-  ctx.beginPath();
-  if (typeof ctx.roundRect === 'function') ctx.roundRect(x, y, w, h, 9);
-  else ctx.rect(x, y, w, h);
-  ctx.fill();
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = options.color || '#5e6875';
+  const maxWidth = options.maxWidth || 190;
+  const display = fitText(ctx, value, Math.max(24, maxWidth - 14));
+  const w = Math.min(maxWidth, ctx.measureText(display).width + 14);
+  const h = options.height || 19;
+  fillStrokeRoundRect(ctx, x, y, w, h, h / 2, options.fill || palette.card, options.stroke || palette.strokeSoft, 1);
+  ctx.fillStyle = options.color || palette.muted;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillText(value, x + 7, y + h / 2);
+  ctx.fillText(display, x + 7, y + h / 2 + 0.4);
   ctx.restore();
   return w;
+}
+
+function drawNodeBadge(ctx, node, x, y, active, palette) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.fillStyle = active ? palette.accent : palette.nodeFill;
+  ctx.strokeStyle = active ? palette.accent : palette.stroke;
+  ctx.lineWidth = active ? 1.8 : 1.2;
+  ctx.arc(x, y, active ? 15 : 12, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = active ? '#ffffff' : palette.nodeText;
+  ctx.font = active ? '700 12px "Times New Roman", serif' : '700 10.5px "Times New Roman", serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(String(node.index), x, y + 0.4);
+  ctx.restore();
 }
 
 function drawNetwork() {
@@ -627,141 +769,122 @@ function drawNetwork() {
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, rect.width, rect.height);
-
-  const styles = getComputedStyle(document.documentElement);
-  const muted = styles.getPropertyValue('--academic-muted').trim() || '#6d7480';
-  const accent = styles.getPropertyValue('--academic-accent').trim() || '#8b6f3d';
-  const ink = styles.getPropertyValue('--academic-ink').trim() || '#17202a';
+  const palette = graphPalette();
   const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
   const active = nodeMap.get(activeNodeId());
 
   ctx.save();
   const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
-  gradient.addColorStop(0, 'rgba(255,253,248,0.78)');
-  gradient.addColorStop(1, 'rgba(237,242,247,0.48)');
+  gradient.addColorStop(0, palette.bg0);
+  gradient.addColorStop(0.55, palette.bg1);
+  gradient.addColorStop(1, palette.bg2);
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, rect.width, rect.height);
   ctx.restore();
 
-  ctx.save();
-  ctx.strokeStyle = 'rgba(101, 86, 61, 0.18)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(Math.max(168, rect.width * 0.36), 24);
-  ctx.lineTo(Math.max(168, rect.width * 0.36), rect.height - 26);
-  ctx.stroke();
-  ctx.restore();
-
   if (!STATE.nodes.length) {
-    drawText(ctx, 'Run a search to build an ego-centered relation map.', 18, 22, 72, {
-      color: muted,
+    drawWrappedText(ctx, 'Run a search to build a readable relation map. The map will show one selected paper, the strongest related records, and the metadata reason for each link.', 18, 20, rect.width - 36, 18, 4, {
+      color: palette.muted,
       font: '13px "Times New Roman", serif'
     });
     return;
   }
 
-  const layoutEdges = STATE.layoutEdges || activeRelations(8);
+  if (!STATE.graphCards) layoutNetworkForActive();
+  const graph = STATE.graphCards;
+  if (!graph || !active) return;
 
-  if (active) {
-    drawPill(ctx, 'selected paper', 16, 16, { fill: 'rgba(255,253,248,0.95)', color: accent, maxWidth: 140 });
-    drawText(ctx, `#${active.index} ${active.paper.title}`, 18, 42, rect.width < 560 ? 42 : 66, {
-      color: ink,
-      font: '700 12px "Times New Roman", serif'
-    });
-  }
+  const { activeCard, relatedCards } = graph;
 
   ctx.save();
   ctx.lineCap = 'round';
-  layoutEdges.forEach((edge, edgeIndex) => {
-    const a = nodeMap.get(edge.source);
-    const b = nodeMap.get(edge.target);
-    if (!a || !b || !a.visible || !b.visible) return;
-    const source = a.id === active?.id ? a : b;
-    const target = a.id === active?.id ? b : a;
-    const dx = target.x - source.x;
-    const dy = target.y - source.y;
-    const dist = Math.hypot(dx, dy) || 1;
-    const curve = (edgeIndex % 2 ? 1 : -1) * Math.min(28, 220 / dist);
-    const midX = (source.x + target.x) / 2;
-    const midY = (source.y + target.y) / 2;
-    const cx = midX - (dy / dist) * curve;
-    const cy = midY + (dx / dist) * curve;
-    const semantic = edge.weight > 0;
-    ctx.globalAlpha = semantic ? 0.58 : 0.22;
-    ctx.strokeStyle = semantic ? accent : muted;
-    ctx.lineWidth = semantic ? clamp(edge.weight * 0.32, 1.1, 2.4) : 0.9;
+  relatedCards.forEach(({ node, edge }, index) => {
+    const semantic = edge?.weight > 0;
+    const curve = (index - (relatedCards.length - 1) / 2) * 8;
+    const startX = active.x + 15;
+    const startY = active.y;
+    const endX = node.x - 12;
+    const endY = node.y;
+    const c1x = startX + Math.max(40, (endX - startX) * 0.42);
+    const c2x = endX - Math.max(36, (endX - startX) * 0.22);
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.bezierCurveTo(c1x, startY + curve, c2x, endY - curve, endX, endY);
+    ctx.strokeStyle = semantic ? palette.accent : palette.faint;
+    ctx.globalAlpha = semantic ? 0.62 : 0.36;
+    ctx.lineWidth = semantic ? clamp((edge.weight || 1) * 0.28, 1.2, 2.3) : 1;
     if (!semantic) ctx.setLineDash([4, 5]);
     else ctx.setLineDash([]);
-    ctx.beginPath();
-    ctx.moveTo(source.x, source.y);
-    ctx.quadraticCurveTo(cx, cy, target.x, target.y);
     ctx.stroke();
   });
   ctx.restore();
 
-  layoutEdges.forEach((edge, edgeIndex) => {
-    const other = nodeMap.get(edgeOther(edge, active?.id));
-    if (!other?.visible) return;
-    const reason = edge.reasons?.[0] || 'metadata relation';
-    const tag = edge.weight ? `${relationType(edge)} · ${reason}` : 'shortlist context';
-    const y = other.y + other.r + 6;
-    drawPill(ctx, tag, other.x + other.r + 8, y, {
-      maxChars: rect.width < 560 ? 22 : 34,
-      maxWidth: Math.max(96, rect.width - other.x - other.r - 20),
-      fill: edge.weight ? 'rgba(255,253,248,0.9)' : 'rgba(246,248,250,0.72)',
-      color: edge.weight ? accent : muted,
-      alpha: 0.9
+  fillStrokeRoundRect(ctx, activeCard.x, activeCard.y, activeCard.w, activeCard.h, 15, palette.cardSoft, palette.stroke, 1);
+  drawPill(ctx, 'selected paper', activeCard.x + 14, activeCard.y + 14, {
+    maxWidth: activeCard.w - 28,
+    fill: palette.accentSoft,
+    stroke: palette.strokeSoft,
+    color: palette.accent
+  });
+  drawNodeBadge(ctx, active, activeCard.x + 28, activeCard.y + 64, true, palette);
+  let activeTextY = activeCard.y + 50;
+  drawText(ctx, `#${active.index}`, activeCard.x + 50, activeTextY, 8, {
+    color: palette.accent,
+    font: '700 11px "Times New Roman", serif'
+  });
+  activeTextY = drawWrappedText(ctx, active.paper.title, activeCard.x + 50, activeTextY + 15, activeCard.w - 64, 17, 5, {
+    color: palette.ink,
+    font: '700 13px "Times New Roman", serif'
+  });
+  const activeMeta = `${active.paper.year || 'n.d.'}${active.paper.venue ? ` · ${active.paper.venue}` : ''}`;
+  drawWrappedText(ctx, activeMeta, activeCard.x + 16, activeTextY + 12, activeCard.w - 32, 15, 2, {
+    color: palette.muted,
+    font: '11.5px "Times New Roman", serif'
+  });
+  const activeFooter = active.paper.lensHits?.length ? `lens: ${active.paper.lensHits.slice(0, 4).join(', ')}` : 'click a result or card to recenter';
+  drawPill(ctx, activeFooter, activeCard.x + 14, activeCard.y + activeCard.h - 34, {
+    maxWidth: activeCard.w - 28,
+    fill: palette.card,
+    color: palette.muted
+  });
+
+  relatedCards.forEach(({ node, edge, card }) => {
+    const semantic = edge?.weight > 0;
+    fillStrokeRoundRect(ctx, card.x, card.y, card.w, card.h, 13, palette.card, semantic ? palette.stroke : palette.strokeSoft, semantic ? 1.1 : 1);
+    drawNodeBadge(ctx, node, node.x, node.y, false, palette);
+    const textX = card.x + 38;
+    const maxW = card.w - 50;
+    const titleY = card.y + 10;
+    drawWrappedText(ctx, `#${node.index} ${node.paper.title}`, textX, titleY, maxW, 14, 2, {
+      color: palette.ink,
+      font: '700 12px "Times New Roman", serif'
+    });
+    const meta = `${node.paper.year || 'n.d.'}${node.paper.venue ? ` · ${node.paper.venue}` : ''}`;
+    drawText(ctx, meta, textX, card.y + card.h - 31, Math.max(24, Math.floor(maxW / 6.2)), {
+      color: palette.muted,
+      font: '10.5px "Times New Roman", serif'
+    });
+    const reason = edge?.reasons?.[0] || 'shortlist context';
+    const relation = semantic ? `${relationType(edge)} · ${reason}` : 'shortlist context';
+    drawPill(ctx, relation, textX, card.y + card.h - 18, {
+      maxWidth: maxW,
+      height: 17,
+      fill: semantic ? palette.accentSoft : palette.cardSoft,
+      stroke: palette.strokeSoft,
+      color: semantic ? palette.accent : palette.muted,
+      font: '10px "Times New Roman", serif'
     });
   });
 
-  STATE.nodes.filter((node) => node.visible).forEach((node) => {
-    const activeNode = node.id === active?.id;
-    const fallback = node.role === 'fallback';
-    ctx.save();
-    if (node.paper.lensScore && !activeNode) {
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(139,111,61,0.08)';
-      ctx.arc(node.x, node.y, node.r + 6, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.beginPath();
-    ctx.fillStyle = activeNode ? accent : fallback ? 'rgba(247,248,250,0.98)' : 'rgba(255, 253, 248, 0.98)';
-    ctx.strokeStyle = activeNode ? accent : 'rgba(94,104,117,0.68)';
-    ctx.lineWidth = activeNode ? 2.1 : 1.05;
-    ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = activeNode ? '#ffffff' : ink;
-    ctx.font = activeNode ? '700 11.5px "Times New Roman", serif' : '700 10px "Times New Roman", serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(String(node.index), node.x, node.y + 0.25);
-    ctx.restore();
-
-    if (!activeNode) {
-      const labelX = node.x + node.r + 8;
-      const max = rect.width < 560 ? 26 : 43;
-      drawText(ctx, `#${node.index} ${node.paper.title}`, labelX, node.y - 15, max, {
-        color: ink,
-        font: '700 11.5px "Times New Roman", serif'
-      });
-      const meta = `${node.paper.year || 'n.d.'}${node.paper.venue ? ` · ${node.paper.venue}` : ''}`;
-      drawText(ctx, meta, labelX, node.y - 1, rect.width < 560 ? 24 : 38, {
-        color: muted,
-        font: '11px "Times New Roman", serif'
-      });
-    }
-  });
-
   ctx.save();
-  ctx.fillStyle = muted;
+  ctx.fillStyle = palette.muted;
   ctx.font = '11.5px "Times New Roman", serif';
   ctx.textAlign = 'left';
-  const relationCount = (STATE.layoutEdges || []).filter((edge) => edge.weight > 0).length;
+  const relationCount = relatedCards.filter(({ edge }) => edge?.weight > 0).length;
   const label = relationCount
-    ? 'Ego map: edges explain the selected paper; click a result or node to recenter.'
+    ? 'Readable ego map: bounded cards show the strongest local relations for the selected paper.'
     : 'No strong metadata edges for this paper; showing shortlist neighbors as context.';
-  ctx.fillText(label, 14, rect.height - 14);
+  ctx.fillText(fitText(ctx, label, rect.width - 28), 14, rect.height - 14);
   ctx.restore();
 }
 
@@ -905,8 +1028,14 @@ function clickNetwork(event) {
   let bestDistance = Infinity;
   STATE.nodes.forEach((node) => {
     if (!node.visible) return;
+    const hit = node.hitbox;
+    if (hit && x >= hit.x && x <= hit.x + hit.w && y >= hit.y && y <= hit.y + hit.h) {
+      best = node;
+      bestDistance = 0;
+      return;
+    }
     const distance = Math.hypot(node.x - x, node.y - y);
-    if (distance < bestDistance && distance <= node.r + 8) {
+    if (distance < bestDistance && distance <= node.r + 10) {
       best = node;
       bestDistance = distance;
     }

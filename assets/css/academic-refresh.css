@@ -1264,3 +1264,205 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* V5 alignment and usability correction: shared compact headers, visible research figures, and readable literature relation map. */
+body.subpage-research .site-main,
+body.subpage-wiki .site-main,
+body.subpage-literature .site-main {
+  padding-top: clamp(0.15rem, 0.55vw, 0.45rem) !important;
+}
+
+.research-direct-section-v4,
+.wiki-direct-section,
+.literature-direct-section {
+  padding-top: clamp(0.2rem, 0.75vw, 0.55rem) !important;
+}
+
+.research-minimal-head,
+.wiki-minimal-head,
+.literature-minimal-head {
+  display: grid !important;
+  grid-template-columns: minmax(300px, 0.52fr) minmax(0, 1fr) auto !important;
+  gap: clamp(0.65rem, 1.8vw, 1.05rem) !important;
+  align-items: end !important;
+  margin: 0 0 0.72rem !important;
+  padding: 0 0 0.58rem !important;
+  border-bottom: 1px solid var(--academic-line) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.literature-minimal-head {
+  grid-template-columns: minmax(360px, 0.58fr) minmax(0, 1fr) !important;
+}
+
+.research-minimal-head h1,
+.wiki-minimal-head h1,
+.literature-minimal-head h1 {
+  margin: 0.18rem 0 0 !important;
+  font-size: clamp(1.42rem, 2.25vw, 2.05rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.research-minimal-head p,
+.wiki-minimal-head p,
+.literature-minimal-head p {
+  margin: 0 !important;
+  max-width: 66rem !important;
+  font-size: 0.91rem !important;
+  line-height: 1.36 !important;
+  color: var(--academic-muted) !important;
+}
+
+.research-mini-stats,
+.wiki-mini-stats {
+  align-self: end !important;
+  justify-content: flex-end !important;
+  white-space: nowrap !important;
+}
+
+.research-main-stack-v4 {
+  gap: 0.78rem !important;
+}
+
+.research-core-card-v4 {
+  grid-template-columns: minmax(0, 0.98fr) minmax(420px, 0.92fr) !important;
+  align-items: stretch !important;
+  min-height: 410px !important;
+  overflow: hidden !important;
+}
+
+.research-core-card-v4:nth-child(2) .research-toc-figure-v4 {
+  order: -1;
+}
+
+.research-core-copy-v4 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+}
+
+.research-core-copy-v4 .section-title {
+  max-width: 18.5em !important;
+  font-size: clamp(1.38rem, 2.25vw, 2.02rem) !important;
+}
+
+.research-note-grid-v4 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.research-toc-figure-v4 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  min-height: 340px !important;
+}
+
+.research-toc-figure-v4 img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 360px !important;
+  aspect-ratio: 16 / 9 !important;
+  object-fit: contain !important;
+  border-radius: 0.78rem !important;
+  background: rgba(255,253,248,0.84) !important;
+}
+
+[data-theme="dark"] .research-toc-figure-v4 img {
+  background: rgba(246, 242, 231, 0.94) !important;
+  border-color: rgba(214, 199, 165, 0.32) !important;
+}
+
+.research-toc-figure-v4 figcaption {
+  max-width: 40rem !important;
+  margin-top: 0.36rem !important;
+}
+
+.research-foundations-v4 {
+  margin-top: 0.75rem !important;
+}
+
+.research-foundation-grid-v4 {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
+/* Literature graph: wider right panel and no text painted outside cards. */
+.lit-workbench {
+  grid-template-columns: minmax(340px, 0.72fr) minmax(560px, 1.28fr) !important;
+  gap: 0.95rem !important;
+}
+
+.lit-network-panel {
+  overflow: hidden !important;
+}
+
+.lit-network-canvas {
+  width: 100% !important;
+  height: clamp(500px, 58vh, 620px) !important;
+  border-radius: 0.78rem !important;
+  background: rgba(255,253,248,0.82) !important;
+  border: 1px solid var(--academic-line) !important;
+}
+
+[data-theme="dark"] .lit-network-canvas {
+  background: rgba(17, 22, 31, 0.92) !important;
+  border-color: rgba(214, 199, 165, 0.22) !important;
+}
+
+.lit-paper-detail {
+  max-height: 230px !important;
+  overflow: auto !important;
+  border-top: 1px solid var(--academic-line) !important;
+  margin-top: 0.74rem !important;
+  padding-top: 0.72rem !important;
+}
+
+@media (max-width: 1180px) {
+  .research-minimal-head,
+  .wiki-minimal-head,
+  .literature-minimal-head {
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+  }
+  .research-mini-stats,
+  .wiki-mini-stats { justify-content: flex-start !important; }
+  .research-core-card-v4,
+  .lit-workbench {
+    grid-template-columns: 1fr !important;
+  }
+  .research-core-card-v4:nth-child(2) .research-toc-figure-v4 {
+    order: initial;
+  }
+  .research-note-grid-v4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.subpage-research .site-main,
+  body.subpage-wiki .site-main,
+  body.subpage-literature .site-main {
+    padding-top: 0.35rem !important;
+  }
+  .research-toc-figure-v4 {
+    min-height: 0 !important;
+  }
+  .research-toc-figure-v4 img {
+    max-height: none !important;
+  }
+  .research-foundation-grid-v4 {
+    grid-template-columns: 1fr !important;
+  }
+  .lit-network-canvas {
+    height: 480px !important;
+  }
+}
+
+body.subpage-research .site-shell,
+body.subpage-wiki .site-shell,
+body.subpage-literature .site-shell {
+  padding-top: 0 !important;
+}
