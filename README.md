@@ -1,33 +1,22 @@
-# Apply V3 Patch
+# Research V4 minimal patch
 
-From your local repository root:
+This patch only changes the Research page.
+
+Files changed:
+
+- `research.html`
+- `assets/js/research.js`
+- `assets/css/academic-refresh.css`
+- `assets/img/research/omiec-oect-hysteresis-toc.svg`
+- `assets/img/research/vitrimer-polymer-physics-toc.svg`
+- `assets/img/research/scientific-computing-toc.svg`
+
+Apply from the repository root:
 
 ```bash
-unzip haoyuwu97-academic-refresh-v3.zip
-rsync -av haoyuwu97-academic-refresh-v3/ ./
+unzip haoyuwu97-research-v4-minimal.zip
+rsync -av haoyuwu97-research-v4-minimal/ ./
 python3 -m http.server 8000
 ```
 
-Preview:
-
-```text
-http://localhost:8000/
-http://localhost:8000/research.html
-http://localhost:8000/wiki.html
-http://localhost:8000/wiki-entry.html?project=pilots
-http://localhost:8000/leisure.html
-```
-
-Commit:
-
-```bash
-git status
-git diff
-git add index.html research.html wiki.html \
-  assets/css/academic-refresh.css \
-  assets/js/home.js assets/js/research.js assets/js/wiki.js assets/js/wiki-entry.js assets/js/literature.js
-git commit -m "Refine academic homepage research wiki and literature map"
-git push
-```
-
-This patch intentionally keeps the route structure unchanged. The literature engine still lives at `leisure.html` so no navigation or deployment rewrite is required.
+Then inspect `http://localhost:8000/research.html`.

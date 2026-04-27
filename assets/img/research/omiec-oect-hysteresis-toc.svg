@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">OMIEC/OECT electrochemical hysteresis mechanism</title>
+  <desc id="desc">A TOC-style schematic linking ion insertion, electronic doping, morphology relaxation, and hysteresis in an organic mixed ionic electronic conductor channel.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="1" stop-color="#eef5f8"/>
+    </linearGradient>
+    <linearGradient id="film" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f385f"/>
+      <stop offset="1" stop-color="#0f6a7d"/>
+    </linearGradient>
+    <linearGradient id="electrolyte" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#dff5ef" stop-opacity="0.45"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#12324d" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#0f6a7d"/>
+    </marker>
+    <marker id="arrowGold" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#a46f18"/>
+    </marker>
+    <style>
+      .bg{fill:url(#paper)} .panel{fill:#ffffff;stroke:#d9d3c4;stroke-width:1.25}.small{font:13px Georgia,'Times New Roman',serif;fill:#56616e}.label{font:700 17px Georgia,'Times New Roman',serif;fill:#172033}.micro{font:12px Georgia,'Times New Roman',serif;fill:#677282}.axis{stroke:#2f3a48;stroke-width:1.4}.ionp{fill:#d79d2b;stroke:#8c6118;stroke-width:1}.ionn{fill:#4e91c7;stroke:#1c5f89;stroke-width:1}.chain{fill:none;stroke:#50c6c3;stroke-width:6;stroke-linecap:round;opacity:.9}.chain2{fill:none;stroke:#9bd2e6;stroke-width:5;stroke-linecap:round;opacity:.72}.electron{fill:#8edbe0;stroke:#12324d;stroke-width:1}.gold{fill:#b8892f;stroke:#7c5a1e;stroke-width:1.4}.arrow{fill:none;stroke:#0f6a7d;stroke-width:2.4;marker-end:url(#arrowBlue)}.arrowG{fill:none;stroke:#a46f18;stroke-width:2.2;marker-end:url(#arrowGold)}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="540" rx="28"/>
+
+  <g filter="url(#softShadow)">
+    <rect class="panel" x="42" y="42" width="592" height="456" rx="22"/>
+    <rect class="panel" x="666" y="42" width="252" height="456" rx="22"/>
+  </g>
+
+  <text class="label" x="72" y="84">OMIEC/OECT channel under electrochemical drive</text>
+  <text class="small" x="72" y="108">ion insertion + electronic doping + slow morphology = memory</text>
+
+  <rect x="83" y="136" width="488" height="166" rx="20" fill="url(#electrolyte)" stroke="#c7d9e7" stroke-width="1.2"/>
+  <text class="small" x="102" y="162">electrolyte</text>
+  <g opacity=".92">
+    <circle class="ionp" cx="170" cy="205" r="9"/><circle class="ionn" cx="220" cy="174" r="7"/>
+    <circle class="ionp" cx="293" cy="232" r="9"/><circle class="ionn" cx="335" cy="185" r="7"/>
+    <circle class="ionp" cx="420" cy="218" r="9"/><circle class="ionn" cx="490" cy="172" r="7"/>
+    <circle class="ionp" cx="532" cy="246" r="8"/><circle class="ionn" cx="134" cy="252" r="7"/>
+  </g>
+
+  <rect x="84" y="344" width="92" height="74" rx="10" class="gold"/>
+  <rect x="480" y="344" width="92" height="74" rx="10" class="gold"/>
+  <rect x="166" y="328" width="334" height="102" rx="24" fill="url(#film)" stroke="#0d2e44" stroke-width="2"/>
+  <text class="small" x="103" y="439">source</text>
+  <text class="small" x="497" y="439">drain</text>
+  <text class="small" x="244" y="455">mixed ionic–electronic channel</text>
+
+  <path class="chain" d="M203 362 C246 336 294 385 338 358 S428 360 462 379"/>
+  <path class="chain2" d="M208 403 C253 375 304 421 350 391 S433 394 466 412"/>
+  <path class="chain2" d="M218 382 C267 408 304 345 359 377 S423 347 456 362"/>
+  <circle class="electron" cx="252" cy="377" r="7"/><circle class="electron" cx="326" cy="369" r="7"/><circle class="electron" cx="407" cy="386" r="7"/>
+  <circle class="ionp" cx="292" cy="395" r="8"/><circle class="ionp" cx="386" cy="358" r="8"/>
+
+  <path class="arrowG" d="M293 245 C292 278 292 303 292 334"/>
+  <path class="arrowG" d="M420 218 C411 273 403 302 386 348"/>
+  <text class="small" x="208" y="288">ion insertion</text>
+  <path class="arrow" d="M506 383 C548 380 581 364 604 332"/>
+  <text class="small" x="512" y="327">channel current</text>
+
+  <g transform="translate(80 116)">
+    <rect x="0" y="0" width="180" height="52" rx="13" fill="#fffaf0" stroke="#d8c89f"/>
+    <text class="micro" x="15" y="22">state variable</text>
+    <text class="label" x="15" y="40" font-size="15">morphology relaxation</text>
+  </g>
+  <path class="arrow" d="M266 151 C335 119 435 119 499 153"/>
+  <text class="micro" x="361" y="129">slow internal coordinate</text>
+
+  <g transform="translate(696 86)">
+    <text class="label" x="0" y="0">history-dependent response</text>
+    <line class="axis" x1="16" y1="284" x2="206" y2="284"/>
+    <line class="axis" x1="16" y1="284" x2="16" y2="68"/>
+    <text class="small" x="196" y="304">V</text>
+    <text class="small" x="-2" y="61">I</text>
+    <path d="M38 235 C72 118 123 84 174 126 C221 170 179 260 105 248 C67 242 43 228 38 235" fill="none" stroke="#0f6a7d" stroke-width="4.3" stroke-linecap="round"/>
+    <path d="M43 244 C81 272 153 261 185 204 C221 138 134 75 73 123 C34 154 20 215 43 244" fill="none" stroke="#db709b" stroke-width="3.6" stroke-linecap="round" opacity=".86"/>
+    <circle cx="38" cy="235" r="5" fill="#0f6a7d"/><circle cx="185" cy="204" r="5" fill="#db709b"/>
+    <text class="small" x="35" y="333">two paths, one voltage protocol</text>
+    <rect x="23" y="360" width="184" height="58" rx="13" fill="#f8fbff" stroke="#d8e0e8"/>
+    <text class="micro" x="38" y="383">simulation output</text>
+    <text x="38" y="405" style="font:700 13px Georgia,'Times New Roman',serif;fill:#172033">descriptor · kernel · model</text>
+  </g>
+</svg>

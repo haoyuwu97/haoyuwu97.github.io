@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Vitrimer and dynamic polymer network theory</title>
+  <desc id="desc">A TOC-style schematic showing dynamic covalent bond exchange, topology descriptors, and stress-bearing paths in a polymer network.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/><stop offset="1" stop-color="#eef4ef"/>
+    </linearGradient>
+    <linearGradient id="node" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7c56b"/><stop offset="1" stop-color="#ba7a25"/>
+    </linearGradient>
+    <linearGradient id="blueNode" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#80d3dc"/><stop offset="1" stop-color="#0e6b83"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#122239" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#966a22"/></marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#0e6b83"/></marker>
+    <style>
+      .bg{fill:url(#paper)}.panel{fill:#fff;stroke:#d9d3c4;stroke-width:1.25}.edge{stroke:#516071;stroke-width:3;stroke-linecap:round;opacity:.42}.edge2{stroke:#516071;stroke-width:2;stroke-linecap:round;opacity:.22}.load{stroke:#9a6d22;stroke-width:7;stroke-linecap:round;fill:none}.exchange{stroke:#0e6b83;stroke-width:3.2;stroke-dasharray:8 8;fill:none;marker-end:url(#arrowB)}.arrow{stroke:#966a22;stroke-width:2.6;fill:none;marker-end:url(#arrow)}.n{fill:url(#node);stroke:#7a501e;stroke-width:1.4}.b{fill:url(#blueNode);stroke:#0d4658;stroke-width:1.4}.label{font:700 18px Georgia,'Times New Roman',serif;fill:#172033}.small{font:13px Georgia,'Times New Roman',serif;fill:#56616e}.micro{font:12px Georgia,'Times New Roman',serif;fill:#677282}.axis{stroke:#2f3a48;stroke-width:1.4}
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="540" rx="28"/>
+  <g filter="url(#shadow)">
+    <rect class="panel" x="42" y="42" width="610" height="456" rx="22"/>
+    <rect class="panel" x="682" y="42" width="236" height="456" rx="22"/>
+  </g>
+  <text class="label" x="76" y="84">dynamic covalent network under load</text>
+  <text class="small" x="76" y="109">bond exchange is useful only when it changes mechanically relevant topology</text>
+
+  <g transform="translate(64 134)">
+    <line class="edge2" x1="70" y1="42" x2="164" y2="96"/><line class="edge" x1="164" y1="96" x2="268" y2="54"/>
+    <line class="edge2" x1="268" y1="54" x2="398" y2="98"/><line class="edge" x1="398" y1="98" x2="504" y2="52"/>
+    <line class="edge2" x1="84" y1="244" x2="168" y2="96"/><line class="edge" x1="168" y1="96" x2="220" y2="205"/>
+    <line class="edge2" x1="220" y1="205" x2="342" y2="238"/><line class="edge" x1="342" y1="238" x2="398" y2="98"/>
+    <line class="edge2" x1="342" y1="238" x2="496" y2="248"/><line class="edge2" x1="220" y1="205" x2="84" y2="244"/>
+    <line class="edge2" x1="70" y1="42" x2="220" y2="205"/><line class="edge2" x1="268" y1="54" x2="342" y2="238"/>
+    <path class="load" d="M70 42 C165 105 222 183 342 238 C402 266 452 258 496 248"/>
+    <circle class="n" cx="70" cy="42" r="15"/><circle class="b" cx="164" cy="96" r="15"/><circle class="n" cx="268" cy="54" r="15"/>
+    <circle class="n" cx="398" cy="98" r="15"/><circle class="b" cx="504" cy="52" r="15"/><circle class="n" cx="84" cy="244" r="15"/>
+    <circle class="b" cx="220" cy="205" r="15"/><circle class="n" cx="342" cy="238" r="15"/><circle class="n" cx="496" cy="248" r="15"/>
+    <path class="exchange" d="M226 74 C250 118 272 148 330 153"/>
+    <path class="exchange" d="M315 89 C284 126 260 160 232 190"/>
+    <text class="small" x="260" y="139">exchange</text>
+    <text class="micro" x="66" y="306">highlighted path = stress-bearing connectivity</text>
+  </g>
+
+  <g transform="translate(690 84)">
+    <text class="label" x="0" y="0">topology-aware descriptors</text>
+    <rect x="8" y="34" width="204" height="74" rx="14" fill="#fffaf0" stroke="#d9caa5"/>
+    <text class="micro" x="24" y="59">network graph</text>
+    <text class="label" x="24" y="84" font-size="15">bridges · loops · paths</text>
+    <path class="arrow" d="M110 116 C110 143 110 160 110 184"/>
+    <rect x="8" y="190" width="204" height="74" rx="14" fill="#f7fbff" stroke="#cbd8e6"/>
+    <text class="micro" x="24" y="215">trajectory event</text>
+    <text class="label" x="24" y="240" font-size="15">exchange that matters?</text>
+    <path class="arrow" d="M110 272 C110 300 110 315 110 338"/>
+    <line class="axis" x1="20" y1="404" x2="204" y2="404"/>
+    <line class="axis" x1="20" y1="404" x2="20" y2="326"/>
+    <path d="M26 338 C52 338 70 356 86 374 C109 401 139 406 196 386" fill="none" stroke="#0e6b83" stroke-width="3.7" stroke-linecap="round"/>
+    <path d="M26 351 C75 352 97 393 130 395 C155 397 172 377 196 359" fill="none" stroke="#c0832b" stroke-width="3.1" stroke-linecap="round" opacity=".85"/>
+    <text class="small" x="36" y="432">relaxation / healing / failure</text>
+  </g>
+</svg>
