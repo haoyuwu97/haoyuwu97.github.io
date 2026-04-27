@@ -6,8 +6,12 @@ const STATE = {
   nodes: [],
   edges: [],
   activeId: null,
-  lastErrors: []
+  lastErrors: [],
+  lensTerms: [],
+  saved: []
 };
+
+const STORAGE_KEY = 'haoyu-literature-graph-library-v1';
 
 const META = {
   title: 'Literature Network | Haoyu Wu',
@@ -41,6 +45,35 @@ function html(text = '') {
 
 function normalizeSpace(value = '') {
   return String(value).replace(/\s+/g, ' ').trim();
+}
+
+function hashString(value = '') {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return Math.abs(hash >>> 0);
+}
+
+function truncate(value = '', max = 58) {
+  const text = normalizeSpace(value);
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+}
+
+function loadSavedLibrary() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    STATE.saved = Array.isArray(data) ? data : [];
+  } catch {
+    STATE.saved = [];
+  }
+}
+
+function saveLibrary() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.saved.slice(0, 80)));
+  } catch {}
 }
 
 function stripMarkup(value = '') {
@@ -92,6 +125,70 @@ function tokenize(text = '') {
     .split(/\s+/)
     .filter((token) => token.length > 3 && !STOPWORDS.has(token))
     .slice(0, 24);
+}
+
+function parseLensTerms(value = '') {
+  return Array.from(new Set(
+    String(value)
+      .split(/[,;|]/)
+      .map((term) => normalizeSpace(term.toLowerCase()))
+      .filter((term) => term.length > 2)
+  )).slice(0, 16);
+}
+
+function lensScore(paper, terms = STATE.lensTerms) {
+  if (!terms.length) return { score: 0, hits: [] };
+  const title = ` ${paper.title.toLowerCase()} `;
+  const abstract = ` ${paper.abstract.toLowerCase()} `;
+  const concepts = ` ${paper.concepts.join(' ').toLowerCase()} `;
+  const keywords = new Set(paper.keywords || []);
+  const hits = [];
+  let score = 0;
+  terms.forEach((term) => {
+    const simple = term.replace(/[^a-z0-9]+/g, ' ').trim();
+    if (!simple) return;
+    let local = 0;
+    if (title.includes(simple)) local += 3.2;
+    if (concepts.includes(simple)) local += 2.2;
+    if (abstract.includes(simple)) local += 1.2;
+    simple.split(/\s+/).forEach((part) => {
+      if (part.length > 3 && keywords.has(part)) local += 0.55;
+    });
+    if (local > 0) {
+      score += local;
+      hits.push(term);
+    }
+  });
+  return { score: Math.round(score * 10) / 10, hits: hits.slice(0, 5) };
+}
+
+function annotateLens(papers, terms = STATE.lensTerms) {
+  papers.forEach((paper) => {
+    const result = lensScore(paper, terms);
+    paper.lensScore = result.score;
+    paper.lensHits = result.hits;
+  });
+}
+
+function triageScore(paper, mode = 'balanced') {
+  const currentYear = new Date().getFullYear();
+  const citation = Math.log10((paper.citations || 0) + 1) * 2.4;
+  const age = paper.year ? Math.max(0, currentYear - paper.year) : 12;
+  const freshness = paper.year ? Math.max(0, 8 - age) * 0.55 : 0;
+  const lens = paper.lensScore || 0;
+  const metadata = (paper.doi ? 0.8 : 0) + (paper.abstract ? 0.5 : 0) + (paper.authors.length ? 0.25 : 0);
+  if (mode === 'canonical') return citation * 2.2 + lens * 0.8 + metadata;
+  if (mode === 'recent') return freshness * 2.1 + lens * 1.2 + citation * 0.35 + metadata;
+  if (mode === 'mechanism') return lens * 2.25 + citation * 0.65 + metadata;
+  return lens * 1.25 + citation + freshness * 0.75 + metadata;
+}
+
+function applyTriage(papers, options) {
+  const mode = options.mode || 'balanced';
+  papers.forEach((paper) => { paper.triageScore = triageScore(paper, mode); });
+  if (mode !== 'balanced' || STATE.lensTerms.length) {
+    papers.sort((a, b) => (b.triageScore || 0) - (a.triageScore || 0) || (b.citations || 0) - (a.citations || 0));
+  }
 }
 
 function initials(name = '') {
@@ -332,47 +429,109 @@ function scorePair(a, b) {
   return { score, reasons };
 }
 
+function relationType(edge) {
+  const reason = edge.reasons.join(' ').toLowerCase();
+  if (reason.includes('shared author')) return 'author';
+  if (reason.includes('venue')) return 'venue';
+  return 'semantic';
+}
+
+function compactEdgeSet(edges, nodeIds) {
+  const byNode = new Map(nodeIds.map((id) => [id, 0]));
+  const sorted = [...edges].sort((a, b) => b.weight - a.weight);
+  const kept = [];
+  sorted.forEach((edge) => {
+    const aDegree = byNode.get(edge.source) || 0;
+    const bDegree = byNode.get(edge.target) || 0;
+    if (kept.length < 34 && (aDegree < 6 || bDegree < 6 || edge.weight >= 4)) {
+      kept.push(edge);
+      byNode.set(edge.source, aDegree + 1);
+      byNode.set(edge.target, bDegree + 1);
+    }
+  });
+  return kept;
+}
+
 function buildNetwork(papers) {
   const canvas = $('lit-network');
   const width = canvas?.clientWidth || 760;
-  const height = canvas?.clientHeight || 360;
+  const height = canvas?.clientHeight || 420;
   const cx = width / 2;
   const cy = height / 2;
-  const radius = Math.max(90, Math.min(width, height) * 0.36);
-  const selected = papers.slice(0, 22);
+  const selected = papers.slice(0, 16);
+  const maxLens = Math.max(1, ...selected.map((paper) => paper.lensScore || 0));
+
   const nodes = selected.map((paper, index) => {
-    const angle = (Math.PI * 2 * index) / Math.max(selected.length, 1);
+    const seed = hashString(paper.id);
+    const ring = index === 0 ? 0 : 1 + (index % 3) * 0.36;
+    const angle = index === 0 ? 0 : (Math.PI * 2 * (index - 1)) / Math.max(selected.length - 1, 1) + (seed % 31) * 0.007;
     const citationScale = Math.log10((paper.citations || 0) + 1);
+    const lensBoost = (paper.lensScore || 0) / maxLens;
+    const radius = Math.min(width, height) * (0.16 + ring * 0.105);
     return {
       id: paper.id,
       paper,
-      x: cx + Math.cos(angle) * radius * (0.78 + (index % 3) * 0.11),
-      y: cy + Math.sin(angle) * radius * (0.78 + ((index + 1) % 3) * 0.11),
+      index: index + 1,
+      x: index === 0 ? cx : cx + Math.cos(angle) * radius,
+      y: index === 0 ? cy : cy + Math.sin(angle) * radius * 0.78,
       vx: 0,
       vy: 0,
-      r: clamp(7 + citationScale * 2.4, 7, 18)
+      r: clamp(8.5 + citationScale * 1.8 + lensBoost * 2.2, 8.5, 15.5)
     };
   });
 
-  const edges = [];
+  const candidateEdges = [];
   for (let i = 0; i < selected.length; i += 1) {
     for (let j = i + 1; j < selected.length; j += 1) {
       const result = scorePair(selected[i], selected[j]);
-      if (result.score >= 1.35) {
-        edges.push({ source: selected[i].id, target: selected[j].id, weight: result.score, reasons: result.reasons });
+      const lensOverlap = (selected[i].lensHits || []).filter((hit) => (selected[j].lensHits || []).includes(hit));
+      if (lensOverlap.length) {
+        result.score += Math.min(lensOverlap.length * 0.8, 2.4);
+        result.reasons.push(`same lens: ${lensOverlap.slice(0, 3).join(', ')}`);
+      }
+      if (result.score >= 1.75) {
+        candidateEdges.push({ source: selected[i].id, target: selected[j].id, weight: result.score, reasons: result.reasons });
       }
     }
   }
+
   STATE.nodes = nodes;
-  STATE.edges = edges.sort((a, b) => b.weight - a.weight).slice(0, 70);
-  runLayout(70);
+  STATE.edges = compactEdgeSet(candidateEdges, nodes.map((node) => node.id));
+  runLayout(120);
 }
 
-function runLayout(iterations = 60) {
+function resolveCollisions(width, height) {
+  const padding = 22;
+  for (let i = 0; i < STATE.nodes.length; i += 1) {
+    for (let j = i + 1; j < STATE.nodes.length; j += 1) {
+      const a = STATE.nodes[i];
+      const b = STATE.nodes[j];
+      const dx = b.x - a.x || 0.01;
+      const dy = b.y - a.y || 0.01;
+      const dist = Math.hypot(dx, dy) || 1;
+      const minDist = a.r + b.r + 16;
+      if (dist < minDist) {
+        const push = (minDist - dist) * 0.52;
+        const ux = dx / dist;
+        const uy = dy / dist;
+        a.x -= ux * push * 0.5;
+        a.y -= uy * push * 0.5;
+        b.x += ux * push * 0.5;
+        b.y += uy * push * 0.5;
+      }
+    }
+  }
+  STATE.nodes.forEach((node) => {
+    node.x = clamp(node.x, padding + node.r, width - padding - node.r);
+    node.y = clamp(node.y, padding + node.r, height - padding - node.r);
+  });
+}
+
+function runLayout(iterations = 90) {
   const canvas = $('lit-network');
   if (!canvas) return;
   const width = canvas.clientWidth || 760;
-  const height = canvas.clientHeight || 360;
+  const height = canvas.clientHeight || 420;
   const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
 
   for (let step = 0; step < iterations; step += 1) {
@@ -383,13 +542,15 @@ function runLayout(iterations = 60) {
         const dx = a.x - b.x || 0.01;
         const dy = a.y - b.y || 0.01;
         const dist2 = dx * dx + dy * dy;
-        const force = Math.min(1400 / dist2, 0.32);
-        a.vx += dx * force;
-        a.vy += dy * force;
-        b.vx -= dx * force;
-        b.vy -= dy * force;
+        const dist = Math.sqrt(dist2) || 1;
+        const force = Math.min(1900 / dist2, 0.42);
+        a.vx += (dx / dist) * force;
+        a.vy += (dy / dist) * force;
+        b.vx -= (dx / dist) * force;
+        b.vy -= (dy / dist) * force;
       }
     }
+
     STATE.edges.forEach((edge) => {
       const a = nodeMap.get(edge.source);
       const b = nodeMap.get(edge.target);
@@ -397,8 +558,8 @@ function runLayout(iterations = 60) {
       const dx = b.x - a.x;
       const dy = b.y - a.y;
       const dist = Math.hypot(dx, dy) || 1;
-      const target = 92 + Math.max(0, 5 - edge.weight) * 18;
-      const force = (dist - target) * 0.004 * clamp(edge.weight, 1, 5);
+      const target = edge.weight >= 4 ? 96 : 128 + Math.max(0, 4 - edge.weight) * 16;
+      const force = (dist - target) * 0.0032 * clamp(edge.weight, 1, 5.5);
       const fx = (dx / dist) * force;
       const fy = (dy / dist) * force;
       a.vx += fx;
@@ -406,16 +567,45 @@ function runLayout(iterations = 60) {
       b.vx -= fx;
       b.vy -= fy;
     });
-    STATE.nodes.forEach((node) => {
-      node.vx += (width / 2 - node.x) * 0.004;
-      node.vy += (height / 2 - node.y) * 0.004;
-      node.x = clamp(node.x + node.vx, 24, width - 24);
-      node.y = clamp(node.y + node.vy, 24, height - 24);
-      node.vx *= 0.72;
-      node.vy *= 0.72;
+
+    STATE.nodes.forEach((node, index) => {
+      const centerPull = index === 0 ? 0.014 : 0.0045;
+      node.vx += (width / 2 - node.x) * centerPull;
+      node.vy += (height / 2 - node.y) * centerPull;
+      node.x += node.vx;
+      node.y += node.vy;
+      node.vx *= 0.66;
+      node.vy *= 0.66;
     });
+    resolveCollisions(width, height);
   }
   drawNetwork();
+}
+
+function drawRoundedLabel(ctx, text, x, y, maxWidth) {
+  const label = truncate(text, 64);
+  ctx.save();
+  ctx.font = '12px "Times New Roman", serif';
+  const width = Math.min(maxWidth - 16, ctx.measureText(label).width + 16);
+  const height = 24;
+  const left = clamp(x, 8, Math.max(8, maxWidth - width - 8));
+  ctx.globalAlpha = 0.94;
+  ctx.fillStyle = 'rgba(255, 253, 248, 0.92)';
+  ctx.strokeStyle = 'rgba(101, 86, 61, 0.24)';
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(left, y, width, height, 8);
+  } else {
+    ctx.rect(left, y, width, height);
+  }
+  ctx.fill();
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#17202a';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, left + 8, y + height / 2, width - 14);
+  ctx.restore();
 }
 
 function drawNetwork() {
@@ -436,18 +626,47 @@ function drawNetwork() {
   const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
 
   ctx.save();
+  const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
+  gradient.addColorStop(0, 'rgba(255,253,248,0.48)');
+  gradient.addColorStop(1, 'rgba(238,243,249,0.26)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, rect.width, rect.height);
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.26;
+  ctx.strokeStyle = muted;
+  ctx.lineWidth = 0.7;
+  [0.32, 0.5, 0.68].forEach((x) => {
+    ctx.beginPath();
+    ctx.moveTo(rect.width * x, 18);
+    ctx.lineTo(rect.width * x, rect.height - 28);
+    ctx.stroke();
+  });
+  ctx.restore();
+
+  ctx.save();
   ctx.lineCap = 'round';
-  STATE.edges.forEach((edge) => {
+  STATE.edges.forEach((edge, edgeIndex) => {
     const a = nodeMap.get(edge.source);
     const b = nodeMap.get(edge.target);
     if (!a || !b) return;
     const active = STATE.activeId && (STATE.activeId === a.id || STATE.activeId === b.id);
-    ctx.globalAlpha = active ? 0.58 : 0.18;
+    const type = relationType(edge);
+    const midX = (a.x + b.x) / 2;
+    const midY = (a.y + b.y) / 2;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const curve = ((edgeIndex % 2 ? 1 : -1) * Math.min(42, 460 / dist));
+    const cx = midX - (dy / dist) * curve;
+    const cy = midY + (dx / dist) * curve;
+    ctx.globalAlpha = active ? 0.62 : (type === 'author' ? 0.25 : 0.15);
     ctx.strokeStyle = active ? accent : muted;
-    ctx.lineWidth = active ? 1.8 : clamp(edge.weight * 0.35, 0.6, 1.5);
+    ctx.lineWidth = active ? 2.2 : clamp(edge.weight * 0.22, 0.55, 1.25);
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
+    ctx.quadraticCurveTo(cx, cy, b.x, b.y);
     ctx.stroke();
   });
   ctx.restore();
@@ -458,22 +677,36 @@ function drawNetwork() {
       (edge.source === STATE.activeId && edge.target === node.id) ||
       (edge.target === STATE.activeId && edge.source === node.id)
     );
+    const faded = STATE.activeId && !active && !connected;
     ctx.save();
-    ctx.globalAlpha = STATE.activeId && !active && !connected ? 0.45 : 1;
+    ctx.globalAlpha = faded ? 0.42 : 1;
+    if ((node.paper.lensScore || 0) > 0) {
+      ctx.beginPath();
+      ctx.fillStyle = active ? 'rgba(139,111,61,0.18)' : 'rgba(139,111,61,0.08)';
+      ctx.arc(node.x, node.y, node.r + 7, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.beginPath();
-    ctx.fillStyle = active ? accent : 'rgba(255, 253, 248, 0.92)';
-    ctx.strokeStyle = active ? accent : muted;
-    ctx.lineWidth = active ? 2.2 : 1.1;
+    ctx.fillStyle = active ? accent : 'rgba(255, 253, 248, 0.96)';
+    ctx.strokeStyle = active ? accent : 'rgba(94,104,117,0.72)';
+    ctx.lineWidth = active ? 2.2 : 1.05;
     ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = active ? '#ffffff' : ink;
-    ctx.font = '10px "Times New Roman", serif';
+    ctx.font = '700 10.5px "Times New Roman", serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(initials(node.paper.authors[0] || node.paper.title), node.x, node.y + 0.5);
+    ctx.fillText(String(node.index), node.x, node.y + 0.25);
     ctx.restore();
   });
+
+  const activeNode = STATE.nodes.find((node) => node.id === STATE.activeId);
+  if (activeNode) {
+    const labelX = activeNode.x + activeNode.r + 8;
+    const labelY = clamp(activeNode.y - 12, 10, rect.height - 34);
+    drawRoundedLabel(ctx, activeNode.paper.title, labelX, labelY, rect.width);
+  }
 
   if (STATE.nodes.length) {
     ctx.save();
@@ -481,8 +714,8 @@ function drawNetwork() {
     ctx.font = '12px "Times New Roman", serif';
     ctx.textAlign = 'left';
     const label = STATE.activeId
-      ? 'Edges indicate shared authors, venues, or semantic terms.'
-      : 'Select a node to inspect metadata and local relations.';
+      ? 'Numbered nodes match result order; highlighted edges explain the selected paper.'
+      : 'Numbered nodes match result order; edges are pruned to strong explainable relations.';
     ctx.fillText(label, 14, rect.height - 14);
     ctx.restore();
   }
@@ -498,6 +731,52 @@ function shortAuthors(paper) {
   return `${paper.authors.slice(0, 3).join(', ')} et al.`;
 }
 
+function paperById(id) {
+  return STATE.papers.find((paper) => paper.id === id);
+}
+
+function relationDegree(paper) {
+  return STATE.edges.filter((edge) => edge.source === paper.id || edge.target === paper.id).length;
+}
+
+function topLensTerms() {
+  const counts = new Map();
+  STATE.papers.forEach((paper) => {
+    (paper.lensHits || []).forEach((hit) => counts.set(hit, (counts.get(hit) || 0) + 1));
+  });
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+}
+
+function strongestBridgePaper() {
+  if (!STATE.papers.length) return null;
+  return [...STATE.papers]
+    .sort((a, b) => relationDegree(b) - relationDegree(a) || (b.lensScore || 0) - (a.lensScore || 0))[0];
+}
+
+function freshestLensPaper() {
+  return STATE.papers
+    .filter((paper) => (paper.lensScore || 0) > 0 && paper.year)
+    .sort((a, b) => b.year - a.year || (b.lensScore || 0) - (a.lensScore || 0))[0] || null;
+}
+
+function renderInsights() {
+  const container = $('lit-insights');
+  if (!container) return;
+  if (!STATE.papers.length) {
+    container.innerHTML = '<span>Run a search to generate a lens-aware shortlist, bridge-paper hint, and saved local library count.</span>';
+    return;
+  }
+  const terms = topLensTerms();
+  const bridge = strongestBridgePaper();
+  const fresh = freshestLensPaper();
+  container.innerHTML = `
+    <span><strong>Lens hits:</strong> ${terms.length ? terms.map(([term, count]) => `${html(term)} ×${count}`).join(' · ') : 'none yet'}</span>
+    ${bridge ? `<span><strong>Bridge:</strong> ${html(truncate(bridge.title, 54))} (${relationDegree(bridge)} edges)</span>` : ''}
+    ${fresh ? `<span><strong>Fresh:</strong> ${html(truncate(fresh.title, 54))} (${fresh.year})</span>` : ''}
+    <span><strong>Saved:</strong> ${STATE.saved.length} local records</span>
+  `;
+}
+
 function renderResults() {
   const container = $('lit-results');
   if (!container) return;
@@ -507,15 +786,17 @@ function renderResults() {
   }
   container.innerHTML = STATE.papers.map((paper, index) => `
     <article class="lit-result${paper.id === STATE.activeId ? ' is-active' : ''}" data-paper-id="${html(paper.id)}" tabindex="0">
-      <h3>${index + 1}. ${html(paper.title)}</h3>
+      <h3><span class="lit-node-index">${index + 1}</span> ${html(paper.title)}</h3>
       <p>${html(shortAuthors(paper))}${paper.year ? ` · ${paper.year}` : ''}${paper.venue ? ` · <em>${html(paper.venue)}</em>` : ''}</p>
-      ${paper.abstract ? `<p>${html(paper.abstract).slice(0, 420)}${paper.abstract.length > 420 ? '…' : ''}</p>` : ''}
+      ${paper.abstract ? `<p>${html(paper.abstract).slice(0, 320)}${paper.abstract.length > 320 ? '…' : ''}</p>` : ''}
       <div class="lit-score-row">
         <span>${html(sourceBadge(paper.source))}</span>
+        ${paper.lensScore ? `<span class="lens-chip">lens ${paper.lensScore}</span>` : ''}
+        ${paper.lensHits?.length ? `<span>${html(paper.lensHits.slice(0, 3).join(' · '))}</span>` : ''}
         ${paper.citations !== null ? `<span>${paper.citations} citations</span>` : ''}
-        ${paper.references !== null ? `<span>${paper.references} references</span>` : ''}
+        ${paper.references !== null ? `<span>${paper.references} refs</span>` : ''}
         ${paper.doi ? `<a href="${html(doiUrl(paper.doi))}" target="_blank" rel="noreferrer noopener">DOI</a>` : ''}
-        ${paper.openAccessUrl ? `<a href="${html(paper.openAccessUrl)}" target="_blank" rel="noreferrer noopener">open access</a>` : ''}
+        ${paper.openAccessUrl ? `<a href="${html(paper.openAccessUrl)}" target="_blank" rel="noreferrer noopener">OA</a>` : ''}
         ${paper.url && !paper.doi ? `<a href="${html(paper.url)}" target="_blank" rel="noreferrer noopener">record</a>` : ''}
       </div>
     </article>
@@ -553,9 +834,10 @@ function renderDetail(paper) {
   container.innerHTML = `
     <h3>${html(paper.title)}</h3>
     <p>${html(shortAuthors(paper))}${paper.year ? ` · ${paper.year}` : ''}${paper.venue ? ` · ${html(paper.venue)}` : ''}</p>
-    <p>${paper.citations !== null ? `${paper.citations} citations` : 'Citation count unavailable'}${paper.references !== null ? ` · ${paper.references} references` : ''} · ${html(sourceBadge(paper.source))}</p>
+    <p>${paper.citations !== null ? `${paper.citations} citations` : 'Citation count unavailable'}${paper.references !== null ? ` · ${paper.references} references` : ''} · ${html(sourceBadge(paper.source))}${paper.lensScore ? ` · lens ${paper.lensScore}` : ''}</p>
+    ${paper.lensHits?.length ? `<p><strong>Lens terms:</strong> ${html(paper.lensHits.join(', '))}</p>` : ''}
     ${paper.concepts.length ? `<p><strong>Concepts:</strong> ${html(paper.concepts.slice(0, 8).join(', '))}</p>` : ''}
-    ${paper.abstract ? `<p>${html(paper.abstract).slice(0, 650)}${paper.abstract.length > 650 ? '…' : ''}</p>` : ''}
+    ${paper.abstract ? `<p>${html(paper.abstract).slice(0, 560)}${paper.abstract.length > 560 ? '…' : ''}</p>` : ''}
     ${related.length ? `<p><strong>Local relations</strong></p><ul>${related.join('')}</ul>` : '<p>No strong local relation edge was inferred among the displayed papers.</p>'}
   `;
 }
@@ -591,7 +873,9 @@ function getOptions() {
     source: $('lit-source')?.value || 'openalex',
     sort: $('lit-sort')?.value || 'relevance_score:desc',
     fromYear: $('lit-from')?.value ? Number($('lit-from').value) : null,
-    toYear: $('lit-to')?.value ? Number($('lit-to').value) : null
+    toYear: $('lit-to')?.value ? Number($('lit-to').value) : null,
+    mode: $('lit-mode')?.value || 'balanced',
+    lensTerms: parseLensTerms($('lit-lens')?.value || '')
   };
 }
 
@@ -610,10 +894,11 @@ async function runSearch(event) {
     return;
   }
   const options = getOptions();
+  STATE.lensTerms = options.lensTerms;
   const sourceOrder = options.source === 'all' ? ['openalex', 'crossref', 'semantic'] : [options.source];
   STATE.lastErrors = [];
   STATE.activeId = null;
-  setStatus(`Searching ${sourceOrder.map((source) => SOURCE_LABELS[source]).join(', ')} for “${query}”…`);
+  setStatus(`Searching ${sourceOrder.map((source) => SOURCE_LABELS[source]).join(', ')} for “${query}” with ${options.mode} triage…`);
 
   const collected = [];
   for (const source of sourceOrder) {
@@ -627,8 +912,10 @@ async function runSearch(event) {
   }
 
   STATE.papers = dedupePapers(collected);
+  annotateLens(STATE.papers, STATE.lensTerms);
   if (!STATE.papers.length) {
     renderResults();
+    renderInsights();
     buildNetwork([]);
     renderDetail(null);
     setStatus('No usable records were returned.', STATE.lastErrors);
@@ -641,11 +928,39 @@ async function runSearch(event) {
   } else if (sort === 'cited_by_count:desc') {
     STATE.papers.sort((a, b) => (b.citations || 0) - (a.citations || 0));
   }
+  applyTriage(STATE.papers, options);
 
   buildNetwork(STATE.papers);
   renderResults();
+  renderInsights();
   selectPaper(STATE.papers[0].id);
-  setStatus(`Loaded ${STATE.papers.length} deduplicated records and ${STATE.edges.length} inferred relation edges.`, STATE.lastErrors);
+  setStatus(`Loaded ${STATE.papers.length} deduplicated records, ${STATE.edges.length} pruned relation edges, and ${STATE.lensTerms.length} lens terms.`, STATE.lastErrors);
+}
+
+function saveSelectedPaper() {
+  const paper = STATE.activeId ? paperById(STATE.activeId) : STATE.papers[0];
+  if (!paper) {
+    setStatus('No selected paper to save.');
+    return;
+  }
+  const record = {
+    id: paper.id,
+    title: paper.title,
+    authors: paper.authors,
+    year: paper.year,
+    venue: paper.venue,
+    doi: paper.doi,
+    url: paper.url || doiUrl(paper.doi),
+    lensScore: paper.lensScore || 0,
+    lensHits: paper.lensHits || [],
+    savedAt: new Date().toISOString()
+  };
+  const existing = new Map(STATE.saved.map((item) => [item.id, item]));
+  existing.set(record.id, record);
+  STATE.saved = [...existing.values()].slice(-80).reverse();
+  saveLibrary();
+  renderInsights();
+  setStatus(`Saved “${truncate(paper.title, 72)}” to the browser-local literature pocket.`, STATE.lastErrors);
 }
 
 function exportList() {
@@ -653,14 +968,33 @@ function exportList() {
     setStatus('Nothing to copy yet. Run a search first.');
     return;
   }
-  const text = STATE.papers.map((paper, index) => {
-    const keyAuthor = (paper.authors[0] || 'paper').split(/\s+/).at(-1)?.replace(/[^A-Za-z0-9]/g, '') || 'paper';
-    const key = `${keyAuthor}${paper.year || 'nd'}_${index + 1}`;
-    return `@article{${key},\n  title = {${paper.title}},\n  author = {${paper.authors.join(' and ')}},\n  year = {${paper.year || ''}},\n  journal = {${paper.venue || ''}},\n  doi = {${paper.doi || ''}},\n  url = {${paper.url || doiUrl(paper.doi) || ''}},\n  note = {Metadata source: ${sourceBadge(paper.source)}}\n}`;
-  }).join('\n\n');
+  const shortlist = STATE.papers.slice(0, 12);
+  const text = [
+    '# Literature Graph shortlist',
+    `Generated: ${new Date().toLocaleString()}`,
+    `Lens: ${STATE.lensTerms.join(', ') || 'none'}`,
+    '',
+    '| # | Paper | Why it is in the shortlist | DOI / URL |',
+    '|---:|---|---|---|',
+    ...shortlist.map((paper, index) => {
+      const relationCount = relationDegree(paper);
+      const why = [
+        paper.lensScore ? `lens ${paper.lensScore}${paper.lensHits?.length ? ` (${paper.lensHits.slice(0, 3).join(', ')})` : ''}` : '',
+        relationCount ? `${relationCount} graph links` : '',
+        paper.citations !== null ? `${paper.citations} citations` : '',
+        paper.year ? `${paper.year}` : ''
+      ].filter(Boolean).join('; ');
+      const citation = `${paper.title} — ${shortAuthors(paper)}${paper.venue ? `, ${paper.venue}` : ''}${paper.year ? ` (${paper.year})` : ''}`.replace(/\|/g, '/');
+      const link = paper.doi ? doiUrl(paper.doi) : (paper.url || '');
+      return `| ${index + 1} | ${citation} | ${why || 'metadata match'} | ${link} |`;
+    }),
+    '',
+    '## Saved local records',
+    ...(STATE.saved.length ? STATE.saved.slice(0, 20).map((paper, index) => `${index + 1}. ${paper.title}${paper.doi ? ` — https://doi.org/${paper.doi}` : paper.url ? ` — ${paper.url}` : ''}`) : ['None yet.'])
+  ].join('\n');
 
   navigator.clipboard?.writeText(text)
-    .then(() => setStatus(`Copied ${STATE.papers.length} BibTeX-like records to clipboard.`, STATE.lastErrors))
+    .then(() => setStatus(`Copied a ${shortlist.length}-paper review shortlist plus ${STATE.saved.length} saved local records.`, STATE.lastErrors))
     .catch(() => {
       const textarea = document.createElement('textarea');
       textarea.value = text;
@@ -668,7 +1002,7 @@ function exportList() {
       textarea.select();
       document.execCommand('copy');
       textarea.remove();
-      setStatus(`Copied ${STATE.papers.length} BibTeX-like records to clipboard.`, STATE.lastErrors);
+      setStatus(`Copied a ${shortlist.length}-paper review shortlist plus ${STATE.saved.length} saved local records.`, STATE.lastErrors);
     });
 }
 
@@ -689,12 +1023,15 @@ function initLiteraturePage() {
   smoothScrollForHashes();
   initReveal();
   initMolecularField(document.getElementById('bg-canvas'), { variant: 'subtle', density: 0.58 });
+  loadSavedLibrary();
+  STATE.lensTerms = parseLensTerms($('lit-lens')?.value || '');
 
   $('lit-form')?.addEventListener('submit', runSearch);
   $('lit-export')?.addEventListener('click', exportList);
+  $('lit-save')?.addEventListener('click', saveSelectedPaper);
   $('lit-fit')?.addEventListener('click', () => {
-    runLayout(90);
-    setStatus(`Re-laid out ${STATE.nodes.length} paper nodes and ${STATE.edges.length} edges.`, STATE.lastErrors);
+    runLayout(120);
+    setStatus(`Re-laid out ${STATE.nodes.length} paper nodes and ${STATE.edges.length} pruned edges.`, STATE.lastErrors);
   });
   $('lit-network')?.addEventListener('click', clickNetwork);
   window.addEventListener('resize', () => {
@@ -702,6 +1039,7 @@ function initLiteraturePage() {
   });
   initExamples();
   renderResults();
+  renderInsights();
   drawNetwork();
 }
 

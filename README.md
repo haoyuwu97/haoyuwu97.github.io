@@ -1,6 +1,6 @@
-# Haoyu Wu homepage academic refresh — apply guide
+# Haoyu Wu homepage academic refresh V2 — apply guide
 
-This package contains only the files that need to be added or overwritten in the current `haoyuwu97.github.io` repository. The goal is a minimal-change static-site refresh: no new build system, no dependency installation, and no change to the existing GitHub Pages deployment model.
+This V2 package contains only the files that need to be added or overwritten in the current `haoyuwu97.github.io` repository. It keeps the static GitHub Pages model but further removes oversized hero blocks, simplifies publications, tightens the wiki layout, and rebuilds the literature network map.
 
 ## Apply
 
@@ -39,7 +39,7 @@ git push
 ### Added
 
 - `assets/css/academic-refresh.css` — low-impact academic design override layer.
-- `assets/js/literature.js` — online literature network search engine.
+- `assets/js/literature.js` — online literature network search engine with research-lens triage, cleaner graph layout, browser-local saving, and shortlist export.
 - `assets/img/research/research-program-map.svg` — restrained research-program schematic.
 
 ### Overwritten
@@ -60,12 +60,12 @@ git push
 - Preserve the existing static architecture and the Brownian / CG-MD background canvas.
 - Add a single CSS override instead of rewriting `main.css`.
 - Reduce typography scale, icon dominance, and glassmorphism intensity.
-- Shift pages toward a low-key professor/lab-site aesthetic: serif typography, tighter metadata chips, restrained paper-like cards, chronological bibliography, and encyclopedia-like wiki layout.
+- Shift pages toward a low-key professor/lab-site aesthetic: serif typography, compact headers, direct chronological bibliography, dense wiki layout, and restrained paper-like cards only where useful.
 - Keep `leisure.html` as the URL for minimal routing change, but replace the Rest Mode interface with `Literature Graph`.
 
 ## Literature engine notes
 
-The literature page queries public metadata APIs directly from the browser. It supports topic/phrase/DOI searches, OpenAlex/Crossref/Semantic Scholar source selection, year limits, result deduplication, inferred relation edges, canvas network visualization, local paper inspection, and BibTeX-like export.
+The literature page queries public metadata APIs directly from the browser. It supports topic/phrase/DOI searches, OpenAlex/Crossref/Semantic Scholar source selection, year limits, result deduplication, personal lens scoring, triage modes, inferred relation edges, a pruned canvas network, local paper inspection, browser-local saving, and Markdown shortlist export.
 
 Because this is a client-side static page, API availability depends on public API rate limits and CORS behavior. The interface reports source-level errors in the status line rather than failing silently.
 

@@ -57,25 +57,15 @@
     </header>
   </div>
     <main class="site-main">
-      <section class="page-hero page-hero-compact literature-hero">
+      <section class="section literature-section literature-direct-section">
         <div class="container">
-          <div class="page-hero-shell compact-shell academic-hero-shell">
-            <div class="page-head compact-page-head">
+          <header class="literature-minimal-head">
+            <div>
               <span class="kicker">Literature Graph</span>
-              <h1 class="page-title">Lightweight literature network search engine</h1>
-              <p class="page-subtitle compact-page-subtitle">Search scholarly metadata online, triage papers, and inspect an instant relation graph built from shared authors, venues, concepts, citations, and references.</p>
-              <div class="compact-meta-row academic-meta-row" aria-label="Search engine sources">
-                <span class="meta-chip">OpenAlex primary</span>
-                <span class="meta-chip">Crossref fallback</span>
-                <span class="meta-chip">Semantic Scholar enrichments</span>
-                <span class="meta-chip">no build step</span>
-              </div>
+              <h1>Lightweight literature network search engine</h1>
             </div>
-          </div>
-        </div>
-      </section>
-      <section class="section section-tight-bottom literature-section">
-        <div class="container">
+            <p>Search, triage, and map papers through explainable relations rather than a visually noisy citation toy.</p>
+          </header>
           <form id="lit-form" class="glass-card lit-search-panel" role="search">
             <label for="lit-query">Search topic, DOI, author, or phrase</label>
             <div class="lit-search-row">
@@ -109,6 +99,21 @@
                 <input id="lit-to" class="text-input" type="number" min="1900" max="2100" placeholder="2026" />
               </div>
             </div>
+            <div class="lit-lens-row">
+              <div class="control lit-lens-control">
+                <label for="lit-lens">Personal research lens</label>
+                <input id="lit-lens" class="text-input" type="text" value="coarse-grained, molecular dynamics, vitrimer, OMIEC, hysteresis, percolation, rheology, transport" />
+              </div>
+              <div class="control">
+                <label for="lit-mode">Triage mode</label>
+                <select id="lit-mode" class="select-input">
+                  <option value="balanced">balanced</option>
+                  <option value="mechanism">mechanism-first</option>
+                  <option value="recent">recent-frontier</option>
+                  <option value="canonical">canonical</option>
+                </select>
+              </div>
+            </div>
             <div class="lit-example-row" aria-label="Example searches">
               <button type="button" data-example="organic mixed ionic electronic conductor hysteresis" class="meta-chip lit-example">OMIEC hysteresis</button>
               <button type="button" data-example="vitrimer fracture self healing molecular dynamics" class="meta-chip lit-example">vitrimer mechanics</button>
@@ -123,8 +128,12 @@
                   <span class="kicker">Results</span>
                   <h2 class="section-title">Candidate papers</h2>
                 </div>
-                <button id="lit-export" class="btn secondary inline-btn" type="button">Copy BibTeX-like list</button>
+                <div class="lit-button-row">
+                  <button id="lit-save" class="btn secondary inline-btn" type="button">Save selected</button>
+                  <button id="lit-export" class="btn secondary inline-btn" type="button">Copy shortlist</button>
+                </div>
               </div>
+              <div id="lit-insights" class="lit-insights" aria-live="polite"></div>
               <div id="lit-results" class="lit-results"></div>
             </section>
             <aside class="glass-card lit-network-panel" aria-label="Literature network">

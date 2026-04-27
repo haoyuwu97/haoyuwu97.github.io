@@ -539,3 +539,310 @@ body {
   border: 1px solid var(--academic-line);
   border-radius: 999px;
 }
+
+/* V2 compact academic corrections: remove oversized hero voids and make the pages read like lab pages. */
+.page-hero,
+.page-hero-compact {
+  padding-top: clamp(1rem, 2.2vw, 1.7rem) !important;
+  padding-bottom: clamp(0.55rem, 1.4vw, 1rem) !important;
+}
+.compact-shell,
+.academic-hero-shell {
+  min-height: 0 !important;
+  padding: clamp(1.15rem, 2.4vw, 1.8rem) !important;
+}
+.page-head,
+.compact-page-head {
+  max-width: none !important;
+}
+.page-title {
+  max-width: 13.5em;
+}
+.compact-page-subtitle {
+  max-width: 48rem !important;
+}
+
+/* Research hero: the former blank right side becomes a concise methodological spine. */
+.research-hero-balanced {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.85fr);
+  gap: clamp(1.2rem, 3vw, 2.6rem);
+  align-items: center;
+}
+.research-hero-balanced .page-title {
+  max-width: 10.7em;
+}
+.research-hero-note {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 1px solid var(--academic-line);
+  padding-left: clamp(1rem, 2.3vw, 1.65rem);
+  color: var(--academic-muted);
+}
+.research-hero-note .note-label {
+  color: var(--academic-accent);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  margin-bottom: 0.72rem;
+}
+.research-hero-note ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.62rem;
+  counter-reset: hero-spine;
+}
+.research-hero-note li {
+  counter-increment: hero-spine;
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 0.65fr) minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: baseline;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.13);
+}
+.research-hero-note li::before {
+  content: counter(hero-spine, decimal-leading-zero);
+  color: var(--academic-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.research-hero-note strong {
+  color: var(--academic-ink);
+  font-size: 0.9rem;
+}
+.research-hero-note span {
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+[data-theme="dark"] .research-hero-note strong { color: rgba(255,255,255,0.84); }
+
+/* Publications: no top module; pure chronological bibliography. */
+.publication-direct-section {
+  padding-top: clamp(1.25rem, 2.8vw, 2.2rem) !important;
+  padding-bottom: 4rem !important;
+}
+.subpage-publications .academic-bibliography {
+  max-width: 980px;
+  gap: 1.55rem;
+}
+.subpage-publications .pub-year-block {
+  grid-template-columns: 4.4rem minmax(0, 1fr);
+  gap: 1.35rem;
+}
+.subpage-publications .pub-year-label {
+  font-size: 1.05rem;
+  color: var(--academic-ink);
+  border-top: 2px solid var(--academic-line);
+  padding-top: 0.55rem;
+  letter-spacing: 0.015em;
+}
+.subpage-publications .pub-year-list {
+  gap: 0;
+}
+.subpage-publications .pub-entry {
+  padding: 0.72rem 0 0.82rem;
+  border: 0;
+  border-top: 1px solid rgba(101, 86, 61, 0.18);
+  border-radius: 0;
+  background: transparent !important;
+}
+.subpage-publications .pub-entry-title {
+  font-size: 0.98rem;
+  line-height: 1.35;
+  margin-bottom: 0.24rem;
+}
+.subpage-publications .pub-authors,
+.subpage-publications .pub-venue,
+.subpage-publications .pub-note {
+  font-size: 0.86rem;
+  line-height: 1.48;
+}
+.subpage-publications .pub-note { display: none; }
+.subpage-publications .pub-links {
+  margin-top: 0.38rem;
+  gap: 0.32rem;
+}
+.subpage-publications .pub-links a,
+.subpage-publications .pub-links span {
+  font-size: 0.68rem;
+  padding: 0.14rem 0.38rem;
+  background: rgba(255,255,255,0.26);
+}
+
+/* Wiki: slim header + content starts immediately. */
+.wiki-direct-section {
+  padding-top: clamp(0.95rem, 2vw, 1.45rem) !important;
+  padding-bottom: 4rem !important;
+}
+.wiki-minimal-head,
+.literature-minimal-head {
+  display: grid;
+  grid-template-columns: minmax(220px, auto) minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 0.78rem;
+  padding: 0 0 0.72rem;
+  border-bottom: 1px solid var(--academic-line);
+}
+.wiki-minimal-head h1,
+.literature-minimal-head h1 {
+  margin: 0.2rem 0 0;
+  font-family: var(--academic-serif);
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.wiki-minimal-head p,
+.literature-minimal-head p {
+  margin: 0;
+  max-width: 50rem;
+  color: var(--academic-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.wiki-mini-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+.wiki-mini-stats span {
+  border: 1px solid var(--academic-line);
+  border-radius: 999px;
+  padding: 0.18rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--academic-muted);
+  background: rgba(255,255,255,0.25);
+}
+.wiki-layout {
+  gap: 0.75rem;
+}
+.wiki-sidebar {
+  padding: 0.82rem !important;
+}
+.wiki-sidebar h2 {
+  margin-bottom: 0.55rem;
+}
+.wiki-note {
+  display: none;
+}
+.wiki-article {
+  padding: clamp(0.95rem, 2.2vw, 1.5rem) !important;
+}
+.wiki-article section + section {
+  margin-top: 1.05rem;
+  padding-top: 1rem;
+}
+
+/* Literature engine: compact entry, research lens, and a cleaner non-overlapping graph. */
+.literature-direct-section {
+  padding-top: clamp(0.95rem, 2vw, 1.45rem) !important;
+  padding-bottom: 4rem !important;
+}
+.literature-minimal-head {
+  grid-template-columns: minmax(260px, auto) minmax(0, 1fr);
+}
+.lit-search-panel {
+  margin-bottom: 0.55rem !important;
+}
+.lit-lens-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 0.24fr);
+  gap: 0.65rem;
+  margin-top: 0.72rem;
+}
+.lit-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+.lit-insights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin-bottom: 0.72rem;
+  color: var(--academic-muted);
+}
+.lit-insights span {
+  border: 1px solid var(--academic-line);
+  border-radius: 999px;
+  padding: 0.28rem 0.56rem;
+  font-size: 0.76rem;
+  background: rgba(255,255,255,0.25);
+}
+.lit-workbench {
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.78fr);
+  gap: 0.9rem;
+}
+.lit-network-panel {
+  position: sticky;
+  top: 5.2rem;
+}
+.lit-network-canvas {
+  height: 430px;
+  border-radius: 0.7rem;
+  background: rgba(255,253,248,0.64);
+}
+.lit-node-index {
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--academic-line);
+  border-radius: 50%;
+  font-size: 0.72rem;
+  color: var(--academic-accent);
+  margin-right: 0.3rem;
+}
+.lit-result h3 {
+  font-size: 0.96rem;
+}
+.lit-result p {
+  font-size: 0.84rem;
+}
+.lit-score-row .lens-chip {
+  border-color: rgba(139,111,61,0.45);
+  color: var(--academic-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .research-hero-balanced,
+  .wiki-minimal-head,
+  .literature-minimal-head,
+  .lit-lens-row {
+    grid-template-columns: 1fr;
+  }
+  .research-hero-note {
+    border-left: 0;
+    border-top: 1px solid var(--academic-line);
+    padding-left: 0;
+    padding-top: 0.9rem;
+  }
+  .wiki-mini-stats { justify-content: flex-start; }
+  .lit-network-panel { position: static; }
+}
+
+@media (max-width: 680px) {
+  .subpage-publications .pub-year-block {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+  .subpage-publications .pub-year-label {
+    position: static;
+    margin-top: 0.8rem;
+  }
+  .research-hero-note li {
+    grid-template-columns: 1.8rem minmax(0, 1fr);
+  }
+  .research-hero-note li span {
+    grid-column: 2;
+  }
+}

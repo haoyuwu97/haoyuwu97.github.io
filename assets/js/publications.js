@@ -56,9 +56,12 @@ function renderPublications() {
   const groups = groupByYear(sorted);
   const years = sorted.map((item) => item.year).filter(Boolean);
 
-  document.getElementById('publication-total').textContent = `${sorted.length}`;
-  document.getElementById('year-span').textContent = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : '—';
-  document.getElementById('first-author-count').textContent = `${sorted.filter((item) => item.authors?.trim().startsWith('Haoyu Wu')).length}`;
+  const totalNode = document.getElementById('publication-total');
+  const yearSpanNode = document.getElementById('year-span');
+  const firstAuthorNode = document.getElementById('first-author-count');
+  if (totalNode) totalNode.textContent = `${sorted.length}`;
+  if (yearSpanNode) yearSpanNode.textContent = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : '—';
+  if (firstAuthorNode) firstAuthorNode.textContent = `${sorted.filter((item) => item.authors?.trim().startsWith('Haoyu Wu')).length}`;
 
   container.innerHTML = '';
   let globalIndex = 1;
