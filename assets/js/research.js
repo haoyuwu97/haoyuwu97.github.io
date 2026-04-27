@@ -1,166 +1,191 @@
 import { pageMeta } from './site-data.js';
-import { activateNav, initReveal, renderTagList, setMeta, smoothScrollForHashes } from './utils.js';
+import { activateNav, initReveal, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
 
 const RESEARCH_PAGE = {
   intro:
-    'The current research program combines polymer-network mechanics with mixed ionic/electronic transport, while earlier work built complementary expertise in polymer informatics, nanocomposite transport, and rheology.',
-  currentProjects: [
+    'My research asks how microscopic organization in polymeric soft matter becomes macroscopic mechanics, transport, and electrochemical response. I combine coarse-grained molecular dynamics, physically interpretable descriptors, and multiscale closure so that simulation output becomes mechanistic explanation rather than only high-dimensional data.',
+  directions: [
     {
-      kicker: 'Current project',
-      title: 'Electrochemical hysteresis in organic mixed ionic–electronic conductors (OMIECs)',
+      kicker: 'Current direction · OMIEC physics',
+      title: 'Electrochemical hysteresis in organic mixed ionic–electronic conductors',
       lead:
-        'This project develops a multiscale simulation-and-theory framework for OMIECs, with particular emphasis on the microscopic origin of electrochemical hysteresis and its translation into continuum and device metrics.',
+        'OMIECs couple ion motion, electronic doping, morphology, solvent uptake, and slow structural relaxation. The central problem is not only to reproduce hysteresis, but to identify which microscopic variables remember the past state of the material.',
       paragraphs: [
-        'The central question is how ionic motion, electronic motion, microstructural evolution, and electrostatic boundary conditions jointly generate history dependence during charging and discharging. The work therefore combines molecularly resolved models with electrochemically faithful boundary treatments so that simulated state variables remain physically interpretable rather than merely descriptive.',
-        'A second objective is methodological: to identify reduced observables and free-energy representations that can be transferred from molecular simulation to mesoscale and device-scale descriptions. The intended outcome is a predictive framework for comparing OMIEC chemistries, hydration states, morphologies, and operating protocols on the same thermodynamically consistent footing.'
+        'The working strategy is to use molecular and mesoscale observables as state variables: local ion coordination, polymer segmental mobility, electrostatic screening, chain packing, and spatially heterogeneous redox environments. These observables can then be translated into continuum-side kernels that preserve a physical interpretation.',
+        'A useful model should separate reversible transport from genuine memory: capacitive charging, ion trapping, morphology-dependent mobility, and redox-state-dependent free energy all leave different signatures in transient experiments.'
       ],
-      tags: ['OMIEC', 'electrochemical hysteresis', 'mixed transport', 'multiscale modeling'],
-      figure: {
+      questions: [
+        'Which molecular observables are sufficient state variables for OMIEC memory?',
+        'Can simulation-derived kernels distinguish ion trapping from morphology-driven slow relaxation?',
+        'How should molecular hysteresis be passed into continuum device models without losing thermodynamic meaning?'
+      ],
+      image: {
         src: 'assets/img/research/omiec-transport.svg',
-        alt: 'Schematic for mixed ionic-electronic transport in OMIECs',
-        caption: 'Current project: coupled ionic/electronic transport, electrochemical history dependence, and multiscale closure in OMIECs.'
+        alt: 'Schematic of transport and memory processes in organic mixed ionic-electronic conductors',
+        caption: 'The OMIEC direction emphasizes transport, memory, morphology, and simulation-derived closure variables.'
       }
     },
     {
-      kicker: 'Current project',
-      title: 'Topological reorganization, viscoelasticity, and damage recovery in vitrimers',
+      kicker: 'Current direction · dynamic networks',
+      title: 'Vitrimers, exchangeable interfaces, and topology-aware mechanics',
       lead:
-        'A second active direction examines how bond-exchange chemistry and network topology reorganize load-bearing pathways, viscoelastic relaxation, fracture processes, and post-damage recovery in vitrimer systems.',
+        'Dynamic polymer networks can heal, rearrange, and redistribute stress. The key question is which parts of the network actually control integrity: bridge bonds, exchange pathways, filler interfaces, or local damage motifs.',
       paragraphs: [
-        'The emphasis is mechanistic: which exchange events alter connectivity in a mechanically meaningful way, which topological motifs stabilize or weaken the response, and how interface-mediated exchange changes crack initiation, crack deflection, and healing trajectories.',
-        'By combining network-level descriptors with molecular simulation, the project aims to distinguish reversible topological reorganization from simple softening and to connect microscopic rearrangements with viscoelastic signatures that can support constitutive interpretation.'
+        'For vitrimer-like systems, topology matters as much as chemistry. Bond exchange can relax stress, but it can also redirect damage if the rearrangement pathway is poorly connected. Simulation is therefore used to identify the structural motifs that mediate fracture, healing, and topological transition.',
+        'This direction connects molecular deformation trajectories with graph-based descriptors such as giant-cluster stability, bridge-bond statistics, local coordination, and stress-bearing paths.'
       ],
-      tags: ['vitrimers', 'dynamic networks', 'viscoelasticity', 'fracture'],
-      figure: {
+      questions: [
+        'Which exchange events repair mechanically important connectivity rather than merely increasing the number of bonds?',
+        'How do filler interfaces reshape crack initiation and crack deflection?',
+        'When does topology preservation dominate over local bond strength?'
+      ],
+      image: {
         src: 'assets/img/publications/vitrimer-topological-transition-2024.png',
-        alt: 'Vitrimer mechanics and exchangeable-interface schematic',
-        caption: 'Current project: topological transition, viscoelastic response, fracture, and self-healing in vitrimer composites.'
+        alt: 'Topological transition and healing schematic for vitrimer composites',
+        caption: 'Representative visual space for exchangeable interfaces, network topology, fracture, and self-healing.'
+      }
+    },
+    {
+      kicker: 'Foundation · connectivity and transport',
+      title: 'Percolation, nanofiller morphology, and transport in polymer nanocomposites',
+      lead:
+        'Transport in filled polymers is controlled by connectivity, excluded volume, interfacial physics, and distributional heterogeneity. A single loading fraction rarely explains the emergent response.',
+      paragraphs: [
+        'Earlier work established how nanorod polydispersity, mixed fillers, non-conductive additives, and surface defects reorganize system-spanning transport paths. These systems form a natural bridge between statistical mechanics and materials design.',
+        'The continuing value of this foundation is methodological: percolation is treated as a measurable object that can be perturbed, visualized, and connected to rheology, conductivity, or thermal response.'
+      ],
+      questions: [
+        'How does filler-size or rod-length distribution shift the onset of percolation?',
+        'Which apparent reinforcement trends are geometric, and which are dynamical?',
+        'How do defects and interfaces alter transport beyond simple volume-fraction arguments?'
+      ],
+      image: {
+        src: 'assets/img/publications/percolation-polydisperse-nanorods-2020.jpg',
+        alt: 'Graphical abstract for percolation of polydisperse nanorods',
+        caption: 'Percolation remains a central conceptual tool for connecting morphology to macroscopic response.'
+      }
+    },
+    {
+      kicker: 'Method direction · scientific software',
+      title: 'Reusable simulation infrastructure for observables and model linkage',
+      lead:
+        'A simulation result becomes scientific only when the assumptions, transformations, and provenance remain recoverable. I therefore treat software architecture as part of the research method.',
+      paragraphs: [
+        'The software layer converts trajectories into audited observables, stores the metadata needed for reproducibility, and allows kernels to be passed into higher-level models. This reduces the distance between molecular simulation, statistical inference, and continuum interpretation.',
+        'Current tools emphasize modular observables, command-line reproducibility, and clean interfaces between molecular data and transport or rheology models.'
+      ],
+      questions: [
+        'Which abstractions make new observables easy to add while preserving provenance?',
+        'How can molecular data be transformed into continuum kernels without becoming a black box?',
+        'What is the minimal software architecture needed for reproducible multiscale simulation?'
+      ],
+      image: {
+        src: 'assets/img/logos/pilots.svg',
+        alt: 'PILOTS software logo',
+        caption: 'The code stack is presented as a research instrument: analysis, closure, and reproducibility are co-designed.'
       }
     }
   ],
-  oldProjects: [
+  archive: [
     {
-      kicker: 'Earlier research theme',
-      title: 'Machine-learning prediction of polymer structure–property relations',
-      lead:
-        'One earlier branch of the work explored how chemically and physically meaningful descriptors can be used to predict polymer properties with interpretable machine-learning models.',
-      paragraphs: [
-        'The objective was not to treat machine learning as a black-box substitute for physics. Instead, the focus was on descriptor design, dataset curation, and identifying which chemistry- and structure-level variables carry predictive signal for target properties such as glass-transition temperature.',
-        'That effort now informs current work on reduced-order modeling and surrogate construction, especially when multiscale problems require a compact but physically defensible mapping from high-dimensional simulation outputs to experimentally relevant observables.'
-      ],
-      tags: ['polymer informatics', 'structure–property mapping', 'glass transition', 'interpretable ML'],
-      figure: {
-        src: 'assets/img/publications/ml-tg-sbr-2026.png',
-        alt: 'Machine-learning summary for polymer property prediction',
-        caption: 'Earlier research theme: descriptor-based prediction of polymer properties with an emphasis on interpretability.'
-      }
+      title: 'Glass transition and pressure-dependent dynamics',
+      body: 'Molecular dynamics studies of pressure-dependent structure and dynamics in polyisoprene during vitrification.'
     },
     {
-      kicker: 'Earlier research theme',
-      title: 'Electrical percolation and thermal conduction in polymer nanocomposites',
-      lead:
-        'A substantial earlier program examined how filler morphology, polydispersity, mixed-filler organization, and interfacial quality control transport in polymer nanocomposites.',
-      paragraphs: [
-        'The electrical-transport side focused on conductive percolation, including rod-like filler networks and the way non-conductive additives or mixed-filler populations reorganize connectivity. The thermal-transport side examined how surface defects and interfaces modify effective heat-conduction pathways in filled polymers.',
-        'Across both cases, the recurring conclusion was that transport is governed by network structure and interfacial physics rather than filler loading alone. The work therefore emphasized morphology-resolved interpretation instead of empirical trend fitting.'
-      ],
-      tags: ['percolation', 'electrical transport', 'thermal conduction', 'nanocomposites'],
-      figure: {
-        src: 'assets/img/publications/percolation-polydisperse-nanorods-2020.jpg',
-        alt: 'Percolation and nanocomposite transport schematic',
-        caption: 'Earlier research theme: morphology-controlled electrical and thermal transport in polymer nanocomposites.'
-      }
+      title: 'Viscoelasticity of filled polymers',
+      body: 'Simulation analysis of how filler shape, size, and local organization govern reinforcement and rheological response.'
     },
     {
-      kicker: 'Earlier research theme',
-      title: 'Rheology and viscoelasticity of polymer nanocomposites',
-      lead:
-        'A parallel research line investigated how filler size, shape, and local organization reshape chain relaxation and the rheological response of filled polymer systems.',
-      paragraphs: [
-        'These studies linked macroscopic viscoelastic signatures to microscopic constraints on chain motion, filler-induced heterogeneity, and the evolution of local polymer environments under deformation or thermal variation.',
-        'The broader value of this work was methodological as well as scientific: it established a consistent habit of interpreting rheology through underlying structure and dynamics rather than treating constitutive curves as self-contained observables.'
-      ],
-      tags: ['rheology', 'viscoelasticity', 'chain dynamics', 'filled polymers'],
-      figure: {
-        src: 'assets/img/publications/rheological-mechanism-spherical-np-2021.jpg',
-        alt: 'Rheology and viscoelastic reinforcement figure',
-        caption: 'Earlier research theme: filler-controlled relaxation and viscoelastic reinforcement in polymer nanocomposites.'
-      }
+      title: 'Fracture in cross-linked networks',
+      body: 'Mechanistic studies of double/interpenetrated networks and nanoparticle-assisted cross-linking for toughness.'
+    },
+    {
+      title: 'Thermal transport at defective interfaces',
+      body: 'Molecular interpretation of how surface defects alter interfacial structure and thermal conductivity.'
     }
   ]
 };
 
-function createFigure(figure, extraClass = '') {
-  const wrapper = document.createElement('figure');
-  wrapper.className = `research-project-figure ${extraClass}`.trim();
-  wrapper.innerHTML = `
-    <div class="research-figure-media research-project-media">
-      <img class="research-figure-image" src="${figure.src}" alt="${figure.alt}" loading="lazy" decoding="async" />
-    </div>
-    <figcaption class="research-figure-caption">${figure.caption}</figcaption>
-  `;
-  return wrapper;
+function textList(items, className) {
+  const ul = document.createElement('ul');
+  ul.className = className;
+  items.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    ul.appendChild(li);
+  });
+  return ul;
 }
 
-function createCurrentCard(project, reverse = false) {
+function createDirection(direction) {
   const article = document.createElement('article');
-  article.className = 'research-current-card';
-  article.dataset.reveal = '';
-
-  const shell = document.createElement('div');
-  shell.className = `research-current-shell${reverse ? ' reverse' : ''}`;
+  article.className = 'glass-card academic-card research-direction';
+  article.setAttribute('data-reveal', '');
 
   const copy = document.createElement('div');
-  copy.className = 'research-project-copy';
-  copy.innerHTML = `
-    <span class="kicker">${project.kicker}</span>
-    <h3 class="section-title research-project-title">${project.title}</h3>
-    <p class="research-direction-lead research-project-lead">${project.lead}</p>
-    <div class="research-prose">${project.paragraphs.map((text) => `<p>${text}</p>`).join('')}</div>
-    <div class="chip-wrap research-chip-wrap"></div>
-  `;
-  renderTagList(copy.querySelector('.research-chip-wrap'), project.tags);
+  copy.className = 'research-direction-copy';
 
-  shell.append(copy, createFigure(project.figure));
-  article.appendChild(shell);
-  return article;
-}
+  const kicker = document.createElement('span');
+  kicker.className = 'meta-chip';
+  kicker.textContent = direction.kicker;
 
-function createOldCard(project) {
-  const article = document.createElement('article');
-  article.className = 'research-archive-card';
-  article.dataset.reveal = '';
-  article.appendChild(createFigure(project.figure));
+  const title = document.createElement('h2');
+  title.className = 'section-title';
+  title.textContent = direction.title;
 
-  const copy = document.createElement('div');
-  copy.className = 'research-project-copy';
-  copy.innerHTML = `
-    <span class="kicker">${project.kicker}</span>
-    <h3 class="section-title research-project-title archive-title">${project.title}</h3>
-    <p class="research-direction-lead research-project-lead archive-lead">${project.lead}</p>
-    <div class="research-prose archive-prose">${project.paragraphs.map((text) => `<p>${text}</p>`).join('')}</div>
-    <div class="chip-wrap research-chip-wrap"></div>
-  `;
-  renderTagList(copy.querySelector('.research-chip-wrap'), project.tags);
-  article.appendChild(copy);
+  const lead = document.createElement('p');
+  lead.className = 'lead';
+  lead.textContent = direction.lead;
+
+  copy.append(kicker, title, lead);
+  direction.paragraphs.forEach((paragraph) => {
+    const p = document.createElement('p');
+    p.className = 'section-text';
+    p.textContent = paragraph;
+    copy.appendChild(p);
+  });
+
+  const qTitle = document.createElement('h3');
+  qTitle.className = 'archive-title';
+  qTitle.textContent = 'Key questions';
+  copy.appendChild(qTitle);
+  copy.appendChild(textList(direction.questions, 'research-question-list'));
+
+  const figure = document.createElement('figure');
+  figure.className = 'research-figure';
+  const img = document.createElement('img');
+  img.src = direction.image.src;
+  img.alt = direction.image.alt;
+  img.loading = 'lazy';
+  const caption = document.createElement('figcaption');
+  caption.textContent = direction.image.caption;
+  figure.append(img, caption);
+
+  article.append(copy, figure);
   return article;
 }
 
 function renderResearchPage() {
-  document.getElementById('research-intro').textContent = RESEARCH_PAGE.intro;
+  const intro = document.getElementById('research-intro');
+  const directions = document.getElementById('research-directions');
+  const archive = document.getElementById('research-archive-list');
+  if (!intro || !directions || !archive) return;
 
-  const current = document.getElementById('current-projects');
-  const old = document.getElementById('old-projects');
-  current.innerHTML = '';
-  old.innerHTML = '';
+  intro.textContent = RESEARCH_PAGE.intro;
+  directions.innerHTML = '';
+  RESEARCH_PAGE.directions.forEach((direction) => directions.appendChild(createDirection(direction)));
 
-  RESEARCH_PAGE.currentProjects.forEach((project, index) => {
-    current.appendChild(createCurrentCard(project, index % 2 === 1));
-  });
-
-  RESEARCH_PAGE.oldProjects.forEach((project) => {
-    old.appendChild(createOldCard(project));
+  archive.innerHTML = '';
+  RESEARCH_PAGE.archive.forEach((item) => {
+    const block = document.createElement('article');
+    block.className = 'archive-item';
+    const h = document.createElement('h3');
+    h.textContent = item.title;
+    const p = document.createElement('p');
+    p.textContent = item.body;
+    block.append(h, p);
+    archive.appendChild(block);
   });
 }
 
@@ -170,5 +195,5 @@ window.addEventListener('DOMContentLoaded', () => {
   smoothScrollForHashes();
   renderResearchPage();
   initReveal();
-  initMolecularField(document.getElementById('bg-canvas'), { variant: 'subtle', density: 0.92 });
+  initMolecularField(document.getElementById('bg-canvas'), { variant: 'subtle', density: 0.72 });
 });

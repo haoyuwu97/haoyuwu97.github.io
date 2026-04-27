@@ -1,107 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Haoyu Wu | Soft Matter Simulation &amp; Scientific Software</title>
-    <meta
-      name="description"
-      content="Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, and scientific software."
-    />
-    <meta name="theme-color" content="#050816" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Haoyu Wu | Soft Matter Simulation &amp; Scientific Software" />
-    <meta
-      property="og:description"
-      content="Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, and scientific software."
-    />
-    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <meta property="og:url" content="https://haoyuwu97.github.io/" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Haoyu Wu | Soft Matter Simulation &amp; Scientific Software" />
-    <meta
-      name="twitter:description"
-      content="Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, and scientific software."
-    />
-    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <script>
-      (() => {
-        const key = 'haoyu-theme-mode';
-        let mode = 'auto';
-        try {
-          mode = localStorage.getItem(key) || 'auto';
-        } catch {}
-        const hour = new Date().getHours();
-        const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
-        document.documentElement.dataset.themeMode = mode;
-        document.documentElement.dataset.theme = effective;
-        document.documentElement.style.colorScheme = effective;
-      })();
-    </script>
-    <link rel="stylesheet" href="assets/css/main.css" />
-  </head>
-  <body>
-    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
-    <div class="site-shell">
-      <div class="topbar-wrap">
-        <header class="container topbar">
-          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
-            <span class="brand-mark" aria-hidden="true">HW</span>
-            <span class="brand-copy">
-              <span class="brand-title">Haoyu Wu</span>
-              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
-            </span>
-          </a>
-          <nav class="nav-links" aria-label="Primary navigation">
-            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
-            <a class="nav-link" data-nav="research" href="research.html">Research</a>
-            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
-            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
-            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
-            <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
-              <span data-theme-icon aria-hidden="true">◐</span>
-              <span data-theme-label>Auto</span>
-            </button>
-          </nav>
-        </header>
-      </div>
-
-      <main class="site-main">
-        <section class="hero compact-hero">
-          <div class="container hero-shell compact-home-shell hero-shell-strong">
-            <div class="hero-grid compact-hero-grid home-hero-grid">
-              <div class="hero-copy compact-hero-copy">
-                <h1 id="hero-name" class="hero-title">Haoyu Wu</h1>
-                <p id="hero-title" class="hero-subtitle">Ph.D. Student in Chemical &amp; Biomolecular Engineering · University of Notre Dame</p>
-                <p id="hero-summary" class="hero-summary"></p>
-                <div class="hero-action-row" aria-label="Homepage actions">
-                  <button id="experience-toggle" class="btn primary experience-toggle-btn" type="button" aria-expanded="false" aria-controls="experience-panel">Experience</button>
-                </div>
-                <div id="experience-panel" class="glass-card experience-panel" hidden aria-hidden="true"></div>
-                <div id="hero-links" class="button-row hero-link-row compact-profile-links" aria-label="External profiles"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Haoyu Wu | Soft Matter Simulation & Scientific Software</title>
+  <meta name="description" content="Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, software, and literature-network search." />
+  <meta name="theme-color" content="#0f1720" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Haoyu Wu | Soft Matter Simulation & Scientific Software" />
+  <meta property="og:description" content="Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, software, and literature-network search." />
+  <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <meta property="og:url" content="https://haoyuwu97.github.io/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Haoyu Wu | Soft Matter Simulation & Scientific Software" />
+  <meta name="twitter:description" content="Personal research homepage for Haoyu Wu: polymer mechanics, OMIEC transport, multiscale simulation, publications, software, and literature-network search." />
+  <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script>
+    (() => {
+      const key = 'haoyu-theme-mode';
+      let mode = 'auto';
+      try { mode = localStorage.getItem(key) || 'auto'; } catch {}
+      const hour = new Date().getHours();
+      const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
+      document.documentElement.dataset.themeMode = mode;
+      document.documentElement.dataset.theme = effective;
+      document.documentElement.style.colorScheme = effective;
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/academic-refresh.css" />
+</head>
+<body>
+  <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+  <div class="site-shell">
+    <div class="topbar-wrap">
+    <header class="container topbar">
+      <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+        <span class="brand-mark" aria-hidden="true">HW</span>
+        <span class="brand-copy">
+          <span class="brand-title">Haoyu Wu</span>
+          <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+        <a class="nav-link" data-nav="research" href="research.html">Research</a>
+        <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+        <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+        <a class="nav-link" data-nav="leisure" href="leisure.html">Literature Graph</a>
+        <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
+          <span data-theme-icon aria-hidden="true">◐</span>
+          <span data-theme-label>Auto</span>
+        </button>
+      </nav>
+    </header>
+  </div>
+    <main class="site-main">
+      <section class="hero compact-hero">
+        <div class="container hero-shell compact-home-shell hero-shell-strong">
+          <div class="hero-grid compact-hero-grid home-hero-grid">
+            <div class="hero-copy compact-hero-copy">
+              <h1 id="hero-name" class="hero-title">Haoyu Wu</h1>
+              <p id="hero-title" class="hero-subtitle">Ph.D. Student in Chemical &amp; Biomolecular Engineering · University of Notre Dame</p>
+              <p id="hero-summary" class="hero-summary"></p>
+              <div class="hero-action-row" aria-label="Homepage actions">
+                <button id="experience-toggle" class="btn primary experience-toggle-btn" type="button" aria-expanded="false" aria-controls="experience-panel">Experience</button>
               </div>
-
-              <div class="hero-visual" aria-hidden="true">
-                <div class="portrait-shell compact-portrait-shell portrait-shell-strong">
-                  <span class="portrait-orbit"></span>
-                  <span class="portrait-orbit--b"></span>
-                  <span class="portrait-orbit--c"></span>
-                  <span class="orbit-dot"></span>
-                  <span class="orbit-dot--b"></span>
-                  <span class="orbit-dot--c"></span>
-                  <div class="portrait-image-wrap">
-                    <img id="hero-portrait" class="portrait-image" src="assets/img/profile-haoyu.jpg" alt="Portrait of Haoyu Wu" />
-                  </div>
+              <div id="experience-panel" class="glass-card experience-panel" hidden aria-hidden="true"></div>
+              <div id="hero-links" class="button-row hero-link-row compact-profile-links" aria-label="External profiles"></div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <div class="portrait-shell compact-portrait-shell portrait-shell-strong">
+                <span class="portrait-orbit"></span>
+                <span class="portrait-orbit--b"></span>
+                <span class="portrait-orbit--c"></span>
+                <span class="orbit-dot"></span>
+                <span class="orbit-dot--b"></span>
+                <span class="orbit-dot--c"></span>
+                <div class="portrait-image-wrap">
+                  <img id="hero-portrait" class="portrait-image" src="assets/img/profile-haoyu.jpg" alt="Portrait of Haoyu Wu" />
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="assets/js/theme.js"></script>
-    <script type="module" src="assets/js/home.js"></script>
-  </body>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="assets/js/theme.js"></script>
+  <script type="module" src="assets/js/home.js"></script>
+</body>
 </html>

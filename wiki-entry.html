@@ -1,122 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Research Wiki | Haoyu Wu</title>
-    <meta name="description" content="Detailed repository page for Haoyu Wu's scientific software." />
-    <meta name="theme-color" content="#050816" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Research Wiki | Haoyu Wu" />
-    <meta property="og:description" content="Detailed repository page for Haoyu Wu's scientific software." />
-    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <meta property="og:url" content="https://haoyuwu97.github.io/wiki-entry.html" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Research Wiki | Haoyu Wu" />
-    <meta name="twitter:description" content="Detailed repository page for Haoyu Wu's scientific software." />
-    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <script>
-      (() => {
-        const key = 'haoyu-theme-mode';
-        let mode = 'auto';
-        try {
-          mode = localStorage.getItem(key) || 'auto';
-        } catch {}
-        const hour = new Date().getHours();
-        const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
-        document.documentElement.dataset.themeMode = mode;
-        document.documentElement.dataset.theme = effective;
-        document.documentElement.style.colorScheme = effective;
-      })();
-    </script>
-    <link rel="stylesheet" href="assets/css/main.css" />
-  </head>
-  <body class="subpage subpage-wiki-entry">
-    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
-    <div class="site-shell">
-      <div class="topbar-wrap">
-        <header class="container topbar">
-          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
-            <span class="brand-mark" aria-hidden="true">HW</span>
-            <span class="brand-copy">
-              <span class="brand-title">Haoyu Wu</span>
-              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
-            </span>
-          </a>
-          <nav class="nav-links" aria-label="Primary navigation">
-            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
-            <a class="nav-link" data-nav="research" href="research.html">Research</a>
-            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
-            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
-            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
-            <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
-              <span data-theme-icon aria-hidden="true">◐</span>
-              <span data-theme-label>Auto</span>
-            </button>
-          </nav>
-        </header>
-      </div>
-
-      <main class="site-main">
-        <section class="page-hero page-hero-compact detail-header-compact">
-          <div class="container">
-            <div class="page-hero-shell compact-shell">
-              <div class="page-head compact-page-head">
-                <div id="entry-brand" class="entry-brand" hidden>
-                  <img id="entry-logo" class="entry-logo" src="" alt="" />
-                  <div class="entry-brand-copy">
-                    <span id="entry-kicker-embedded" class="kicker">Repository</span>
-                  </div>
-                </div>
-                <span id="entry-kicker-fallback" class="kicker">Repository</span>
-                <h1 id="entry-title" class="page-title">Repository</h1>
-                <p id="entry-headline" class="page-subtitle compact-page-subtitle"></p>
-                <p id="entry-summary" class="page-subtitle compact-page-subtitle compact-page-summary"></p>
-                <div id="entry-tags" class="entry-tags"></div>
-              </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Wiki | Haoyu Wu</title>
+  <meta name="description" content="Detailed encyclopedia-style repository page for Haoyu Wu's scientific software." />
+  <meta name="theme-color" content="#0f1720" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Research Wiki | Haoyu Wu" />
+  <meta property="og:description" content="Detailed encyclopedia-style repository page for Haoyu Wu's scientific software." />
+  <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <meta property="og:url" content="https://haoyuwu97.github.io/wiki-entry.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Research Wiki | Haoyu Wu" />
+  <meta name="twitter:description" content="Detailed encyclopedia-style repository page for Haoyu Wu's scientific software." />
+  <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script>
+    (() => {
+      const key = 'haoyu-theme-mode';
+      let mode = 'auto';
+      try { mode = localStorage.getItem(key) || 'auto'; } catch {}
+      const hour = new Date().getHours();
+      const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
+      document.documentElement.dataset.themeMode = mode;
+      document.documentElement.dataset.theme = effective;
+      document.documentElement.style.colorScheme = effective;
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/academic-refresh.css" />
+</head>
+<body class="subpage subpage-wiki-entry academic-page wiki-entry-academic-page">
+  <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+  <div class="site-shell">
+    <div class="topbar-wrap">
+    <header class="container topbar">
+      <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+        <span class="brand-mark" aria-hidden="true">HW</span>
+        <span class="brand-copy">
+          <span class="brand-title">Haoyu Wu</span>
+          <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+        <a class="nav-link" data-nav="research" href="research.html">Research</a>
+        <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+        <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+        <a class="nav-link" data-nav="leisure" href="leisure.html">Literature Graph</a>
+        <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
+          <span data-theme-icon aria-hidden="true">◐</span>
+          <span data-theme-label>Auto</span>
+        </button>
+      </nav>
+    </header>
+  </div>
+    <main class="site-main">
+      <section class="page-hero page-hero-compact detail-header-compact">
+        <div class="container">
+          <div class="page-hero-shell compact-shell academic-hero-shell">
+            <div class="page-head compact-page-head">
+              <span id="entry-kicker" class="kicker">Repository</span>
+              <h1 id="entry-title" class="page-title">Repository</h1>
+              <p id="entry-headline" class="page-subtitle compact-page-subtitle"></p>
+              <p id="entry-summary" class="page-subtitle compact-page-subtitle compact-page-summary"></p>
+              <div id="entry-tags" class="entry-tags"></div>
             </div>
           </div>
-        </section>
-
-        <section class="section section-tight-bottom">
-          <div class="container">
-            <div class="detail-main detail-main-compact">
-              <article class="glass-card detail-section detail-section-compact" data-reveal>
-                <span class="meta-chip">Why it matters</span>
-                <p id="entry-why" class="card-body"></p>
-              </article>
-
-              <article class="glass-card detail-section detail-section-compact" data-reveal>
-                <span class="meta-chip">Core features</span>
+        </div>
+      </section>
+      <section class="section section-tight-bottom">
+        <div class="container">
+          <div class="wiki-layout wiki-detail-layout">
+            <aside id="entry-infobox" class="glass-card wiki-infobox" aria-label="Repository metadata"></aside>
+            <article class="glass-card wiki-article wiki-detail-article" data-reveal>
+              <section>
+                <h2>Why it matters</h2>
+                <p id="entry-why"></p>
+              </section>
+              <section>
+                <h2>Core features</h2>
                 <ul id="feature-list" class="section-list"></ul>
-              </article>
-
-              <article class="glass-card detail-section detail-section-compact" data-reveal>
-                <span class="meta-chip">Workflow</span>
+              </section>
+              <section>
+                <h2>Workflow</h2>
                 <ul id="workflow-list" class="section-list"></ul>
-              </article>
-
-              <article class="glass-card detail-section detail-section-compact command-section" data-reveal>
-                <span class="meta-chip">Key commands</span>
+              </section>
+              <section class="command-section">
+                <h2>Key commands</h2>
                 <div class="compact-command-grid">
-                  <div>
-                    <h2 class="compact-command-title">Build</h2>
-                    <div id="build-commands" class="code-grid"></div>
-                  </div>
-                  <div>
-                    <h2 class="compact-command-title">Run</h2>
-                    <div id="run-commands" class="code-grid"></div>
-                  </div>
+                  <div><h3 class="compact-command-title">Build</h3><div id="build-commands" class="code-grid"></div></div>
+                  <div><h3 class="compact-command-title">Run</h3><div id="run-commands" class="code-grid"></div></div>
                 </div>
-              </article>
-            </div>
+              </section>
+            </article>
           </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="assets/js/theme.js"></script>
-    <script type="module" src="assets/js/wiki-entry.js"></script>
-  </body>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="assets/js/theme.js"></script>
+  <script type="module" src="assets/js/wiki-entry.js"></script>
+</body>
 </html>

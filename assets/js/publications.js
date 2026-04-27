@@ -1,126 +1,82 @@
 import { publications, pageMeta } from './site-data.js';
-import {
-  activateNav,
-  initFooterYear,
-  initReveal,
-  initTilt,
-  paginate,
-  renderPagination,
-  setMeta,
-  unique,
-  createTagButton,
-  smoothScrollForHashes
-} from './utils.js';
-import { publicationCard } from './renderers.js';
+import { activateNav, initReveal, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
 
-const state = {
-  query: '',
-  tag: 'All',
-  year: 'All',
-  page: 1,
-  pageSize: 6
-};
-
-function getTagOptions() {
-  return ['All', ...unique(publications.flatMap((item) => item.tags)).sort((a, b) => a.localeCompare(b))];
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
-function getYearOptions() {
-  return ['All', ...unique(publications.map((item) => `${item.year}`)).sort((a, b) => Number(b) - Number(a))];
+function emphasizeHaoyu(authors = '') {
+  return escapeHtml(authors).replaceAll('Haoyu Wu', '<strong>Haoyu Wu</strong>');
 }
 
-function filterPublications() {
-  const query = state.query.trim().toLowerCase();
-  return [...publications]
-    .filter((item) => {
-      const searchable = `${item.title} ${item.authors} ${item.venue} ${item.tags.join(' ')} ${item.blurb}`.toLowerCase();
-      const matchesQuery = !query || searchable.includes(query);
-      const matchesTag = state.tag === 'All' || item.tags.includes(state.tag);
-      const matchesYear = state.year === 'All' || `${item.year}` === state.year;
-      return matchesQuery && matchesTag && matchesYear;
-    })
-    .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+function groupByYear(items) {
+  return items.reduce((groups, item) => {
+    const year = `${item.year || 'Unyearred'}`;
+    if (!groups.has(year)) groups.set(year, []);
+    groups.get(year).push(item);
+    return groups;
+  }, new Map());
 }
 
-function renderTagFilters() {
-  const container = document.getElementById('tag-filters');
-  container.innerHTML = '';
-  getTagOptions().forEach((tag) => {
-    const button = createTagButton(tag, tag === state.tag);
-    button.addEventListener('click', () => {
-      state.tag = tag;
-      state.page = 1;
-      render();
-    });
-    container.appendChild(button);
-  });
+function paperLinks(item) {
+  const links = [];
+  if (item.url) links.push(`<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Publisher</a>`);
+  if (item.doi) links.push(`<a href="https://doi.org/${escapeHtml(item.doi)}" target="_blank" rel="noopener">DOI: ${escapeHtml(item.doi)}</a>`);
+  if (item.tags?.length) links.push(`<span>${escapeHtml(item.tags.slice(0, 3).join(' · '))}</span>`);
+  return links.join('');
 }
 
-function renderYearFilters() {
-  const select = document.getElementById('year-filter');
-  select.innerHTML = '';
-  getYearOptions().forEach((year) => {
-    const option = document.createElement('option');
-    option.value = year;
-    option.textContent = year === 'All' ? 'All years' : year;
-    if (year === state.year) option.selected = true;
-    select.appendChild(option);
-  });
+function publicationEntry(item, index) {
+  const article = document.createElement('article');
+  article.className = 'pub-entry';
+  article.setAttribute('data-reveal', '');
+
+  const venue = [item.venue, item.citation].filter(Boolean).join(', ');
+  article.innerHTML = `
+    <h3 class="pub-entry-title"><span>${index}.</span> ${item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a>` : escapeHtml(item.title)}</h3>
+    <p class="pub-authors">${emphasizeHaoyu(item.authors)}</p>
+    <p class="pub-venue"><em>${escapeHtml(venue)}</em>${item.year ? ` (${escapeHtml(item.year)})` : ''}</p>
+    ${item.blurb ? `<p class="pub-note">${escapeHtml(item.blurb)}</p>` : ''}
+    <div class="pub-links">${paperLinks(item)}</div>
+  `;
+  return article;
 }
 
-function render() {
-  const filtered = filterPublications();
-  const { items, page, totalPages } = paginate(filtered, state.page, state.pageSize);
-  state.page = page;
-
-  document.getElementById('result-count').textContent = `${filtered.length}`;
-  document.getElementById('year-span').textContent = `${Math.min(...publications.map((p) => p.year))}–${Math.max(...publications.map((p) => p.year))}`;
-  document.getElementById('publication-total').textContent = `${publications.length}`;
-
+function renderPublications() {
   const container = document.getElementById('publication-list');
-  container.innerHTML = '';
-  if (!items.length) {
-    const empty = document.createElement('div');
-    empty.className = 'glass-card empty-state';
-    empty.innerHTML = `
-      <h3 class="card-title">No publication matched the current filter.</h3>
-      <p class="card-body">Try a broader keyword or switch the topic / year filter back to <strong>All</strong>.</p>
-    `;
-    container.appendChild(empty);
-  } else {
-    items.forEach((item) => container.appendChild(publicationCard(item)));
-  }
+  if (!container) return;
 
-  renderTagFilters();
-  renderYearFilters();
-  renderPagination(document.getElementById('publication-pagination'), page, totalPages, (nextPage) => {
-    state.page = nextPage;
-    render();
-    document.getElementById('publication-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const sorted = [...publications].sort((a, b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title));
+  const groups = groupByYear(sorted);
+  const years = sorted.map((item) => item.year).filter(Boolean);
+
+  document.getElementById('publication-total').textContent = `${sorted.length}`;
+  document.getElementById('year-span').textContent = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : '—';
+  document.getElementById('first-author-count').textContent = `${sorted.filter((item) => item.authors?.trim().startsWith('Haoyu Wu')).length}`;
+
+  container.innerHTML = '';
+  let globalIndex = 1;
+  [...groups.entries()].sort((a, b) => Number(b[0]) - Number(a[0])).forEach(([year, papers]) => {
+    const block = document.createElement('section');
+    block.className = 'pub-year-block';
+    block.innerHTML = `<div class="pub-year-label">${escapeHtml(year)}</div><div class="pub-year-list"></div>`;
+    const list = block.querySelector('.pub-year-list');
+    papers.forEach((paper) => list.appendChild(publicationEntry(paper, globalIndex++)));
+    container.appendChild(block);
   });
-  initReveal();
-  initTilt();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   setMeta(pageMeta.publications);
   activateNav('publications');
-  initFooterYear();
   smoothScrollForHashes();
-  initMolecularField(document.getElementById('bg-canvas'), { variant: 'page', density: 0.8 });
-
-  document.getElementById('search-input').addEventListener('input', (event) => {
-    state.query = event.target.value;
-    state.page = 1;
-    render();
-  });
-
-  document.getElementById('year-filter').addEventListener('change', (event) => {
-    state.year = event.target.value;
-    state.page = 1;
-    render();
-  });
-
-  render();
+  initMolecularField(document.getElementById('bg-canvas'), { variant: 'page', density: 0.62 });
+  renderPublications();
+  initReveal();
 });

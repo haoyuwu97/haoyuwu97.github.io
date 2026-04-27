@@ -1,104 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rest Mode | Haoyu Wu</title>
-    <meta
-      name="description"
-      content="Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion."
-    />
-    <meta name="theme-color" content="#050816" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Rest Mode | Haoyu Wu" />
-    <meta
-      property="og:description"
-      content="Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion."
-    />
-    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <meta property="og:url" content="https://haoyuwu97.github.io/leisure.html" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Rest Mode | Haoyu Wu" />
-    <meta
-      name="twitter:description"
-      content="Five endless browser sketches for polymerization, catalytic transport, charge hopping, vitrimer healing, and wormlike chain motion."
-    />
-    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <script>
-      (() => {
-        const key = 'haoyu-theme-mode';
-        let mode = 'auto';
-        try {
-          mode = localStorage.getItem(key) || 'auto';
-        } catch {}
-        const hour = new Date().getHours();
-        const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
-        document.documentElement.dataset.themeMode = mode;
-        document.documentElement.dataset.theme = effective;
-        document.documentElement.style.colorScheme = effective;
-      })();
-    </script>
-    <link rel="stylesheet" href="assets/css/main.css" />
-  </head>
-  <body class="leisure-page">
-    <div class="site-shell leisure-shell">
-      <div class="topbar-wrap">
-        <header class="container topbar">
-          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
-            <span class="brand-mark" aria-hidden="true">HW</span>
-            <span class="brand-copy">
-              <span class="brand-title">Haoyu Wu</span>
-              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
-            </span>
-          </a>
-          <nav class="nav-links" aria-label="Primary navigation">
-            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
-            <a class="nav-link" data-nav="research" href="research.html">Research</a>
-            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
-            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
-            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
-            <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
-              <span data-theme-icon aria-hidden="true">◐</span>
-              <span data-theme-label>Auto</span>
-            </button>
-          </nav>
-        </header>
-      </div>
-
-      <main class="site-main leisure-main">
-        <section class="leisure-stage" aria-label="Interactive browser game">
-          <canvas id="playground" class="playground-canvas-full" aria-label="Playable chemistry-inspired browser game"></canvas>
-
-          <div class="leisure-hud leisure-hud-primary glass-card">
-            <span id="mode-subtitle" class="kicker">Rest mode</span>
-            <h1 id="mode-title" class="mode-title">Interactive mode</h1>
-            <p id="mode-description" class="hud-copy"></p>
-          </div>
-
-          <div class="leisure-hud leisure-hud-controls leisure-control-cluster glass-card" aria-live="polite">
-            <div class="leisure-mode-picker">
-              <label class="sr-only" for="mode-selector">Choose a mode</label>
-              <select id="mode-selector"></select>
-            </div>
-            <div class="leisure-control-bottom">
-              <div class="leisure-metric-row">
-                <div class="hud-chip"><span>Score</span><strong id="hud-score">0</strong></div>
-                <div class="hud-chip"><span>Best</span><strong id="hud-best">0</strong></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Literature Network | Haoyu Wu</title>
+  <meta name="description" content="A lightweight browser-based literature network search engine using OpenAlex, Crossref, and Semantic Scholar metadata." />
+  <meta name="theme-color" content="#0f1720" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Literature Network | Haoyu Wu" />
+  <meta property="og:description" content="A lightweight browser-based literature network search engine using OpenAlex, Crossref, and Semantic Scholar metadata." />
+  <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <meta property="og:url" content="https://haoyuwu97.github.io/leisure.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Literature Network | Haoyu Wu" />
+  <meta name="twitter:description" content="A lightweight browser-based literature network search engine using OpenAlex, Crossref, and Semantic Scholar metadata." />
+  <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script>
+    (() => {
+      const key = 'haoyu-theme-mode';
+      let mode = 'auto';
+      try { mode = localStorage.getItem(key) || 'auto'; } catch {}
+      const hour = new Date().getHours();
+      const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
+      document.documentElement.dataset.themeMode = mode;
+      document.documentElement.dataset.theme = effective;
+      document.documentElement.style.colorScheme = effective;
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/academic-refresh.css" />
+</head>
+<body class="subpage subpage-literature academic-page literature-page">
+  <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+  <div class="site-shell">
+    <div class="topbar-wrap">
+    <header class="container topbar">
+      <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+        <span class="brand-mark" aria-hidden="true">HW</span>
+        <span class="brand-copy">
+          <span class="brand-title">Haoyu Wu</span>
+          <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+        <a class="nav-link" data-nav="research" href="research.html">Research</a>
+        <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+        <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+        <a class="nav-link" data-nav="leisure" href="leisure.html">Literature Graph</a>
+        <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
+          <span data-theme-icon aria-hidden="true">◐</span>
+          <span data-theme-label>Auto</span>
+        </button>
+      </nav>
+    </header>
+  </div>
+    <main class="site-main">
+      <section class="page-hero page-hero-compact literature-hero">
+        <div class="container">
+          <div class="page-hero-shell compact-shell academic-hero-shell">
+            <div class="page-head compact-page-head">
+              <span class="kicker">Literature Graph</span>
+              <h1 class="page-title">Lightweight literature network search engine</h1>
+              <p class="page-subtitle compact-page-subtitle">Search scholarly metadata online, triage papers, and inspect an instant relation graph built from shared authors, venues, concepts, citations, and references.</p>
+              <div class="compact-meta-row academic-meta-row" aria-label="Search engine sources">
+                <span class="meta-chip">OpenAlex primary</span>
+                <span class="meta-chip">Crossref fallback</span>
+                <span class="meta-chip">Semantic Scholar enrichments</span>
+                <span class="meta-chip">no build step</span>
               </div>
-              <button id="mode-reroll" class="btn secondary inline-btn" type="button">Random</button>
             </div>
           </div>
-
-          <div class="leisure-hud leisure-hud-note leisure-bottom-note glass-card">
-            <p id="mode-instruction" class="hud-copy"></p>
-            <p id="mode-concept" class="hud-note"></p>
+        </div>
+      </section>
+      <section class="section section-tight-bottom literature-section">
+        <div class="container">
+          <form id="lit-form" class="glass-card lit-search-panel" role="search">
+            <label for="lit-query">Search topic, DOI, author, or phrase</label>
+            <div class="lit-search-row">
+              <input id="lit-query" class="text-input lit-query" type="search" value="polymer vitrimer molecular dynamics" autocomplete="off" />
+              <button class="btn primary" type="submit">Search</button>
+            </div>
+            <div class="lit-options-grid">
+              <div class="control">
+                <label for="lit-source">Source</label>
+                <select id="lit-source" class="select-input">
+                  <option value="openalex">OpenAlex</option>
+                  <option value="semantic">Semantic Scholar</option>
+                  <option value="crossref">Crossref</option>
+                  <option value="all">Blend all sources</option>
+                </select>
+              </div>
+              <div class="control">
+                <label for="lit-sort">Sort</label>
+                <select id="lit-sort" class="select-input">
+                  <option value="relevance_score:desc">Relevance</option>
+                  <option value="cited_by_count:desc">Citations</option>
+                  <option value="publication_year:desc">Newest</option>
+                </select>
+              </div>
+              <div class="control">
+                <label for="lit-from">From year</label>
+                <input id="lit-from" class="text-input" type="number" min="1900" max="2100" placeholder="2018" />
+              </div>
+              <div class="control">
+                <label for="lit-to">To year</label>
+                <input id="lit-to" class="text-input" type="number" min="1900" max="2100" placeholder="2026" />
+              </div>
+            </div>
+            <div class="lit-example-row" aria-label="Example searches">
+              <button type="button" data-example="organic mixed ionic electronic conductor hysteresis" class="meta-chip lit-example">OMIEC hysteresis</button>
+              <button type="button" data-example="vitrimer fracture self healing molecular dynamics" class="meta-chip lit-example">vitrimer mechanics</button>
+              <button type="button" data-example="polymer nanocomposite percolation nanorods coarse grained molecular dynamics" class="meta-chip lit-example">nanorod percolation</button>
+            </div>
+          </form>
+          <div id="lit-status" class="lit-status" aria-live="polite">Ready.</div>
+          <div class="lit-workbench">
+            <section class="glass-card lit-results-panel" aria-label="Search results">
+              <div class="lit-panel-head">
+                <div>
+                  <span class="kicker">Results</span>
+                  <h2 class="section-title">Candidate papers</h2>
+                </div>
+                <button id="lit-export" class="btn secondary inline-btn" type="button">Copy BibTeX-like list</button>
+              </div>
+              <div id="lit-results" class="lit-results"></div>
+            </section>
+            <aside class="glass-card lit-network-panel" aria-label="Literature network">
+              <div class="lit-panel-head">
+                <div>
+                  <span class="kicker">Network</span>
+                  <h2 class="section-title">Relation map</h2>
+                </div>
+                <button id="lit-fit" class="btn secondary inline-btn" type="button">Re-layout</button>
+              </div>
+              <canvas id="lit-network" class="lit-network-canvas" width="760" height="480"></canvas>
+              <div id="lit-paper-detail" class="lit-paper-detail">Select a paper node or result to inspect metadata.</div>
+            </aside>
           </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="assets/js/theme.js"></script>
-    <script type="module" src="assets/js/leisure.js"></script>
-  </body>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="assets/js/theme.js"></script>
+  <script type="module" src="assets/js/literature.js"></script>
+</body>
 </html>

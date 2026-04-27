@@ -1,121 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Publications | Haoyu Wu</title>
-    <meta
-      name="description"
-      content="Selected publications spanning polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation."
-    />
-    <meta name="theme-color" content="#050816" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Publications | Haoyu Wu" />
-    <meta
-      property="og:description"
-      content="Selected publications spanning polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation."
-    />
-    <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <meta property="og:url" content="https://haoyuwu97.github.io/publications.html" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Publications | Haoyu Wu" />
-    <meta
-      name="twitter:description"
-      content="Selected publications spanning polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation."
-    />
-    <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <script>
-      (() => {
-        const key = 'haoyu-theme-mode';
-        let mode = 'auto';
-        try {
-          mode = localStorage.getItem(key) || 'auto';
-        } catch {}
-        const hour = new Date().getHours();
-        const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
-        document.documentElement.dataset.themeMode = mode;
-        document.documentElement.dataset.theme = effective;
-        document.documentElement.style.colorScheme = effective;
-      })();
-    </script>
-    <link rel="stylesheet" href="assets/css/main.css" />
-  </head>
-  <body class="subpage subpage-publications">
-    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
-    <div class="site-shell">
-      <div class="topbar-wrap">
-        <header class="container topbar">
-          <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
-            <span class="brand-mark" aria-hidden="true">HW</span>
-            <span class="brand-copy">
-              <span class="brand-title">Haoyu Wu</span>
-              <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
-            </span>
-          </a>
-          <nav class="nav-links" aria-label="Primary navigation">
-            <a class="nav-link" data-nav="home" href="index.html">Overview</a>
-            <a class="nav-link" data-nav="research" href="research.html">Research</a>
-            <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
-            <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
-            <a class="nav-link" data-nav="leisure" href="leisure.html">Rest Mode</a>
-            <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
-              <span data-theme-icon aria-hidden="true">◐</span>
-              <span data-theme-label>Auto</span>
-            </button>
-          </nav>
-        </header>
-      </div>
-
-      <main class="site-main">
-        <section class="page-hero page-hero-compact">
-          <div class="container">
-            <div class="page-hero-shell compact-shell">
-              <div class="page-head compact-page-head">
-                <span class="kicker">Publications</span>
-                <h1 class="page-title">Full paper list</h1>
-                <p class="page-subtitle compact-page-subtitle">Search, filter, and scan figures. Six papers are shown per page.</p>
-                <div class="compact-meta-row" aria-label="Publication summary">
-                  <span class="meta-chip"><strong id="publication-total">0</strong> indexed</span>
-                  <span class="meta-chip"><strong id="year-span">—</strong></span>
-                  <span class="meta-chip"><strong id="result-count">0</strong> shown</span>
-                </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publications | Haoyu Wu</title>
+  <meta name="description" content="Chronological publication list for Haoyu Wu, covering polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation." />
+  <meta name="theme-color" content="#0f1720" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Publications | Haoyu Wu" />
+  <meta property="og:description" content="Chronological publication list for Haoyu Wu, covering polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation." />
+  <meta property="og:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <meta property="og:url" content="https://haoyuwu97.github.io/publications.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Publications | Haoyu Wu" />
+  <meta name="twitter:description" content="Chronological publication list for Haoyu Wu, covering polymer nanocomposites, vitrimers, rheology, percolation, and molecular simulation." />
+  <meta name="twitter:image" content="https://haoyuwu97.github.io/assets/img/og-cover.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script>
+    (() => {
+      const key = 'haoyu-theme-mode';
+      let mode = 'auto';
+      try { mode = localStorage.getItem(key) || 'auto'; } catch {}
+      const hour = new Date().getHours();
+      const effective = mode === 'auto' ? (hour >= 7 && hour < 18 ? 'light' : 'dark') : mode;
+      document.documentElement.dataset.themeMode = mode;
+      document.documentElement.dataset.theme = effective;
+      document.documentElement.style.colorScheme = effective;
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/academic-refresh.css" />
+</head>
+<body class="subpage subpage-publications academic-page">
+  <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+  <div class="site-shell">
+    <div class="topbar-wrap">
+    <header class="container topbar">
+      <a class="brand" href="index.html" aria-label="Haoyu Wu home page">
+        <span class="brand-mark" aria-hidden="true">HW</span>
+        <span class="brand-copy">
+          <span class="brand-title">Haoyu Wu</span>
+          <span class="brand-subtitle">Molecular simulation · polymer physics · scientific software</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a class="nav-link" data-nav="home" href="index.html">Overview</a>
+        <a class="nav-link" data-nav="research" href="research.html">Research</a>
+        <a class="nav-link" data-nav="publications" href="publications.html">Publications</a>
+        <a class="nav-link" data-nav="wiki" href="wiki.html">Research Wiki</a>
+        <a class="nav-link" data-nav="leisure" href="leisure.html">Literature Graph</a>
+        <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-label="Switch theme">
+          <span data-theme-icon aria-hidden="true">◐</span>
+          <span data-theme-label>Auto</span>
+        </button>
+      </nav>
+    </header>
+  </div>
+    <main class="site-main">
+      <section class="page-hero page-hero-compact">
+        <div class="container">
+          <div class="page-hero-shell compact-shell academic-hero-shell">
+            <div class="page-head compact-page-head">
+              <span class="kicker">Publications</span>
+              <h1 class="page-title">Peer-reviewed papers</h1>
+              <p class="page-subtitle compact-page-subtitle">A compact chronological list in the style of academic group pages. Figures and search controls are removed so the record reads like a clean scholarly bibliography.</p>
+              <div class="compact-meta-row academic-meta-row" aria-label="Publication summary">
+                <span class="meta-chip"><strong id="publication-total">0</strong> papers</span>
+                <span class="meta-chip"><strong id="year-span">—</strong></span>
+                <span class="meta-chip"><strong id="first-author-count">0</strong> first-author</span>
               </div>
             </div>
           </div>
-        </section>
-
-        <section class="section section-tight">
-          <div class="container">
-            <div class="glass-card control-panel compact-control-panel" data-reveal>
-              <div class="control-grid compact-control-grid">
-                <div class="control">
-                  <label for="search-input">Search</label>
-                  <input id="search-input" class="text-input" type="search" placeholder="Try: vitrimer, rheology, nanorods, glass transition..." />
-                </div>
-                <div class="control">
-                  <label for="year-filter">Year</label>
-                  <select id="year-filter" class="select-input"></select>
-                </div>
-              </div>
-              <div class="control">
-                <label>Topic</label>
-                <div id="tag-filters" class="chip-wrap" aria-label="Publication tags"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="section section-tight-bottom">
-          <div class="container">
-            <div id="publication-list" class="results-grid"></div>
-            <div id="publication-pagination" class="pagination" aria-label="Publication pagination"></div>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="assets/js/theme.js"></script>
-    <script type="module" src="assets/js/publications.js"></script>
-  </body>
+        </div>
+      </section>
+      <section class="section section-tight-bottom">
+        <div class="container">
+          <div id="publication-list" class="publication-list academic-bibliography" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="assets/js/theme.js"></script>
+  <script type="module" src="assets/js/publications.js"></script>
+</body>
 </html>
