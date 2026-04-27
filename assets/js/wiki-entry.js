@@ -1,4 +1,4 @@
-import { softwareProjects, softwareGraph, pageMeta } from './site-data.js';
+import { softwareProjects, pageMeta } from './site-data.js';
 import { activateNav, initReveal, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
 
@@ -40,7 +40,6 @@ function commands(containerId, commands = []) {
 }
 
 function renderInfobox(project) {
-  const connected = softwareGraph.filter((edge) => edge.from === project.id || edge.to === project.id);
   const box = document.getElementById('entry-infobox');
   box.innerHTML = `
     <h2>${escapeHtml(project.name)}</h2>
@@ -57,7 +56,6 @@ function renderInfobox(project) {
       ${project.docsUrl ? `<a class="meta-chip" href="${escapeHtml(project.docsUrl)}" target="_blank" rel="noopener">Docs</a>` : ''}
       <a class="meta-chip" href="wiki.html#${escapeHtml(project.slug || project.id)}">Wiki index</a>
     </div>
-    ${connected.length ? `<h3>Graph links</h3><ul class="wiki-edge-list">${connected.map((edge) => `<li>${escapeHtml(edge.from)} → ${escapeHtml(edge.to)} (${escapeHtml(edge.label)})</li>`).join('')}</ul>` : ''}
   `;
 }
 

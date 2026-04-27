@@ -443,7 +443,8 @@ function compactEdgeSet(edges, nodeIds) {
   sorted.forEach((edge) => {
     const aDegree = byNode.get(edge.source) || 0;
     const bDegree = byNode.get(edge.target) || 0;
-    if (kept.length < 34 && (aDegree < 6 || bDegree < 6 || edge.weight >= 4)) {
+    const strong = edge.weight >= 3.2;
+    if (kept.length < 24 && (strong || (aDegree < 4 && bDegree < 4))) {
       kept.push(edge);
       byNode.set(edge.source, aDegree + 1);
       byNode.set(edge.target, bDegree + 1);
@@ -452,31 +453,41 @@ function compactEdgeSet(edges, nodeIds) {
   return kept;
 }
 
+function activeNodeId() {
+  return STATE.activeId || STATE.nodes[0]?.id || null;
+}
+
+function edgeOther(edge, id) {
+  return edge.source === id ? edge.target : edge.source;
+}
+
+function activeRelations(limit = 8) {
+  const id = activeNodeId();
+  if (!id) return [];
+  return STATE.edges
+    .filter((edge) => edge.source === id || edge.target === id)
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, limit);
+}
+
 function buildNetwork(papers) {
-  const canvas = $('lit-network');
-  const width = canvas?.clientWidth || 760;
-  const height = canvas?.clientHeight || 420;
-  const cx = width / 2;
-  const cy = height / 2;
-  const selected = papers.slice(0, 16);
+  const selected = papers.slice(0, 18);
   const maxLens = Math.max(1, ...selected.map((paper) => paper.lensScore || 0));
 
   const nodes = selected.map((paper, index) => {
-    const seed = hashString(paper.id);
-    const ring = index === 0 ? 0 : 1 + (index % 3) * 0.36;
-    const angle = index === 0 ? 0 : (Math.PI * 2 * (index - 1)) / Math.max(selected.length - 1, 1) + (seed % 31) * 0.007;
     const citationScale = Math.log10((paper.citations || 0) + 1);
     const lensBoost = (paper.lensScore || 0) / maxLens;
-    const radius = Math.min(width, height) * (0.16 + ring * 0.105);
     return {
       id: paper.id,
       paper,
       index: index + 1,
-      x: index === 0 ? cx : cx + Math.cos(angle) * radius,
-      y: index === 0 ? cy : cy + Math.sin(angle) * radius * 0.78,
+      x: -999,
+      y: -999,
       vx: 0,
       vy: 0,
-      r: clamp(8.5 + citationScale * 1.8 + lensBoost * 2.2, 8.5, 15.5)
+      visible: false,
+      role: 'hidden',
+      r: clamp(9 + citationScale * 1.3 + lensBoost * 1.8, 9, 15)
     };
   });
 
@@ -486,10 +497,10 @@ function buildNetwork(papers) {
       const result = scorePair(selected[i], selected[j]);
       const lensOverlap = (selected[i].lensHits || []).filter((hit) => (selected[j].lensHits || []).includes(hit));
       if (lensOverlap.length) {
-        result.score += Math.min(lensOverlap.length * 0.8, 2.4);
+        result.score += Math.min(lensOverlap.length * 0.9, 2.4);
         result.reasons.push(`same lens: ${lensOverlap.slice(0, 3).join(', ')}`);
       }
-      if (result.score >= 1.75) {
+      if (result.score >= 1.8) {
         candidateEdges.push({ source: selected[i].id, target: selected[j].id, weight: result.score, reasons: result.reasons });
       }
     }
@@ -497,115 +508,113 @@ function buildNetwork(papers) {
 
   STATE.nodes = nodes;
   STATE.edges = compactEdgeSet(candidateEdges, nodes.map((node) => node.id));
-  runLayout(120);
-}
-
-function resolveCollisions(width, height) {
-  const padding = 22;
-  for (let i = 0; i < STATE.nodes.length; i += 1) {
-    for (let j = i + 1; j < STATE.nodes.length; j += 1) {
-      const a = STATE.nodes[i];
-      const b = STATE.nodes[j];
-      const dx = b.x - a.x || 0.01;
-      const dy = b.y - a.y || 0.01;
-      const dist = Math.hypot(dx, dy) || 1;
-      const minDist = a.r + b.r + 16;
-      if (dist < minDist) {
-        const push = (minDist - dist) * 0.52;
-        const ux = dx / dist;
-        const uy = dy / dist;
-        a.x -= ux * push * 0.5;
-        a.y -= uy * push * 0.5;
-        b.x += ux * push * 0.5;
-        b.y += uy * push * 0.5;
-      }
-    }
-  }
-  STATE.nodes.forEach((node) => {
-    node.x = clamp(node.x, padding + node.r, width - padding - node.r);
-    node.y = clamp(node.y, padding + node.r, height - padding - node.r);
-  });
-}
-
-function runLayout(iterations = 90) {
-  const canvas = $('lit-network');
-  if (!canvas) return;
-  const width = canvas.clientWidth || 760;
-  const height = canvas.clientHeight || 420;
-  const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
-
-  for (let step = 0; step < iterations; step += 1) {
-    for (let i = 0; i < STATE.nodes.length; i += 1) {
-      for (let j = i + 1; j < STATE.nodes.length; j += 1) {
-        const a = STATE.nodes[i];
-        const b = STATE.nodes[j];
-        const dx = a.x - b.x || 0.01;
-        const dy = a.y - b.y || 0.01;
-        const dist2 = dx * dx + dy * dy;
-        const dist = Math.sqrt(dist2) || 1;
-        const force = Math.min(1900 / dist2, 0.42);
-        a.vx += (dx / dist) * force;
-        a.vy += (dy / dist) * force;
-        b.vx -= (dx / dist) * force;
-        b.vy -= (dy / dist) * force;
-      }
-    }
-
-    STATE.edges.forEach((edge) => {
-      const a = nodeMap.get(edge.source);
-      const b = nodeMap.get(edge.target);
-      if (!a || !b) return;
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const dist = Math.hypot(dx, dy) || 1;
-      const target = edge.weight >= 4 ? 96 : 128 + Math.max(0, 4 - edge.weight) * 16;
-      const force = (dist - target) * 0.0032 * clamp(edge.weight, 1, 5.5);
-      const fx = (dx / dist) * force;
-      const fy = (dy / dist) * force;
-      a.vx += fx;
-      a.vy += fy;
-      b.vx -= fx;
-      b.vy -= fy;
-    });
-
-    STATE.nodes.forEach((node, index) => {
-      const centerPull = index === 0 ? 0.014 : 0.0045;
-      node.vx += (width / 2 - node.x) * centerPull;
-      node.vy += (height / 2 - node.y) * centerPull;
-      node.x += node.vx;
-      node.y += node.vy;
-      node.vx *= 0.66;
-      node.vy *= 0.66;
-    });
-    resolveCollisions(width, height);
-  }
+  if (!STATE.activeId && nodes.length) STATE.activeId = nodes[0].id;
+  layoutNetworkForActive();
   drawNetwork();
 }
 
-function drawRoundedLabel(ctx, text, x, y, maxWidth) {
-  const label = truncate(text, 64);
-  ctx.save();
-  ctx.font = '12px "Times New Roman", serif';
-  const width = Math.min(maxWidth - 16, ctx.measureText(label).width + 16);
-  const height = 24;
-  const left = clamp(x, 8, Math.max(8, maxWidth - width - 8));
-  ctx.globalAlpha = 0.94;
-  ctx.fillStyle = 'rgba(255, 253, 248, 0.92)';
-  ctx.strokeStyle = 'rgba(101, 86, 61, 0.24)';
-  ctx.beginPath();
-  if (typeof ctx.roundRect === 'function') {
-    ctx.roundRect(left, y, width, height, 8);
-  } else {
-    ctx.rect(left, y, width, height);
+function layoutNetworkForActive() {
+  const canvas = $('lit-network');
+  if (!canvas) return;
+  const width = canvas.clientWidth || 760;
+  const height = canvas.clientHeight || 430;
+  const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
+  const id = activeNodeId();
+
+  STATE.nodes.forEach((node) => {
+    node.visible = false;
+    node.role = 'hidden';
+    node.x = -999;
+    node.y = -999;
+  });
+
+  if (!id) {
+    STATE.layoutEdges = [];
+    return;
   }
+
+  const active = nodeMap.get(id);
+  if (!active) {
+    STATE.layoutEdges = [];
+    return;
+  }
+
+  const relations = activeRelations(width < 560 ? 6 : 8);
+  const relatedIds = relations.map((edge) => edgeOther(edge, id));
+  let relatedNodes = relatedIds.map((otherId) => nodeMap.get(otherId)).filter(Boolean);
+  let layoutEdges = relations;
+
+  if (!relatedNodes.length) {
+    relatedNodes = STATE.nodes.filter((node) => node.id !== id).slice(0, width < 560 ? 5 : 7);
+    layoutEdges = relatedNodes.map((node) => ({
+      source: id,
+      target: node.id,
+      weight: 0,
+      reasons: ['shortlist neighbor; no strong metadata edge inferred']
+    }));
+  }
+
+  const top = 68;
+  const bottom = 38;
+  const usable = Math.max(120, height - top - bottom);
+  const activeX = clamp(width * 0.22, 76, 132);
+  const relatedX = clamp(width * 0.67, 245, width - 130);
+
+  active.visible = true;
+  active.role = 'active';
+  active.x = activeX;
+  active.y = clamp(height * 0.52, top + 30, height - bottom - 30);
+  active.r = Math.max(active.r, 15);
+
+  relatedNodes.forEach((node, index) => {
+    const count = relatedNodes.length;
+    const y = top + ((index + 0.5) / Math.max(count, 1)) * usable;
+    node.visible = true;
+    node.role = layoutEdges[index]?.weight ? 'related' : 'fallback';
+    node.x = relatedX;
+    node.y = clamp(y, top + node.r, height - bottom - node.r);
+  });
+
+  STATE.layoutEdges = layoutEdges;
+}
+
+function runLayout() {
+  layoutNetworkForActive();
+  drawNetwork();
+}
+
+function drawText(ctx, text, x, y, maxChars, options = {}) {
+  const value = truncate(text, maxChars);
+  ctx.save();
+  ctx.font = options.font || '12px "Times New Roman", serif';
+  ctx.fillStyle = options.color || '#17202a';
+  ctx.textAlign = options.align || 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(value, x, y);
+  ctx.restore();
+}
+
+function drawPill(ctx, text, x, y, options = {}) {
+  const value = truncate(text, options.maxChars || 28);
+  ctx.save();
+  ctx.font = options.font || '11px "Times New Roman", serif';
+  const w = Math.min(options.maxWidth || 210, ctx.measureText(value).width + 14);
+  const h = 20;
+  ctx.globalAlpha = options.alpha || 0.94;
+  ctx.fillStyle = options.fill || 'rgba(255, 253, 248, 0.92)';
+  ctx.strokeStyle = options.stroke || 'rgba(101, 86, 61, 0.22)';
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') ctx.roundRect(x, y, w, h, 9);
+  else ctx.rect(x, y, w, h);
   ctx.fill();
   ctx.stroke();
   ctx.globalAlpha = 1;
-  ctx.fillStyle = '#17202a';
+  ctx.fillStyle = options.color || '#5e6875';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillText(label, left + 8, y + height / 2, width - 14);
+  ctx.fillText(value, x + 7, y + h / 2);
   ctx.restore();
+  return w;
 }
 
 function drawNetwork() {
@@ -624,101 +633,136 @@ function drawNetwork() {
   const accent = styles.getPropertyValue('--academic-accent').trim() || '#8b6f3d';
   const ink = styles.getPropertyValue('--academic-ink').trim() || '#17202a';
   const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
+  const active = nodeMap.get(activeNodeId());
 
   ctx.save();
   const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
-  gradient.addColorStop(0, 'rgba(255,253,248,0.48)');
-  gradient.addColorStop(1, 'rgba(238,243,249,0.26)');
+  gradient.addColorStop(0, 'rgba(255,253,248,0.78)');
+  gradient.addColorStop(1, 'rgba(237,242,247,0.48)');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, rect.width, rect.height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.26;
-  ctx.strokeStyle = muted;
-  ctx.lineWidth = 0.7;
-  [0.32, 0.5, 0.68].forEach((x) => {
-    ctx.beginPath();
-    ctx.moveTo(rect.width * x, 18);
-    ctx.lineTo(rect.width * x, rect.height - 28);
-    ctx.stroke();
-  });
+  ctx.strokeStyle = 'rgba(101, 86, 61, 0.18)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(Math.max(168, rect.width * 0.36), 24);
+  ctx.lineTo(Math.max(168, rect.width * 0.36), rect.height - 26);
+  ctx.stroke();
   ctx.restore();
+
+  if (!STATE.nodes.length) {
+    drawText(ctx, 'Run a search to build an ego-centered relation map.', 18, 22, 72, {
+      color: muted,
+      font: '13px "Times New Roman", serif'
+    });
+    return;
+  }
+
+  const layoutEdges = STATE.layoutEdges || activeRelations(8);
+
+  if (active) {
+    drawPill(ctx, 'selected paper', 16, 16, { fill: 'rgba(255,253,248,0.95)', color: accent, maxWidth: 140 });
+    drawText(ctx, `#${active.index} ${active.paper.title}`, 18, 42, rect.width < 560 ? 42 : 66, {
+      color: ink,
+      font: '700 12px "Times New Roman", serif'
+    });
+  }
 
   ctx.save();
   ctx.lineCap = 'round';
-  STATE.edges.forEach((edge, edgeIndex) => {
+  layoutEdges.forEach((edge, edgeIndex) => {
     const a = nodeMap.get(edge.source);
     const b = nodeMap.get(edge.target);
-    if (!a || !b) return;
-    const active = STATE.activeId && (STATE.activeId === a.id || STATE.activeId === b.id);
-    const type = relationType(edge);
-    const midX = (a.x + b.x) / 2;
-    const midY = (a.y + b.y) / 2;
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
+    if (!a || !b || !a.visible || !b.visible) return;
+    const source = a.id === active?.id ? a : b;
+    const target = a.id === active?.id ? b : a;
+    const dx = target.x - source.x;
+    const dy = target.y - source.y;
     const dist = Math.hypot(dx, dy) || 1;
-    const curve = ((edgeIndex % 2 ? 1 : -1) * Math.min(42, 460 / dist));
+    const curve = (edgeIndex % 2 ? 1 : -1) * Math.min(28, 220 / dist);
+    const midX = (source.x + target.x) / 2;
+    const midY = (source.y + target.y) / 2;
     const cx = midX - (dy / dist) * curve;
     const cy = midY + (dx / dist) * curve;
-    ctx.globalAlpha = active ? 0.62 : (type === 'author' ? 0.25 : 0.15);
-    ctx.strokeStyle = active ? accent : muted;
-    ctx.lineWidth = active ? 2.2 : clamp(edge.weight * 0.22, 0.55, 1.25);
+    const semantic = edge.weight > 0;
+    ctx.globalAlpha = semantic ? 0.58 : 0.22;
+    ctx.strokeStyle = semantic ? accent : muted;
+    ctx.lineWidth = semantic ? clamp(edge.weight * 0.32, 1.1, 2.4) : 0.9;
+    if (!semantic) ctx.setLineDash([4, 5]);
+    else ctx.setLineDash([]);
     ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.quadraticCurveTo(cx, cy, b.x, b.y);
+    ctx.moveTo(source.x, source.y);
+    ctx.quadraticCurveTo(cx, cy, target.x, target.y);
     ctx.stroke();
   });
   ctx.restore();
 
-  STATE.nodes.forEach((node) => {
-    const active = node.id === STATE.activeId;
-    const connected = STATE.activeId && STATE.edges.some((edge) =>
-      (edge.source === STATE.activeId && edge.target === node.id) ||
-      (edge.target === STATE.activeId && edge.source === node.id)
-    );
-    const faded = STATE.activeId && !active && !connected;
+  layoutEdges.forEach((edge, edgeIndex) => {
+    const other = nodeMap.get(edgeOther(edge, active?.id));
+    if (!other?.visible) return;
+    const reason = edge.reasons?.[0] || 'metadata relation';
+    const tag = edge.weight ? `${relationType(edge)} · ${reason}` : 'shortlist context';
+    const y = other.y + other.r + 6;
+    drawPill(ctx, tag, other.x + other.r + 8, y, {
+      maxChars: rect.width < 560 ? 22 : 34,
+      maxWidth: Math.max(96, rect.width - other.x - other.r - 20),
+      fill: edge.weight ? 'rgba(255,253,248,0.9)' : 'rgba(246,248,250,0.72)',
+      color: edge.weight ? accent : muted,
+      alpha: 0.9
+    });
+  });
+
+  STATE.nodes.filter((node) => node.visible).forEach((node) => {
+    const activeNode = node.id === active?.id;
+    const fallback = node.role === 'fallback';
     ctx.save();
-    ctx.globalAlpha = faded ? 0.42 : 1;
-    if ((node.paper.lensScore || 0) > 0) {
+    if (node.paper.lensScore && !activeNode) {
       ctx.beginPath();
-      ctx.fillStyle = active ? 'rgba(139,111,61,0.18)' : 'rgba(139,111,61,0.08)';
-      ctx.arc(node.x, node.y, node.r + 7, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(139,111,61,0.08)';
+      ctx.arc(node.x, node.y, node.r + 6, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.beginPath();
-    ctx.fillStyle = active ? accent : 'rgba(255, 253, 248, 0.96)';
-    ctx.strokeStyle = active ? accent : 'rgba(94,104,117,0.72)';
-    ctx.lineWidth = active ? 2.2 : 1.05;
+    ctx.fillStyle = activeNode ? accent : fallback ? 'rgba(247,248,250,0.98)' : 'rgba(255, 253, 248, 0.98)';
+    ctx.strokeStyle = activeNode ? accent : 'rgba(94,104,117,0.68)';
+    ctx.lineWidth = activeNode ? 2.1 : 1.05;
     ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = active ? '#ffffff' : ink;
-    ctx.font = '700 10.5px "Times New Roman", serif';
+    ctx.fillStyle = activeNode ? '#ffffff' : ink;
+    ctx.font = activeNode ? '700 11.5px "Times New Roman", serif' : '700 10px "Times New Roman", serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(node.index), node.x, node.y + 0.25);
     ctx.restore();
+
+    if (!activeNode) {
+      const labelX = node.x + node.r + 8;
+      const max = rect.width < 560 ? 26 : 43;
+      drawText(ctx, `#${node.index} ${node.paper.title}`, labelX, node.y - 15, max, {
+        color: ink,
+        font: '700 11.5px "Times New Roman", serif'
+      });
+      const meta = `${node.paper.year || 'n.d.'}${node.paper.venue ? ` · ${node.paper.venue}` : ''}`;
+      drawText(ctx, meta, labelX, node.y - 1, rect.width < 560 ? 24 : 38, {
+        color: muted,
+        font: '11px "Times New Roman", serif'
+      });
+    }
   });
 
-  const activeNode = STATE.nodes.find((node) => node.id === STATE.activeId);
-  if (activeNode) {
-    const labelX = activeNode.x + activeNode.r + 8;
-    const labelY = clamp(activeNode.y - 12, 10, rect.height - 34);
-    drawRoundedLabel(ctx, activeNode.paper.title, labelX, labelY, rect.width);
-  }
-
-  if (STATE.nodes.length) {
-    ctx.save();
-    ctx.fillStyle = muted;
-    ctx.font = '12px "Times New Roman", serif';
-    ctx.textAlign = 'left';
-    const label = STATE.activeId
-      ? 'Numbered nodes match result order; highlighted edges explain the selected paper.'
-      : 'Numbered nodes match result order; edges are pruned to strong explainable relations.';
-    ctx.fillText(label, 14, rect.height - 14);
-    ctx.restore();
-  }
+  ctx.save();
+  ctx.fillStyle = muted;
+  ctx.font = '11.5px "Times New Roman", serif';
+  ctx.textAlign = 'left';
+  const relationCount = (STATE.layoutEdges || []).filter((edge) => edge.weight > 0).length;
+  const label = relationCount
+    ? 'Ego map: edges explain the selected paper; click a result or node to recenter.'
+    : 'No strong metadata edges for this paper; showing shortlist neighbors as context.';
+  ctx.fillText(label, 14, rect.height - 14);
+  ctx.restore();
 }
 
 function sourceBadge(source) {
@@ -847,6 +891,7 @@ function selectPaper(id) {
   const paper = STATE.papers.find((item) => item.id === id);
   renderResults();
   renderDetail(paper);
+  layoutNetworkForActive();
   drawNetwork();
 }
 
@@ -859,6 +904,7 @@ function clickNetwork(event) {
   let best = null;
   let bestDistance = Infinity;
   STATE.nodes.forEach((node) => {
+    if (!node.visible) return;
     const distance = Math.hypot(node.x - x, node.y - y);
     if (distance < bestDistance && distance <= node.r + 8) {
       best = node;
@@ -934,7 +980,7 @@ async function runSearch(event) {
   renderResults();
   renderInsights();
   selectPaper(STATE.papers[0].id);
-  setStatus(`Loaded ${STATE.papers.length} deduplicated records, ${STATE.edges.length} pruned relation edges, and ${STATE.lensTerms.length} lens terms.`, STATE.lastErrors);
+  setStatus(`Loaded ${STATE.papers.length} deduplicated records, ${STATE.edges.length} inferred metadata edges, and ${STATE.lensTerms.length} lens terms.`, STATE.lastErrors);
 }
 
 function saveSelectedPaper() {
@@ -1031,7 +1077,7 @@ function initLiteraturePage() {
   $('lit-save')?.addEventListener('click', saveSelectedPaper);
   $('lit-fit')?.addEventListener('click', () => {
     runLayout(120);
-    setStatus(`Re-laid out ${STATE.nodes.length} paper nodes and ${STATE.edges.length} pruned edges.`, STATE.lastErrors);
+    setStatus(`Recentered the ego map for ${STATE.nodes.length} paper nodes and ${STATE.edges.length} inferred edges.`, STATE.lastErrors);
   });
   $('lit-network')?.addEventListener('click', clickNetwork);
   window.addEventListener('resize', () => {

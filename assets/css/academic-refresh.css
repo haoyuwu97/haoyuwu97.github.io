@@ -846,3 +846,211 @@ body {
     grid-column: 2;
   }
 }
+
+
+/* V3 precision pass: denser homepage, compact research flow, neutral wiki, and ego-centered literature map. */
+
+/* Homepage: keep the Notre Dame line intact on normal screens. */
+.home-hero-grid {
+  grid-template-columns: minmax(0, 1.28fr) minmax(260px, 0.72fr) !important;
+  gap: clamp(1.2rem, 3vw, 2.1rem) !important;
+}
+#hero-title.hero-subtitle {
+  white-space: nowrap;
+  font-size: clamp(0.9rem, 1.22vw, 1.02rem) !important;
+  line-height: 1.38 !important;
+  max-width: none !important;
+}
+#hero-summary.hero-summary {
+  max-width: 66rem !important;
+  line-height: 1.62 !important;
+}
+.compact-profile-links {
+  gap: 0.42rem !important;
+}
+.compact-profile-links .btn,
+.compact-profile-links a {
+  font-size: 0.76rem !important;
+  padding: 0.48rem 0.68rem !important;
+}
+.experience-panel {
+  max-width: 72rem !important;
+}
+.experience-body p:empty {
+  display: none;
+}
+
+/* Research: remove oversized hero-to-content gap and replace decorative figures with method panels. */
+.research-page-hero-v3 {
+  padding-top: clamp(0.75rem, 1.8vw, 1.15rem) !important;
+  padding-bottom: 0 !important;
+}
+.research-hero-v3 {
+  display: block !important;
+  padding: clamp(0.95rem, 2vw, 1.35rem) clamp(1.05rem, 2.4vw, 1.65rem) !important;
+}
+.research-hero-v3 .page-title {
+  max-width: 18em !important;
+  font-size: clamp(1.75rem, 3.25vw, 2.85rem) !important;
+  line-height: 1.05 !important;
+}
+.research-hero-v3 .compact-page-subtitle {
+  max-width: 70rem !important;
+  margin-top: 0.55rem !important;
+}
+.research-hero-v3 .academic-meta-row {
+  margin-top: 0.78rem !important;
+}
+.research-content-section-v3 {
+  padding-top: clamp(0.65rem, 1.35vw, 1rem) !important;
+}
+.research-direction-v3 {
+  grid-template-columns: minmax(0, 1.55fr) minmax(230px, 0.62fr) !important;
+  gap: clamp(1rem, 2.3vw, 1.5rem) !important;
+}
+.research-direction-v3:nth-child(even) .research-direction-copy {
+  order: initial !important;
+}
+.research-direction-v3 .section-title {
+  max-width: 20em;
+}
+.research-direction-v3 .lead {
+  color: var(--academic-ink);
+  font-size: 1rem !important;
+}
+[data-theme="dark"] .research-direction-v3 .lead {
+  color: rgba(255,255,255,0.82);
+}
+.research-method-panel {
+  border-left: 1px solid var(--academic-line);
+  padding-left: clamp(0.95rem, 2vw, 1.25rem);
+  color: var(--academic-muted);
+}
+.research-ordinal {
+  color: var(--academic-accent);
+  font-size: 1.85rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.6rem;
+}
+.research-method-panel h3 {
+  margin: 0 0 0.38rem;
+  color: var(--academic-ink);
+  font-size: 0.98rem;
+}
+[data-theme="dark"] .research-method-panel h3 {
+  color: rgba(255,255,255,0.84);
+}
+.research-method-panel p {
+  margin: 0 0 0.85rem;
+  font-size: 0.84rem;
+  line-height: 1.48;
+}
+.research-tag-panel + .research-tag-panel {
+  margin-top: 0.8rem;
+  padding-top: 0.72rem;
+  border-top: 1px solid rgba(128,128,128,0.16);
+}
+.research-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.32rem;
+}
+.research-tag-list span {
+  border: 1px solid var(--academic-line);
+  border-radius: 999px;
+  padding: 0.18rem 0.42rem;
+  font-size: 0.72rem;
+  background: rgba(255,255,255,0.22);
+}
+.research-archive-v3 .section-title {
+  font-size: clamp(1.1rem, 2vw, 1.45rem) !important;
+}
+.research-archive-v3 .section-text {
+  margin-bottom: 0.25rem !important;
+}
+.research-archive-v3 .archive-list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.archive-item-v3 {
+  border: 1px solid var(--academic-line);
+  border-radius: 0.72rem;
+  padding: 0.72rem !important;
+  background: rgba(255,255,255,0.22);
+}
+.archive-item-v3 h3 {
+  font-size: 0.92rem;
+}
+.archive-item-v3 p {
+  font-size: 0.82rem;
+  line-height: 1.46;
+}
+
+/* Wiki: neutral index without inferred graph relationships. */
+.wiki-mini-stats span:last-child {
+  margin-right: 0;
+}
+.wiki-index > p {
+  margin: 0 0 0.8rem;
+  color: var(--academic-muted);
+  line-height: 1.48;
+  font-size: 0.88rem;
+}
+.wiki-edge-list {
+  display: none !important;
+}
+
+/* Literature map: give the graph more horizontal room and reduce visual clutter. */
+.lit-workbench {
+  grid-template-columns: minmax(0, 0.95fr) minmax(430px, 1.05fr) !important;
+}
+.lit-network-panel {
+  overflow: hidden;
+}
+.lit-network-canvas {
+  height: 460px !important;
+  background: rgba(255,253,248,0.72) !important;
+}
+.lit-paper-detail {
+  max-height: 260px;
+  overflow: auto;
+}
+.lit-panel-head .section-title {
+  font-size: clamp(1.18rem, 2vw, 1.55rem) !important;
+}
+
+@media (max-width: 1080px) {
+  #hero-title.hero-subtitle {
+    white-space: normal;
+  }
+  .research-archive-v3 .archive-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lit-workbench {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .home-hero-grid,
+  .research-direction-v3 {
+    grid-template-columns: 1fr !important;
+  }
+  .research-method-panel {
+    border-left: 0;
+    border-top: 1px solid var(--academic-line);
+    padding-left: 0;
+    padding-top: 0.9rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .research-archive-v3 .archive-list {
+    grid-template-columns: 1fr;
+  }
+  .lit-network-canvas {
+    height: 420px !important;
+  }
+}
