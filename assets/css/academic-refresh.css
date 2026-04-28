@@ -1466,3 +1466,165 @@ body.subpage-wiki .site-shell,
 body.subpage-literature .site-shell {
   padding-top: 0 !important;
 }
+
+/* V6 compact academic correction: remove oversized subpage entry gaps, keep headers on one line, and simplify the relation map. */
+body.subpage-research .site-main,
+body.subpage-wiki .site-main,
+body.subpage-literature .site-main {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+body.subpage-research .topbar-wrap,
+body.subpage-wiki .topbar-wrap,
+body.subpage-literature .topbar-wrap {
+  margin-bottom: 0 !important;
+}
+
+body.subpage-research .site-main > .section:first-child,
+body.subpage-wiki .site-main > .section:first-child,
+body.subpage-literature .site-main > .section:first-child {
+  padding-top: 0.35rem !important;
+}
+
+@media (min-width: 900px) {
+  body.subpage-research .site-main > .section:first-child,
+  body.subpage-wiki .site-main > .section:first-child,
+  body.subpage-literature .site-main > .section:first-child {
+    margin-top: -5.35rem !important;
+  }
+}
+
+.research-minimal-head,
+.wiki-minimal-head,
+.literature-minimal-head {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: end !important;
+  margin-bottom: 0.62rem !important;
+  padding-bottom: 0.52rem !important;
+}
+
+.research-minimal-head > p,
+.wiki-minimal-head > p,
+.literature-minimal-head > p {
+  display: none !important;
+}
+
+.research-minimal-head h1,
+.wiki-minimal-head h1,
+.literature-minimal-head h1,
+.research-foundations-head-v4 .section-title {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+}
+
+.research-minimal-head h1,
+.wiki-minimal-head h1,
+.literature-minimal-head h1 {
+  max-width: 100% !important;
+  font-size: clamp(1.54rem, 2vw, 2.04rem) !important;
+  line-height: 1.03 !important;
+}
+
+.literature-minimal-head h1 {
+  font-size: clamp(1.46rem, 1.95vw, 1.96rem) !important;
+}
+
+.research-mini-stats,
+.wiki-mini-stats {
+  margin-left: auto !important;
+}
+
+.research-mini-stats span,
+.wiki-mini-stats span {
+  font-size: 0.72rem !important;
+}
+
+.research-core-card-v4 {
+  min-height: 380px !important;
+}
+
+.research-core-copy-v4 .section-title {
+  max-width: 22em !important;
+  letter-spacing: -0.014em !important;
+}
+
+.research-core-lead-v4,
+.research-note-v4 span,
+.research-foundation-item-v4 p,
+.wiki-article p,
+.wiki-entry li {
+  color: var(--academic-muted) !important;
+}
+
+.research-note-v4 strong {
+  letter-spacing: 0.035em !important;
+}
+
+.research-foundations-head-v4 {
+  display: block !important;
+  padding-bottom: 0.52rem !important;
+}
+
+.research-foundations-head-v4 .section-title {
+  max-width: none !important;
+  font-size: clamp(1.18rem, 1.72vw, 1.55rem) !important;
+  line-height: 1.08 !important;
+}
+
+.research-foundations-head-v4 p {
+  display: none !important;
+}
+
+.wiki-sidebar .wiki-note {
+  display: none !important;
+}
+
+.wiki-minimal-head {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+}
+
+.literature-minimal-head {
+  display: block !important;
+}
+
+.literature-minimal-head h1 {
+  display: inline-block !important;
+}
+
+.lit-network-canvas {
+  height: clamp(450px, 52vh, 560px) !important;
+  background: rgba(255,253,248,0.84) !important;
+}
+
+[data-theme="dark"] .lit-network-canvas {
+  background: rgba(13, 18, 27, 0.94) !important;
+}
+
+.lit-paper-detail {
+  max-height: 210px !important;
+}
+
+@media (max-width: 1180px) {
+  .research-minimal-head,
+  .wiki-minimal-head,
+  .literature-minimal-head {
+    grid-template-columns: 1fr !important;
+  }
+  .research-minimal-head h1,
+  .wiki-minimal-head h1,
+  .literature-minimal-head h1,
+  .research-foundations-head-v4 .section-title {
+    white-space: normal !important;
+  }
+}
+
+@media (max-width: 899px) {
+  body.subpage-research .site-main > .section:first-child,
+  body.subpage-wiki .site-main > .section:first-child,
+  body.subpage-literature .site-main > .section:first-child {
+    margin-top: 0 !important;
+  }
+}
