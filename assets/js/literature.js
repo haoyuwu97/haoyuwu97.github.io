@@ -556,17 +556,14 @@ function layoutNetworkForActive() {
   const activeId = activeNodeId();
   const active = nodeMap.get(activeId) || STATE.nodes[0];
   const pad = width < 620 ? 22 : 30;
-  const footer = 26;
+  const footer = 30;
   const usableW = Math.max(220, width - pad * 2);
   const usableH = Math.max(260, height - pad * 2 - footer);
-  const cx = pad + usableW / 2;
-  const cy = pad + usableH / 2;
 
   STATE.nodes.forEach((node) => {
     node.visible = true;
     node.role = node.id === active?.id ? 'active' : 'bubble';
     node.hitbox = null;
-    node.r = node.id === active?.id ? Math.min(38, node.baseR + 4) : node.baseR;
   });
 
   if (!STATE.nodes.length) {
@@ -580,103 +577,56 @@ function layoutNetworkForActive() {
     if (b.id === active?.id) return 1;
     return edgeWeightBetween(active?.id, b.id) - edgeWeightBetween(active?.id, a.id)
       || (b.paper.citations || 0) - (a.paper.citations || 0)
+      || (b.venueSignal || 0) - (a.venueSignal || 0)
       || a.index - b.index;
   });
 
-  const placed = [];
-  const activeNode = ordered[0];
-  activeNode.x = cx;
-  activeNode.y = cy;
-  activeNode.hitbox = { x: cx - activeNode.r, y: cy - activeNode.r, w: activeNode.r * 2, h: activeNode.r * 2 };
-  placed.push(activeNode);
+  const count = ordered.length;
+  const cols = count <= 4
+    ? count
+    : width < 540
+      ? 3
+      : 4;
+  const rows = Math.ceil(count / cols);
+  const cellW = usableW / Math.max(1, cols);
+  const cellH = usableH / Math.max(1, rows);
+  const maxSlotRadius = clamp(Math.floor(Math.min(cellW, cellH) / 2 - (width < 620 ? 8 : 11)), 12, 34);
 
-  const golden = Math.PI * (3 - Math.sqrt(5));
-  ordered.slice(1).forEach((node, orderIndex) => {
-    const baseGap = width < 620 ? 9 : 13;
-    const maxAttempts = 360;
-    let best = null;
-    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-      const shell = Math.floor(attempt / 42) + 1;
-      const angle = orderIndex * golden + attempt * 0.19;
-      const radius = Math.min(usableW, usableH) * (0.17 + shell * 0.052) + orderIndex * 1.7;
-      const x = cx + Math.cos(angle) * radius * (usableW / Math.max(usableW, usableH));
-      const y = cy + Math.sin(angle) * radius * (usableH / Math.max(usableW, usableH));
-      if (x - node.r < pad || x + node.r > width - pad || y - node.r < pad || y + node.r > height - pad - footer) continue;
-      let overlap = false;
-      let minClearance = Infinity;
-      placed.forEach((other) => {
-        const clearance = Math.hypot(x - other.x, y - other.y) - (node.r + other.r + baseGap);
-        minClearance = Math.min(minClearance, clearance);
-        if (clearance < 0) overlap = true;
-      });
-      if (!overlap) {
-        best = { x, y };
-        break;
-      }
-      if (!best || minClearance > best.clearance) best = { x, y, clearance: minClearance };
+  const slots = [];
+  const centerX = pad + usableW / 2;
+  const centerY = pad + usableH / 2;
+  for (let row = 0; row < rows; row += 1) {
+    for (let col = 0; col < cols; col += 1) {
+      if (slots.length >= count) break;
+      const x = pad + cellW * (col + 0.5);
+      const y = pad + cellH * (row + 0.5);
+      const d = Math.hypot(x - centerX, y - centerY);
+      slots.push({ x, y, d, row, col });
     }
-    if (!best) {
-      const fallbackAngle = orderIndex * golden;
-      best = {
-        x: cx + Math.cos(fallbackAngle) * Math.min(usableW, usableH) * 0.28,
-        y: cy + Math.sin(fallbackAngle) * Math.min(usableW, usableH) * 0.28
-      };
-    }
-    node.x = clamp(best.x, pad + node.r, width - pad - node.r);
-    node.y = clamp(best.y, pad + node.r, height - pad - footer - node.r);
-    placed.push(node);
-  });
-
-  // Final collision pass. It is intentionally conservative: the map favors guaranteed readability over force-layout aesthetics.
-  for (let iter = 0; iter < 90; iter += 1) {
-    for (let i = 0; i < placed.length; i += 1) {
-      for (let j = i + 1; j < placed.length; j += 1) {
-        const a = placed[i];
-        const b = placed[j];
-        const gap = width < 620 ? 8 : 12;
-        const dx = b.x - a.x;
-        const dy = b.y - a.y;
-        const dist = Math.hypot(dx, dy) || 0.001;
-        const minDist = a.r + b.r + gap;
-        if (dist >= minDist) continue;
-        const push = (minDist - dist) / 2;
-        const ux = dx / dist;
-        const uy = dy / dist;
-        if (a.role !== 'active') {
-          a.x -= ux * push;
-          a.y -= uy * push;
-        }
-        if (b.role !== 'active') {
-          b.x += ux * push;
-          b.y += uy * push;
-        }
-      }
-    }
-    placed.forEach((node) => {
-      if (node.role === 'active') return;
-      node.x = clamp(node.x, pad + node.r, width - pad - node.r);
-      node.y = clamp(node.y, pad + node.r, height - pad - footer - node.r);
-    });
   }
+  slots.sort((a, b) => a.d - b.d || a.row - b.row || a.col - b.col);
 
-  placed.forEach((node) => {
+  ordered.forEach((node, index) => {
+    const slot = slots[index];
+    const desired = node.id === active?.id ? node.baseR + 5 : node.baseR;
+    node.r = clamp(Math.min(desired, maxSlotRadius), 12, maxSlotRadius);
+    node.x = clamp(slot.x, pad + node.r, width - pad - node.r);
+    node.y = clamp(slot.y, pad + node.r, height - pad - footer - node.r);
     node.hitbox = { x: node.x - node.r, y: node.y - node.r, w: node.r * 2, h: node.r * 2 };
   });
 
-  const visibleIds = new Set(placed.map((node) => node.id));
-  const keptEdges = STATE.edges
+  const visibleIds = new Set(ordered.map((node) => node.id));
+  STATE.layoutEdges = STATE.edges
     .filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target))
     .sort((a, b) => {
       const aActive = a.source === active?.id || a.target === active?.id ? 1 : 0;
       const bActive = b.source === active?.id || b.target === active?.id ? 1 : 0;
       return bActive - aActive || b.weight - a.weight;
     })
-    .slice(0, 28);
+    .slice(0, 32);
 
-  STATE.layoutEdges = keptEdges;
   STATE.graphCards = { footerY: height - 13, activeId: active?.id };
 }
-
 function runLayout() {
   layoutNetworkForActive();
   drawNetwork();

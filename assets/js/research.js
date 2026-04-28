@@ -31,48 +31,48 @@ const RESEARCH_PAGE = {
     },
     {
       kicker: 'Current project · vitrimer / polymer physics',
-      title: 'Theoretical simulation of vitrimers and dynamic polymer networks',
+      title: 'Molecular Dynamics Simulation and Theoretical Research on Viscoelasticity and Topology of Vitrimers',
       lead:
-        'This project treats vitrimers as polymer-physics systems in which dynamic covalent exchange changes topology, relaxation spectra, and failure pathways. The goal is to distinguish chemical exchange events from mechanically active network rearrangements.',
+        'This project studies vitrimer networks by molecular dynamics and theoretical polymer physics. The emphasis is on viscoelastic relaxation, topology exchange, stress-bearing connectivity, and the distinction between local bond exchange and network-level rearrangement.',
       figure: 'assets/img/research/vitrimer-polymer-physics-toc.svg',
       alt: 'TOC-style schematic of a dynamic covalent polymer network with bond exchange, stress-bearing paths, and topology descriptors.',
       caption: 'Dynamic network topology as the link between bond exchange, relaxation, healing, and fracture.',
       notes: [
         {
           label: 'Mechanism',
-          body: 'Identify which bond exchanges modify load-bearing connectivity and which remain local, topologically neutral events.'
+          body: 'Identify which exchange events change load-bearing paths, relaxation spectra, and long-range network topology.'
         },
         {
           label: 'Simulation route',
-          body: 'Combine dynamic-bond molecular simulation with graph descriptors, stress-path analysis, and polymer-network theory.'
+          body: 'Combine dynamic-bond molecular simulation, topology descriptors, stress-correlation analysis, and polymer-network theory.'
         },
         {
           label: 'Model output',
-          body: 'Relate exchange chemistry and network topology to relaxation, self-healing, toughness, and failure modes.'
+          body: 'Relate exchange kinetics and topology evolution to viscoelasticity, self-healing, toughness, and fracture modes.'
         }
       ],
       tags: ['vitrimer', 'dynamic covalent bonds', 'polymer-network theory', 'topology', 'relaxation / fracture']
     },
     {
       kicker: 'Current project · scientific computing',
-      title: 'Scientific computing software and algorithms for simulation-to-model workflows',
+      title: 'Scientific computing software and algorithms',
       lead:
-        'This project develops compact software for molecular-simulation analysis: trajectory processing, descriptor extraction, graph/network metrics, transport and rheology kernels, and reproducible interfaces between molecular data and continuum models.',
+        'This project develops scientific software for simulation data reduction, trajectory analysis, descriptor extraction, graph metrics, transport kernels, viscoelastic analysis, and reproducible coupling between molecular observables and higher-level models.',
       figure: 'assets/img/research/scientific-computing-toc.svg',
       alt: 'TOC-style schematic showing a trajectory-to-descriptor-to-kernel-to-model software workflow with provenance and validation layers.',
       caption: 'A trajectory-to-model workflow in which descriptors, kernels, provenance, and validation are explicit objects.',
       notes: [
         {
           label: 'Object',
-          body: 'Define each computational product explicitly: descriptor, kernel, observable, uncertainty, provenance record, or boundary condition.'
+          body: 'Define computational products explicitly: descriptors, kernels, observables, uncertainty estimates, provenance records, and boundary-condition inputs.'
         },
         {
           label: 'Algorithmic route',
-          body: 'Build reusable modules for analysis registries, graph metrics, kernel extraction, and simulation-data reduction.'
+          body: 'Build reusable modules for trajectory readers, analysis registries, graph metrics, kernel extraction, and simulation-data reduction.'
         },
         {
           label: 'Model output',
-          body: 'Produce auditable workflows that are portable across projects instead of being single-use analysis scripts.'
+          body: 'Produce auditable analysis workflows that remain portable across projects rather than becoming one-off post-processing scripts.'
         }
       ],
       tags: ['scientific software', 'trajectory analysis', 'descriptor extraction', 'kernel methods', 'reproducible workflows']
@@ -89,7 +89,7 @@ const RESEARCH_PAGE = {
     },
     {
       title: 'Viscoelastic response',
-      body: 'Molecular relaxation, modulus evolution, and time-dependent mechanical response in polymer and filled-polymer systems.'
+      body: 'Time-dependent modulus, relaxation spectra, and stress correlation analysis in polymer and filled-polymer systems.'
     },
     {
       title: 'Thermal transport',
@@ -101,7 +101,7 @@ const RESEARCH_PAGE = {
     },
     {
       title: 'Fracture in networks',
-      body: 'Microscopic failure, crack deflection, and toughness in cross-linked and interpenetrating polymer networks.'
+      body: 'Microscopic damage, crack deflection, and fracture-energy pathways in cross-linked and interpenetrating polymer networks.'
     }
   ]
 };

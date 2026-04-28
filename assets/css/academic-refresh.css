@@ -1491,7 +1491,7 @@ body.subpage-literature .site-main > .section:first-child {
   body.subpage-research .site-main > .section:first-child,
   body.subpage-wiki .site-main > .section:first-child,
   body.subpage-literature .site-main > .section:first-child {
-    margin-top: -5.35rem !important;
+    margin-top: 0 !important;
   }
 }
 
@@ -1627,4 +1627,134 @@ body.subpage-literature .site-main > .section:first-child {
   body.subpage-literature .site-main > .section:first-child {
     margin-top: 0 !important;
   }
+}
+
+/* V7 correction: restore safe subpage clearance under the floating topbar, tighten page headers, and keep the literature map label-free. */
+body.subpage-research .site-main,
+body.subpage-wiki .site-main,
+body.subpage-literature .site-main {
+  padding-top: clamp(0.7rem, 1.1vw, 1rem) !important;
+  margin-top: 0 !important;
+}
+
+body.subpage-research .site-main > .section:first-child,
+body.subpage-wiki .site-main > .section:first-child,
+body.subpage-literature .site-main > .section:first-child {
+  margin-top: 0 !important;
+  padding-top: clamp(0.35rem, 0.7vw, 0.65rem) !important;
+}
+
+@media (min-width: 900px) {
+  body.subpage-research .site-main > .section:first-child,
+  body.subpage-wiki .site-main > .section:first-child,
+  body.subpage-literature .site-main > .section:first-child {
+    margin-top: 0 !important;
+  }
+}
+
+.research-minimal-head,
+.wiki-minimal-head,
+.literature-minimal-head {
+  display: grid !important;
+  grid-template-columns: minmax(max-content, 1fr) auto !important;
+  align-items: end !important;
+  gap: 0.72rem !important;
+  margin-bottom: 0.62rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.literature-minimal-head {
+  grid-template-columns: minmax(max-content, 1fr) !important;
+}
+
+.research-minimal-head h1,
+.wiki-minimal-head h1,
+.literature-minimal-head h1 {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+  font-size: clamp(1.45rem, 1.7vw, 1.9rem) !important;
+  line-height: 1.05 !important;
+}
+
+.research-mini-stats,
+.wiki-mini-stats {
+  justify-self: end !important;
+  align-self: end !important;
+}
+
+.research-foundations-head-v4 .section-title {
+  white-space: nowrap !important;
+  font-size: clamp(1.18rem, 1.48vw, 1.55rem) !important;
+  letter-spacing: -0.012em !important;
+}
+
+.research-core-card-v4 {
+  min-height: 370px !important;
+  grid-template-columns: minmax(0, 1fr) minmax(390px, 0.84fr) !important;
+}
+
+.research-core-copy-v4 .section-title {
+  max-width: none !important;
+  font-size: clamp(1.28rem, 1.78vw, 1.78rem) !important;
+  line-height: 1.12 !important;
+}
+
+.research-core-lead-v4 {
+  font-size: 0.93rem !important;
+  line-height: 1.56 !important;
+}
+
+.research-note-v4 span,
+.research-foundation-item-v4 p,
+.wiki-article p,
+.wiki-article li,
+.wiki-detail-article p,
+.wiki-detail-article li {
+  line-height: 1.48 !important;
+}
+
+.lit-network-canvas {
+  height: clamp(430px, 50vh, 540px) !important;
+}
+
+@media (max-width: 1180px) {
+  .research-minimal-head,
+  .wiki-minimal-head,
+  .literature-minimal-head {
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+  }
+  .research-minimal-head h1,
+  .wiki-minimal-head h1,
+  .literature-minimal-head h1,
+  .research-foundations-head-v4 .section-title {
+    white-space: normal !important;
+  }
+  .research-mini-stats,
+  .wiki-mini-stats {
+    justify-self: start !important;
+  }
+  .research-core-card-v4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+body.subpage-wiki-entry .site-main {
+  padding-top: clamp(0.7rem, 1.1vw, 1rem) !important;
+}
+
+body.subpage-wiki-entry .page-hero-compact {
+  padding-top: clamp(0.35rem, 0.75vw, 0.65rem) !important;
+  padding-bottom: clamp(0.55rem, 1vw, 0.9rem) !important;
+}
+
+body.subpage-wiki-entry .compact-shell {
+  padding: clamp(0.95rem, 1.8vw, 1.35rem) !important;
+}
+
+body.subpage-wiki-entry .compact-page-subtitle {
+  font-size: 0.92rem !important;
+  line-height: 1.48 !important;
 }
