@@ -2,6 +2,37 @@ import { publications, pageMeta } from './site-data.js';
 import { activateNav, initReveal, setMeta, smoothScrollForHashes } from './utils.js';
 import { initMolecularField } from './background.js';
 
+
+const supplementalPublications = [
+  {
+    id: 'multichannel-flexible-pulse-array-2023',
+    year: 2023,
+    title: 'Multichannel Flexible Pulse Perception Array for Intelligent Disease Diagnosis System',
+    authors: 'Tiezhu Liu, Guang-yang Gou, Fupeng Gao, Pan Yao, Haoyu Wu, Yusen Guo, Minghui Yin, Jie Yang, Tiancai Wen, Ming Zhao, Tong Li, Gang Chen, Jianhai Sun, Tianjun Ma, Jianqun Cheng, Zhimei Qi, Jiamin Chen, Junbo Wang, Mengdi Han, Zhen Fang, Yangyang Gao, Chunxiu Liu, Ning Xue',
+    venue: 'ACS Nano',
+    citation: '17(6), 5673–5685',
+    doi: '10.1021/acsnano.2c11897',
+    url: 'https://doi.org/10.1021/acsnano.2c11897',
+    tags: ['Flexible electronics', 'Nanocomposites', 'Molecular modeling', 'Machine learning'],
+    blurb: 'Reports a multichannel PI/MWCNT–PDMS flexible pressure-sensor array, with molecular-level modeling and machine-learning analysis for pulse perception.'
+  }
+];
+
+function publicationKey(item) {
+  return (item.doi || item.id || item.title || '').toLowerCase().replace(/\s+/g, '');
+}
+
+function mergedPublications() {
+  const merged = new Map();
+  [...publications, ...supplementalPublications].forEach((item) => {
+    const key = publicationKey(item);
+    if (!key || merged.has(key)) return;
+    merged.set(key, item);
+  });
+  return [...merged.values()];
+}
+
+
 function escapeHtml(value = '') {
   return String(value)
     .replaceAll('&', '&amp;')
@@ -52,7 +83,7 @@ function renderPublications() {
   const container = document.getElementById('publication-list');
   if (!container) return;
 
-  const sorted = [...publications].sort((a, b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title));
+  const sorted = mergedPublications().sort((a, b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title));
   const groups = groupByYear(sorted);
   const years = sorted.map((item) => item.year).filter(Boolean);
 

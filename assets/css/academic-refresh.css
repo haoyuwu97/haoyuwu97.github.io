@@ -1758,3 +1758,22 @@ body.subpage-wiki-entry .compact-page-subtitle {
   font-size: 0.92rem !important;
   line-height: 1.48 !important;
 }
+
+
+/* V8 literature-map correction: restore the organic v6 bubble language while keeping strict non-overlap. */
+.lit-network-panel {
+  overflow: hidden !important;
+}
+
+.lit-network-canvas {
+  height: clamp(455px, 50vh, 550px) !important;
+  background: rgba(255, 253, 248, 0.78) !important;
+}
+
+[data-theme="dark"] .lit-network-canvas {
+  background: rgba(14, 20, 31, 0.9) !important;
+}
+
+.lit-network-panel .section-title {
+  letter-spacing: -0.015em !important;
+}

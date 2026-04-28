@@ -1,33 +1,30 @@
-# V7 minimal patch: compact top clearance, research titles, wiki copy, and bubble map
+# Apply this patch
 
-Apply from the repository root:
+From the repository root:
 
 ```bash
-unzip haoyuwu97-v7-research-wiki-literature-fix.zip
-rsync -av haoyuwu97-v7-research-wiki-literature-fix/ ./
+unzip haoyuwu97-v8-literature-publication-fix.zip
+rsync -av haoyuwu97-v8-literature-publication-fix/ ./
 python3 -m http.server 8000
 ```
 
 Check:
 
 ```text
-http://localhost:8000/research.html
-http://localhost:8000/wiki.html
-http://localhost:8000/wiki-entry.html?project=pilots
-http://localhost:8000/wiki-entry.html?project=channel
 http://localhost:8000/leisure.html
+http://localhost:8000/publications.html
 ```
 
-Files touched:
+Then commit:
+
+```bash
+git add leisure.html publications.html assets/css/academic-refresh.css assets/js/literature.js assets/js/publications.js
+git commit -m "Improve literature bubble map and complete publications"
+git push
+```
+
+Use a hard refresh if the browser still serves cached JavaScript:
 
 ```text
-research.html
-wiki.html
-wiki-entry.html
-leisure.html
-assets/css/academic-refresh.css
-assets/js/research.js
-assets/js/wiki.js
-assets/js/wiki-entry.js
-assets/js/literature.js
+Cmd/Ctrl + Shift + R
 ```

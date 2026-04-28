@@ -477,7 +477,7 @@ function compactEdgeSet(edges, nodeIds) {
     const aDegree = byNode.get(edge.source) || 0;
     const bDegree = byNode.get(edge.target) || 0;
     const strong = edge.weight >= 3.2;
-    if (kept.length < 24 && (strong || (aDegree < 4 && bDegree < 4))) {
+    if (kept.length < 20 && (strong || (aDegree < 3 && bDegree < 3))) {
       kept.push(edge);
       byNode.set(edge.source, aDegree + 1);
       byNode.set(edge.target, bDegree + 1);
@@ -555,10 +555,12 @@ function layoutNetworkForActive() {
   const nodeMap = new Map(STATE.nodes.map((node) => [node.id, node]));
   const activeId = activeNodeId();
   const active = nodeMap.get(activeId) || STATE.nodes[0];
-  const pad = width < 620 ? 22 : 30;
-  const footer = 30;
-  const usableW = Math.max(220, width - pad * 2);
-  const usableH = Math.max(260, height - pad * 2 - footer);
+
+  const pad = width < 620 ? 22 : 32;
+  const footer = 32;
+  const usableW = Math.max(240, width - pad * 2);
+  const usableH = Math.max(280, height - pad * 2 - footer);
+  const minDim = Math.min(usableW, usableH);
 
   STATE.nodes.forEach((node) => {
     node.visible = true;
@@ -581,49 +583,147 @@ function layoutNetworkForActive() {
       || a.index - b.index;
   });
 
-  const count = ordered.length;
-  const cols = count <= 4
-    ? count
-    : width < 540
-      ? 3
-      : 4;
-  const rows = Math.ceil(count / cols);
-  const cellW = usableW / Math.max(1, cols);
-  const cellH = usableH / Math.max(1, rows);
-  const maxSlotRadius = clamp(Math.floor(Math.min(cellW, cellH) / 2 - (width < 620 ? 8 : 11)), 12, 34);
+  // Organic, v6-style bubble map: deterministic anchors + conservative collision resolution.
+  // It avoids text labels inside the graph and keeps result order + citation count inside each bubble.
+  const maxR = clamp(Math.floor(minDim / (STATE.nodes.length > 12 ? 9.6 : 8.5)), 19, 34);
+  const rawArea = STATE.nodes.reduce((sum, node) => sum + Math.PI * Math.pow(node.baseR + (node.id === active?.id ? 4 : 0), 2), 0);
+  const areaScale = clamp(Math.sqrt((usableW * usableH * 0.24) / Math.max(rawArea, 1)), 0.72, 1);
 
-  const slots = [];
-  const centerX = pad + usableW / 2;
-  const centerY = pad + usableH / 2;
-  for (let row = 0; row < rows; row += 1) {
-    for (let col = 0; col < cols; col += 1) {
-      if (slots.length >= count) break;
-      const x = pad + cellW * (col + 0.5);
-      const y = pad + cellH * (row + 0.5);
-      const d = Math.hypot(x - centerX, y - centerY);
-      slots.push({ x, y, d, row, col });
+  ordered.forEach((node) => {
+    const desired = node.baseR * areaScale + (node.id === active?.id ? 5 : 0);
+    node.r = clamp(desired, node.id === active?.id ? 21 : 15, maxR);
+  });
+
+  const cx = pad + usableW * (width < 620 ? 0.5 : 0.43);
+  const cy = pad + usableH * 0.52;
+  const activeNode = ordered[0];
+  activeNode.x = cx;
+  activeNode.y = cy;
+  activeNode.ax = cx;
+  activeNode.ay = cy;
+
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const start = -Math.PI / 2.2;
+  ordered.slice(1).forEach((node, orderIndex) => {
+    const relation = edgeWeightBetween(active?.id, node.id);
+    const relationNorm = clamp(relation / 5.5, 0, 1);
+    const shell = orderIndex < 7 || relation > 0 ? 0 : 1;
+    const angleSeed = (hashString(`${active?.id || 'root'}-${node.id}`) % 900) / 900;
+    const angle = start + orderIndex * golden + angleSeed * 0.42;
+    const radius = minDim * (0.24 + (1 - relationNorm) * 0.12 + shell * 0.18);
+    const anisotropyX = clamp(usableW / minDim, 1, 1.58);
+    const anisotropyY = clamp(usableH / minDim, 0.86, 1.22);
+
+    node.ax = cx + Math.cos(angle) * radius * anisotropyX;
+    node.ay = cy + Math.sin(angle) * radius * anisotropyY;
+    node.x = clamp(node.ax, pad + node.r, width - pad - node.r);
+    node.y = clamp(node.ay, pad + node.r, height - pad - footer - node.r);
+  });
+
+  const placed = ordered;
+  const clampNode = (node) => {
+    node.x = clamp(node.x, pad + node.r, width - pad - node.r);
+    node.y = clamp(node.y, pad + node.r, height - pad - footer - node.r);
+  };
+
+  for (let iter = 0; iter < 180; iter += 1) {
+    placed.forEach((node) => {
+      if (node.id === active?.id) return;
+      node.x += (node.ax - node.x) * 0.035;
+      node.y += (node.ay - node.y) * 0.035;
+    });
+
+    for (let i = 0; i < placed.length; i += 1) {
+      for (let j = i + 1; j < placed.length; j += 1) {
+        const a = placed[i];
+        const b = placed[j];
+        const gap = width < 620 ? 8 : 12;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const minDist = a.r + b.r + gap;
+        if (dist >= minDist) continue;
+
+        const ux = dx / dist;
+        const uy = dy / dist;
+        const push = (minDist - dist) * 0.58;
+        if (a.id === active?.id) {
+          b.x += ux * push;
+          b.y += uy * push;
+        } else if (b.id === active?.id) {
+          a.x -= ux * push;
+          a.y -= uy * push;
+        } else {
+          a.x -= ux * push * 0.5;
+          a.y -= uy * push * 0.5;
+          b.x += ux * push * 0.5;
+          b.y += uy * push * 0.5;
+        }
+      }
     }
-  }
-  slots.sort((a, b) => a.d - b.d || a.row - b.row || a.col - b.col);
 
-  ordered.forEach((node, index) => {
-    const slot = slots[index];
-    const desired = node.id === active?.id ? node.baseR + 5 : node.baseR;
-    node.r = clamp(Math.min(desired, maxSlotRadius), 12, maxSlotRadius);
-    node.x = clamp(slot.x, pad + node.r, width - pad - node.r);
-    node.y = clamp(slot.y, pad + node.r, height - pad - footer - node.r);
+    activeNode.x = cx;
+    activeNode.y = cy;
+    placed.forEach(clampNode);
+  }
+
+  // Final strict pass: no attraction, only separation and boundary clamp.
+  for (let iter = 0; iter < 50; iter += 1) {
+    for (let i = 0; i < placed.length; i += 1) {
+      for (let j = i + 1; j < placed.length; j += 1) {
+        const a = placed[i];
+        const b = placed[j];
+        const gap = width < 620 ? 8 : 12;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const minDist = a.r + b.r + gap;
+        if (dist >= minDist) continue;
+
+        const ux = dx / dist;
+        const uy = dy / dist;
+        const push = (minDist - dist) * 0.64;
+        if (a.id === active?.id) {
+          b.x += ux * push;
+          b.y += uy * push;
+        } else if (b.id === active?.id) {
+          a.x -= ux * push;
+          a.y -= uy * push;
+        } else {
+          a.x -= ux * push * 0.5;
+          a.y -= uy * push * 0.5;
+          b.x += ux * push * 0.5;
+          b.y += uy * push * 0.5;
+        }
+      }
+    }
+    activeNode.x = cx;
+    activeNode.y = cy;
+    placed.forEach(clampNode);
+  }
+
+  placed.forEach((node) => {
     node.hitbox = { x: node.x - node.r, y: node.y - node.r, w: node.r * 2, h: node.r * 2 };
   });
 
-  const visibleIds = new Set(ordered.map((node) => node.id));
-  STATE.layoutEdges = STATE.edges
-    .filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target))
-    .sort((a, b) => {
-      const aActive = a.source === active?.id || a.target === active?.id ? 1 : 0;
-      const bActive = b.source === active?.id || b.target === active?.id ? 1 : 0;
-      return bActive - aActive || b.weight - a.weight;
-    })
-    .slice(0, 32);
+  const visibleIds = new Set(placed.map((node) => node.id));
+  const activeEdges = STATE.edges
+    .filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target) && (edge.source === active?.id || edge.target === active?.id))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 9);
+
+  const otherEdges = STATE.edges
+    .filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target) && edge.source !== active?.id && edge.target !== active?.id)
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 8);
+
+  const edgeKeys = new Set();
+  STATE.layoutEdges = [...activeEdges, ...otherEdges].filter((edge) => {
+    const key = [edge.source, edge.target].sort().join('::');
+    if (edgeKeys.has(key)) return false;
+    edgeKeys.add(key);
+    return true;
+  });
 
   STATE.graphCards = { footerY: height - 13, activeId: active?.id };
 }
@@ -639,27 +739,28 @@ function graphPalette() {
   if (isDark) {
     return {
       isDark,
-      bg0: '#111722',
-      bg1: '#161d2a',
-      bg2: '#202735',
-      card: 'rgba(24, 30, 42, 0.94)',
-      cardSoft: 'rgba(20, 26, 36, 0.92)',
-      stroke: 'rgba(214, 199, 165, 0.24)',
-      strokeSoft: 'rgba(214, 199, 165, 0.14)',
-      ink: 'rgba(245, 247, 250, 0.94)',
-      muted: 'rgba(208, 215, 226, 0.68)',
-      faint: 'rgba(208, 215, 226, 0.32)',
-      accent: '#c2a060',
-      accentSoft: 'rgba(194, 160, 96, 0.18)',
-      nodeFill: '#f7f1df',
-      nodeText: '#17202a',
-      node0: '#eff6ff',
-      node1: '#243447',
-      activeNode0: '#d7b66f',
-      activeNode1: '#8b6f3d',
+      bg0: '#101621',
+      bg1: '#121a27',
+      bg2: '#172231',
+      card: 'rgba(22, 28, 39, 0.94)',
+      cardSoft: 'rgba(18, 24, 34, 0.92)',
+      stroke: 'rgba(214, 199, 165, 0.28)',
+      strokeSoft: 'rgba(214, 199, 165, 0.16)',
+      ink: 'rgba(246, 248, 251, 0.95)',
+      muted: 'rgba(211, 218, 228, 0.72)',
+      faint: 'rgba(211, 218, 228, 0.23)',
+      accent: '#c5a462',
+      accentSoft: 'rgba(197, 164, 98, 0.18)',
+      nodeFill: '#1e2938',
+      nodeText: 'rgba(245, 248, 252, 0.94)',
+      node0: '#2a3546',
+      node1: '#151d2a',
+      activeNode0: '#d0b16b',
+      activeNode1: '#8f713d',
       nodeActiveText: '#fffdf8',
-      nodeActiveTextSoft: 'rgba(255,253,248,0.88)',
-      venueStroke: '#d7b66f'
+      nodeActiveTextSoft: 'rgba(255,253,248,0.9)',
+      venueStroke: '#d0b16b',
+      nodeShadow: 'rgba(0, 0, 0, 0.34)'
     };
   }
   return {
@@ -673,18 +774,19 @@ function graphPalette() {
     strokeSoft: 'rgba(101, 86, 61, 0.12)',
     ink: '#17202a',
     muted: '#5e6875',
-    faint: 'rgba(94, 104, 117, 0.35)',
+    faint: 'rgba(94, 104, 117, 0.26)',
     accent,
     accentSoft: 'rgba(139, 111, 61, 0.12)',
     nodeFill: '#ffffff',
     nodeText: '#17202a',
     node0: '#ffffff',
-    node1: '#e8f1f8',
-    activeNode0: '#b9974e',
+    node1: '#e7f0f7',
+    activeNode0: '#bd9b50',
     activeNode1: '#8b6f3d',
     nodeActiveText: '#fffdf8',
     nodeActiveTextSoft: 'rgba(255,253,248,0.92)',
-    venueStroke: '#b9974e'
+    venueStroke: '#b9974e',
+    nodeShadow: 'rgba(31, 41, 55, 0.14)'
   };
 }
 
@@ -811,6 +913,9 @@ function drawBubble(ctx, node, palette) {
   const citation = citationLabel(node.paper.citations);
   const quality = node.venueSignal || 0;
   ctx.save();
+  ctx.shadowColor = palette.nodeShadow || 'rgba(0,0,0,0.12)';
+  ctx.shadowBlur = active ? 14 : 7;
+  ctx.shadowOffsetY = active ? 3 : 2;
   ctx.beginPath();
   const halo = ctx.createRadialGradient(node.x - node.r * 0.28, node.y - node.r * 0.34, node.r * 0.15, node.x, node.y, node.r * 1.08);
   if (active) {
@@ -826,6 +931,8 @@ function drawBubble(ctx, node, palette) {
   ctx.strokeStyle = active ? palette.accent : quality >= 3 ? palette.venueStroke : palette.stroke;
   ctx.lineWidth = active ? 2.4 : clamp(1 + quality * 0.28, 1, 2.1);
   ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 
   ctx.fillStyle = active ? palette.nodeActiveText : palette.nodeText;
   ctx.textAlign = 'center';
@@ -862,7 +969,7 @@ function drawNetwork() {
   ctx.restore();
 
   if (!STATE.nodes.length) {
-    drawWrappedText(ctx, 'Run a search to build a bubble map. Bubble area reflects citation count and a venue signal; numbers match the result order.', 18, 20, rect.width - 36, 18, 4, {
+    drawWrappedText(ctx, 'Run a search to build a non-overlapping bubble map. Bubble area reflects citations, venue signal, and lens relevance; numbers match the result order.', 18, 20, rect.width - 36, 18, 4, {
       color: palette.muted,
       font: '13px "Times New Roman", serif'
     });
